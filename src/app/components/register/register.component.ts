@@ -4,6 +4,7 @@ import {Router} from '@angular/router';
 import {UserService} from '../../_services/user.service';
 import {AlertService} from '../../_services/alert.service';
 import {first} from 'rxjs/operators';
+import {NgxSpinnerService} from 'ngx-spinner';
 
 @Component({
   selector: 'app-register',
@@ -20,7 +21,8 @@ export class RegisterComponent implements OnInit {
     private formBuilder: FormBuilder,
     private router: Router,
     private userService: UserService,
-    private alertService: AlertService) { }
+    private alertService: AlertService,
+    private spinner: NgxSpinnerService ) { }
 
   ngOnInit() {
     this.registerForm = this.formBuilder.group({
@@ -43,6 +45,7 @@ export class RegisterComponent implements OnInit {
     }
 
     this.loading = true;
+    this.spinner.show();
     this.userService.register(this.registerForm.value)
       .pipe(first())
       .subscribe(
@@ -53,6 +56,7 @@ export class RegisterComponent implements OnInit {
         error => {
           this.alertService.error(error);
           this.loading = false;
+          this.spinner.hide();
         });
   }
 

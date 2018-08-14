@@ -4,6 +4,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {AuthenticationService} from '../../_services/authentication.service';
 import {AlertService} from '../../_services/alert.service';
 import {first} from 'rxjs/operators';
+import {NgxSpinnerService} from 'ngx-spinner';
 
 @Component({
   selector: 'app-login',
@@ -22,7 +23,8 @@ export class LoginComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private authenticationService: AuthenticationService,
-    private alertService: AlertService) {
+    private alertService: AlertService,
+    private spinner: NgxSpinnerService) {
   }
 
   ngOnInit() {
@@ -32,6 +34,7 @@ export class LoginComponent implements OnInit {
     });
     this.authenticationService.logout();
     this.retunUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
+
   }
 
   get f() {
@@ -45,6 +48,7 @@ export class LoginComponent implements OnInit {
     }
 
     this.loading = true;
+    this.spinner.show();
     this.authenticationService.login(this.f.username.value, this.f.password.value)
       .pipe(first())
       .subscribe(
@@ -54,6 +58,7 @@ export class LoginComponent implements OnInit {
         error => {
           this.alertService.error(error);
           this.loading = false;
+          this.spinner.hide();
         }
       );
   }

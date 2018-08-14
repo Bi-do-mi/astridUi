@@ -11,6 +11,7 @@ import {AuthGuard} from './_guards/auth.guard';
 import { LoginComponent } from './components/login/login.component';
 import { RegisterComponent } from './components/register/register.component';
 import {routing} from './app.routing';
+import {NgxSpinnerModule} from 'ngx-spinner';
 
 @NgModule({
   declarations: [
@@ -26,7 +27,8 @@ import {routing} from './app.routing';
     FormsModule,
     HttpClientModule,
     ReactiveFormsModule,
-    routing
+    routing,
+    NgxSpinnerModule
   ],
   providers: [AuthGuard],
   bootstrap: [AppComponent]
