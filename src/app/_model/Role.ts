@@ -1,3 +1,4 @@
-enum Role {
-  GUEST
+export class Role {
+  id: number;
+  role: string;
 }

@@ -1,6 +1,5 @@
 import {Injectable} from '@angular/core';
 import {Observable, of, Subject} from 'rxjs';
-import {MessageService} from './message.service';
 import {HttpClient, HttpParams} from '@angular/common/http';
 import {User} from '../_model/User';
 
@@ -9,37 +8,31 @@ import {User} from '../_model/User';
 })
 export class UserService {
 
-  constructor(private http: HttpClient,
-              private messageService: MessageService) {
-  }
-
-  private log(message: string) {
-    this.messageService.add(`HeroService: ${message}`);
+  constructor(private http: HttpClient) {
   }
 
   getAll() {
-    return this.http.get<User[]>('api/users');
+    return this.http.get<User[]>('rest/users/');
   }
 
   getById(id: number) {
-    return this.http.get('api/users/' + id);
+    return this.http.get('rest/users/' + id);
   }
 
   register(user: User) {
-    return this.http.post('api/users/register', user);
+    return this.http.post('rest/users/register', user);
   }
 
   update(user: User) {
-    return this.http.put('api/users/' + user.id, user);
+    return this.http.put('rest/users/' + user.id, user);
   }
 
   delete(id: number) {
-    return this.http.delete('api/users/' + id);
+    return this.http.delete('rest/users/' + id);
   }
   public getUsers(): Observable<User> {
-    this.log('UserService fetched users!');
     const param = new HttpParams().set('firstName', 'Alla');
-    return this.http.get<User>('/api/byName', {params: param});
+    return this.http.get<User>('/rest/byName', {params: param});
   }
 
   // public getUsers(): Observable<User> {

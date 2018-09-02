@@ -5,6 +5,7 @@ import {AuthenticationService} from '../../_services/authentication.service';
 import {AlertService} from '../../_services/alert.service';
 import {first} from 'rxjs/operators';
 import {NgxSpinnerService} from 'ngx-spinner';
+import {NGXLogger} from 'ngx-logger';
 
 @Component({
   selector: 'app-login',
@@ -16,7 +17,8 @@ export class LoginComponent implements OnInit {
   loginForm: FormGroup;
   loading = false;
   submitted = false;
-  retunUrl: string;
+  returnUrl: string;
+  credentials = {username: '', password: ''};
 
   constructor(
     private formBuilder: FormBuilder,
@@ -24,7 +26,8 @@ export class LoginComponent implements OnInit {
     private router: Router,
     private authenticationService: AuthenticationService,
     private alertService: AlertService,
-    private spinner: NgxSpinnerService) {
+    private spinner: NgxSpinnerService,
+    private  logger: NGXLogger) {
   }
 
   ngOnInit() {
@@ -33,8 +36,8 @@ export class LoginComponent implements OnInit {
       password: ['', Validators.required]
     });
     this.authenticationService.logout();
-    this.retunUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
-
+    this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
+    this.logger.info('in ngOnInit');
   }
 
   get f() {
@@ -44,24 +47,27 @@ export class LoginComponent implements OnInit {
   onSubmit() {
     this.submitted = true;
     if (this.loginForm.invalid) {
+      this.logger.info('invalid form. return');
       return;
     }
 
     this.loading = true;
     this.spinner.show();
-    this.authenticationService.login(this.f.username.value, this.f.password.value)
+    this.credentials.username = this.f.username.value;
+    this.credentials.password = this.f.password.value;
+    this.authenticationService.login(this.credentials)
       .pipe(first())
       .subscribe(
         data => {
-          this.router.navigate([this.retunUrl]);
-        },
-        error => {
-          this.alertService.error(error);
           this.loading = false;
           this.spinner.hide();
+          this.router.navigate([this.returnUrl]);
+        },
+        error => {
+          this.loading = false;
+          this.spinner.hide();
+          this.alertService.error(error);
         }
       );
   }
-
-
 }

@@ -4,6 +4,7 @@ import {User} from '../../_model/User';
 import {AlertService} from '../../_services/alert.service';
 import {first} from 'rxjs/operators';
 import {assertNumber} from '@angular/core/src/render3/assert';
+import {NGXLogger} from 'ngx-logger';
 
 @Component({
   selector: 'app-home',
@@ -14,7 +15,7 @@ export class HomeComponent implements OnInit {
   currentUser: User;
   users: User[] = [];
 
-  constructor(private userService: UserService) {
+  constructor(private userService: UserService, private logger: NGXLogger) {
     this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
   }
 
@@ -30,6 +31,7 @@ export class HomeComponent implements OnInit {
 
   private loadAllUsers() {
     this.userService.getAll().pipe(first()).subscribe(u => {
+      this.logger.info('from loadAllUsers');
       if (u) {
         this.users = u;
       }
