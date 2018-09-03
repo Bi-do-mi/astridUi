@@ -6,17 +6,18 @@
     {{user.username}} ({{user.firstName}} {{user.lastName}})
     - <a (click)="deleteUser(user.id)" class="text-danger">Delete</a>
   </li>
+  <li>{{u}}</li>
   <li>
-    {{users[0].id}}
-    <br>{{users[0].password}}
-    <br>{{users[0].username}}
-    <br>{{users[0].firstName}}
-    <br>{{users[0].lastName}}
-    <br>{{users[0].email}}
-    <br>{{users[0].accountNonExpired}}
-    <br>{{users[0].accountNonLocked}}
-    <br>{{users[0].enabled}}
-    <br>{{users[0].roles}}
+    {{currentUser.id}}
+    <br>{{currentUser.password}}
+    <br>{{currentUser.username}}
+    <br>{{currentUser.firstName}}
+    <br>{{currentUser.lastName}}
+    <br>{{currentUser.email}}
+    <br>{{currentUser.accountNonExpired}}
+    <br>{{currentUser.accountNonLocked}}
+    <br>{{currentUser.enabled}}
+    <br>{{currentUser.roles}}
   </li>
 </ul>
 <p><a [routerLink]="['/login']">Logout</a></p>

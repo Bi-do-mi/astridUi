@@ -14,6 +14,7 @@ import {NGXLogger} from 'ngx-logger';
 export class HomeComponent implements OnInit {
   currentUser: User;
   users: User[] = [];
+  u: string;
 
   constructor(private userService: UserService, private logger: NGXLogger) {
     this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
@@ -34,6 +35,7 @@ export class HomeComponent implements OnInit {
       this.logger.info('from loadAllUsers');
       if (u) {
         this.users = u;
+        this.u = localStorage.getItem('currentUser');
       }
     });
   }

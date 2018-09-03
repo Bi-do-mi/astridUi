@@ -8,8 +8,8 @@ export class User {
   roles: Role[];
   password: string;
   username: string;
-  accountNonExpired: boolean;
-  accountNonLocked: boolean;
-  credentialsNonExpired: boolean;
-  enabled: boolean;
+  accountNonExpired = true;
+  accountNonLocked = true;
+  credentialsNonExpired = true;
+  enabled = true;
 }

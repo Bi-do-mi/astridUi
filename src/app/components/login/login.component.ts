@@ -6,6 +6,7 @@ import {AlertService} from '../../_services/alert.service';
 import {first} from 'rxjs/operators';
 import {NgxSpinnerService} from 'ngx-spinner';
 import {NGXLogger} from 'ngx-logger';
+import {HttpErrorResponse} from '@angular/common/http';
 
 @Component({
   selector: 'app-login',
@@ -50,7 +51,6 @@ export class LoginComponent implements OnInit {
       this.logger.info('invalid form. return');
       return;
     }
-
     this.loading = true;
     this.spinner.show();
     this.credentials.username = this.f.username.value;
@@ -66,7 +66,9 @@ export class LoginComponent implements OnInit {
         error => {
           this.loading = false;
           this.spinner.hide();
-          this.alertService.error(error);
+          if (error instanceof HttpErrorResponse && error.status === 401) {
+            this.alertService.error('Неправильный логин или пароль.');
+          }
         }
       );
   }
