@@ -38,7 +38,7 @@ export class LoginComponent implements OnInit {
     });
     this.authenticationService.logout();
     this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
-    this.logger.info('in ngOnInit');
+    // this.logger.info('in ngOnInit');
   }
 
   get f() {

@@ -15,6 +15,16 @@ import {NgxSpinnerModule} from 'ngx-spinner';
 import {XhrInterceptor} from './_services/xhr.interceptor';
 import {LoggerModule, NgxLoggerLevel} from 'ngx-logger';
 import {AuthenticationService} from './_services/authentication.service';
+import {RequestInterceptor} from './_guards/RequestInterceptor';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import {MatToolbarModule} from '@angular/material/toolbar';
+import {MatFormFieldModule, MatIconModule} from '@angular/material';
+import {MatInputModule} from '@angular/material/input';
+
+export const httpInterceptorProviders = [
+  {provide: HTTP_INTERCEPTORS, useClass: RequestInterceptor, multi: true},
+  {provide: HTTP_INTERCEPTORS, useClass: XhrInterceptor, multi: true}
+];
 
 @NgModule({
   declarations: [
@@ -27,6 +37,7 @@ import {AuthenticationService} from './_services/authentication.service';
   ],
   imports: [
     BrowserModule,
+    BrowserAnimationsModule,
     FormsModule,
     HttpClientModule,
     ReactiveFormsModule,
@@ -35,10 +46,13 @@ import {AuthenticationService} from './_services/authentication.service';
     LoggerModule.forRoot({
       level: NgxLoggerLevel.INFO,
       serverLogLevel: NgxLoggerLevel.ERROR
-    })
+    }),
+    MatToolbarModule,
+    MatIconModule,
+    MatInputModule,
+    MatFormFieldModule
   ],
-  providers: [AuthGuard, {provide: HTTP_INTERCEPTORS, useClass: XhrInterceptor, multi: true},
-  AuthenticationService],
+  providers: [AuthGuard, AuthenticationService, httpInterceptorProviders],
   bootstrap: [AppComponent]
 })
 export class AppModule {

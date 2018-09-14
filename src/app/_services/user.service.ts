@@ -19,6 +19,10 @@ export class UserService {
     return this.http.get('rest/users/' + id);
   }
 
+  getByName(name: string) {
+    return this.http.get('rest/users/name_check?name=' + name, {'withCredentials': false, responseType: 'text'});
+  }
+
   register(user: User) {
     return this.http.post('rest/users/sign_up', user);
   }
@@ -30,6 +34,7 @@ export class UserService {
   delete(id: number) {
     return this.http.delete('rest/users/' + id);
   }
+
   public getUsers(): Observable<User> {
     const param = new HttpParams().set('firstName', 'Alla');
     return this.http.get<User>('/rest/byName', {params: param});

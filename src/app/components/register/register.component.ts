@@ -1,5 +1,5 @@
-import {Component, OnInit} from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {Component, OnChanges, OnInit, SimpleChanges} from '@angular/core';
+import {AbstractControl, FormBuilder, FormGroup, ValidationErrors, Validators} from '@angular/forms';
 import {Router} from '@angular/router';
 import {UserService} from '../../_services/user.service';
 import {AlertService} from '../../_services/alert.service';
@@ -34,21 +34,36 @@ export class RegisterComponent implements OnInit {
 
   ngOnInit() {
     this.registerForm = this.formBuilder.group({
-      username: ['', [Validators.required, Validators.maxLength(60)]],
-      password: ['', [Validators.required
-        , Validators.minLength(6)
-        , Validators.maxLength(30)]],
-      firstName: ['', Validators.required],
-      lastName: ['', Validators.required],
-      email: ['', [Validators.required
-        , Validators.pattern('^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$')]]
+      username: ['', [Validators.maxLength(60),
+        Validators.pattern('^(?=.*[A-Za-z0-9]$)[A-Za-z][A-Za-z\\d.-]{0,59}$')]],
+      password: ['', [Validators.minLength(8)
+        , Validators.maxLength(30)
+        , Validators.pattern('^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[a-zA-Z\\d]{8,}$')]],
+      firstName: [''],
+      lastName: [''],
+      email: ['', [Validators.email]]
     });
     this.authenticationService.logout();
   }
 
-  // convenience getter for easy access to form fields
   get f() {
     return this.registerForm.controls;
+  }
+
+  checkName(user_name: string) {
+    this.userService.getByName(user_name)
+      .pipe(first())
+      .subscribe(data => {
+          if (user_name === data) {
+            this.registerForm.controls['username'].setErrors({occupied: true});
+          } else {
+            this.registerForm.controls['username'].setErrors({occupied: false});
+            this.registerForm.controls['username'].updateValueAndValidity();
+          }
+        },
+        error => {
+          this.logger.info(error);
+        });
   }
 
   onSubmit() {
