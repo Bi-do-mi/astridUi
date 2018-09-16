@@ -21,6 +21,7 @@ export class RegisterComponent implements OnInit {
   loading = false;
   submitted = false;
   newUser = new User();
+  hide = true;
 
   constructor(
     private formBuilder: FormBuilder,

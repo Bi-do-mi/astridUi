@@ -20,6 +20,7 @@ export class LoginComponent implements OnInit {
   submitted = false;
   returnUrl: string;
   credentials = {username: '', password: ''};
+  hide = true;
 
   constructor(
     private formBuilder: FormBuilder,

@@ -18,7 +18,7 @@ import {AuthenticationService} from './_services/authentication.service';
 import {RequestInterceptor} from './_guards/RequestInterceptor';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {MatToolbarModule} from '@angular/material/toolbar';
-import {MatFormFieldModule, MatIconModule} from '@angular/material';
+import {MatButtonModule, MatFormFieldModule, MatIconModule} from '@angular/material';
 import {MatInputModule} from '@angular/material/input';
 
 export const httpInterceptorProviders = [
@@ -50,7 +50,8 @@ export const httpInterceptorProviders = [
     MatToolbarModule,
     MatIconModule,
     MatInputModule,
-    MatFormFieldModule
+    MatFormFieldModule,
+    MatButtonModule
   ],
   providers: [AuthGuard, AuthenticationService, httpInterceptorProviders],
   bootstrap: [AppComponent]
