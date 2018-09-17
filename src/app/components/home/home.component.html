@@ -3,21 +3,22 @@
 <h3>All registered users:</h3>
 <ul>
   <li *ngFor="let user of users">
-    {{user.username}} ({{user.firstName}} {{user.lastName}})
+    {{user.login}} ({{user.firstName}} {{user.lastName}})
     - <a (click)="deleteUser(user.id)" class="text-danger">Delete</a>
   </li>
   <li>{{u}}</li>
   <li>
     {{currentUser.id}}
     <br>{{currentUser.password}}
-    <br>{{currentUser.username}}
+    <br>{{currentUser.login}}
     <br>{{currentUser.firstName}}
     <br>{{currentUser.lastName}}
-    <br>{{currentUser.email}}
     <br>{{currentUser.accountNonExpired}}
     <br>{{currentUser.accountNonLocked}}
     <br>{{currentUser.enabled}}
     <br>{{currentUser.roles}}
+    <br>{{currentUser.credentialsNonExpired}}
+    <br>{{currentUser.lastVisit}}
   </li>
 </ul>
 <p><a [routerLink]="['/login']">Logout</a></p>

@@ -19,7 +19,7 @@ export class LoginComponent implements OnInit {
   loading = false;
   submitted = false;
   returnUrl: string;
-  credentials = {username: '', password: ''};
+  credentials = {login: '', password: ''};
   hide = true;
 
   constructor(
@@ -34,7 +34,7 @@ export class LoginComponent implements OnInit {
 
   ngOnInit() {
     this.loginForm = this.formBuilder.group({
-      username: ['', Validators.required],
+      login: ['', Validators.required],
       password: ['', Validators.required]
     });
     this.authenticationService.logout();
@@ -54,7 +54,7 @@ export class LoginComponent implements OnInit {
     }
     this.loading = true;
     this.spinner.show();
-    this.credentials.username = this.f.username.value;
+    this.credentials.login = this.f.login.value;
     this.credentials.password = this.f.password.value;
     this.authenticationService.login(this.credentials)
       .pipe(first())

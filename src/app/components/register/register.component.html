@@ -1,38 +1,23 @@
 <h2>Регистрация</h2>
 <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
-  <!--<div class="form-group">-->
-  <!--<label for="username">Username</label>-->
-  <!--<input type="text" formControlName="username" class="form-control"-->
-  <!--[ngClass]="{ 'is-invalid': submitted && f.username.errors }" />-->
-  <!--<div *ngIf="submitted && f.username.errors" class="invalid-feedback">-->
-  <!--<div *ngIf="f.username.errors.required">Username is required</div>-->
-  <!--</div>-->
-  <!--</div>-->
+
   <mat-form-field class="example-full-width">
-    <input matInput placeholder="логин" formControlName="username" required
+    <input matInput placeholder="email или телефон" formControlName="login" required
            (change)="checkName($event.target.value)">
     <!--<mat-icon matSuffix (click)="hide = !hide">{{hide ? 'visibility' : 'visibility_off'}}</mat-icon>-->
-    <mat-error *ngIf=" submitted && f.username.hasError('required')">
-      введите логин
+    <mat-error *ngIf=" submitted && f.login.hasError('required')">
+      введите email или телефон
     </mat-error>
-    <mat-error *ngIf="f.username.hasError('pattern')">
-      логин должен начинаться с латинской буквы
+    <mat-error *ngIf="(f.login.hasError('pattern'))">
+      ввод некоректен
     </mat-error>
-    <mat-error *ngIf="f.username.hasError('occupied')
-    && !f.username.hasError('pattern')&& !f.username.hasError('required')">
-      этот логин уже занят
+    <mat-error *ngIf="f.login.hasError('occupied')
+    && !f.login.hasError('pattern')&& !f.login.hasError('required')">
+      email/телефон уже зарегестрирован
     </mat-error>
   </mat-form-field>
 
-  <!--<div class="form-group">-->
-  <!--<label for="password">Password</label>-->
-  <!--<input type="password" formControlName="password" class="form-control"-->
-  <!--[ngClass]="{ 'is-invalid': submitted && f.password.errors }" />-->
-  <!--<div *ngIf="submitted && f.password.errors" class="invalid-feedback">-->
-  <!--<div *ngIf="f.password.errors.required">Password is required</div>-->
-  <!--<div *ngIf="f.password.errors.minlength">Password must be at least 6 characters</div>-->
-  <!--</div>-->
-  <!--</div>-->
+  <!--password-->
   <mat-form-field class="example-full-width">
     <input matInput placeholder="пароль" formControlName="password" required [type]="hide ? 'password' : 'text'">
     <mat-icon matSuffix (click)=" hide=!hide">{{hide ? 'visibility' : 'visibility_off'}}</mat-icon>
@@ -46,52 +31,23 @@
       как минимум 1 заглавная, 1 прописная буква и 1 цифра
     </mat-error>
   </mat-form-field>
-  <!--<div class="form-group">-->
-  <!--<label for="firstName">First Name</label>-->
-  <!--<input type="text" formControlName="firstName" class="form-control"-->
-  <!--[ngClass]="{ 'is-invalid': submitted && f.firstName.errors }" />-->
-  <!--<div *ngIf="submitted && f.firstName.errors" class="invalid-feedback">-->
-  <!--<div *ngIf="f.firstName.errors.required">First Name is required</div>-->
-  <!--</div>-->
-  <!--</div>-->
+
+  <!--name-->
   <mat-form-field class="example-full-width">
     <input matInput placeholder="имя" formControlName="firstName" required>
     <mat-error *ngIf="submitted && f.firstName.hasError('required')">
       введите свое имя
     </mat-error>
   </mat-form-field>
-  <!--<div class="form-group">-->
-  <!--<label for="lastName">Last Name</label>-->
-  <!--<input type="text" formControlName="lastName" class="form-control"-->
-  <!--[ngClass]="{ 'is-invalid': submitted && f.lastName.errors }" />-->
-  <!--<div *ngIf="submitted && f.lastName.errors" class="invalid-feedback">-->
-  <!--<div *ngIf="f.lastName.errors.required">Last Name is required</div>-->
-  <!--</div>-->
-  <!--</div>-->
+
+  <!--family-->
   <mat-form-field class="example-full-width">
     <input matInput placeholder="фамилия" formControlName="lastName" required>
     <mat-error *ngIf="submitted && f.lastName.hasError('required')">
       введите свою фамилию
     </mat-error>
   </mat-form-field>
-  <!--<div class="form-group">-->
-  <!--<label for="email">Email</label>-->
-  <!--<input type="email" formControlName="email" class="form-control"-->
-  <!--[ngClass]="{ 'is-invalid': submitted && f.email.errors }" />-->
-  <!--<div *ngIf="submitted && (f.email.errors || f.email.errors?.email)" class="invalid-feedback">-->
-  <!--<div *ngIf="f.email.errors.required">Введите электронный адрес</div>-->
-  <!--<div *ngIf="f.email.errors.pattern">Электронный адрес некорректен</div>-->
-  <!--</div>-->
-  <!--</div>-->
-  <mat-form-field class="example-full-width">
-    <input matInput placeholder="email" formControlName="email" required>
-    <mat-error *ngIf="submitted && f.email.hasError('required')">
-      введите свой электронный адрес
-    </mat-error>
-    <mat-error *ngIf="f.email.hasError('email') && !f.email.hasError('required')">
-      Электронный адрес некорректен
-    </mat-error>
-  </mat-form-field>
+
   <div class="form-group">
     <button [disabled]="loading" mat-raised-button color="primary">Регистрация</button>
     <!--<img *ngIf="loading" src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==" />-->

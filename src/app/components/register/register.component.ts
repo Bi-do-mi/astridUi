@@ -35,14 +35,15 @@ export class RegisterComponent implements OnInit {
 
   ngOnInit() {
     this.registerForm = this.formBuilder.group({
-      username: ['', [Validators.maxLength(60),
-        Validators.pattern('^(?=.*[A-Za-z0-9]$)[A-Za-z][A-Za-z\\d.-]{0,59}$')]],
+      login: ['', [Validators.maxLength(60),
+        Validators.pattern('^(([^<>()\\[\\]\\\\.,;:\\s@"]+(\\.[^<>()\\[\\]\\\\.,;:\\s@"]+)*)' +
+          '|(".+"))@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}])' +
+          '|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))$|^(\\+7|8)?[-\\(]?\\d{3}\\)?-?\\d{3}-?\\d{2}-?\\d{2}$')]],
       password: ['', [Validators.minLength(8)
         , Validators.maxLength(30)
         , Validators.pattern('^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[a-zA-Z\\d]{8,}$')]],
       firstName: [''],
-      lastName: [''],
-      email: ['', [Validators.email]]
+      lastName: ['']
     });
     this.authenticationService.logout();
   }
@@ -52,14 +53,15 @@ export class RegisterComponent implements OnInit {
   }
 
   checkName(user_name: string) {
+    this.logger.info(this.registerForm.controls['login'].errors);
     this.userService.getByName(user_name)
       .pipe(first())
       .subscribe(data => {
           if (user_name === data) {
-            this.registerForm.controls['username'].setErrors({occupied: true});
+            this.registerForm.controls['login'].setErrors({occupied: true});
           } else {
-            this.registerForm.controls['username'].setErrors({occupied: false});
-            this.registerForm.controls['username'].updateValueAndValidity();
+            this.registerForm.controls['login'].setErrors({occupied: false});
+            this.registerForm.controls['login'].updateValueAndValidity();
           }
         },
         error => {
@@ -97,11 +99,10 @@ export class RegisterComponent implements OnInit {
   }
 
   initUser(): User {
-    this.newUser.username = this.registerForm.controls['username'].value;
+    this.newUser.username = this.registerForm.controls['login'].value;
     this.newUser.password = this.registerForm.controls['password'].value;
     this.newUser.firstName = this.registerForm.controls['firstName'].value;
     this.newUser.lastName = this.registerForm.controls['lastName'].value;
-    this.newUser.email = this.registerForm.controls['email'].value;
     return this.newUser;
   }
 }

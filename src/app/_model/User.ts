@@ -4,7 +4,6 @@ export class User {
   id: number;
   firstName: string;
   lastName: string;
-  email: string;
   roles: Role[];
   password: string;
   username: string;
@@ -12,4 +11,5 @@ export class User {
   accountNonLocked = true;
   credentialsNonExpired = true;
   enabled = true;
+  lastVisit: Date;
 }

@@ -19,7 +19,6 @@ export class RequestInterceptor implements HttpInterceptor {
     return next.handle(request).pipe(tap((event: HttpEvent<any>) => {
     }, (err: any) => {
       if (err instanceof HttpErrorResponse && err.status === 401) {
-        this.logger.info('RequestInterceptor-status 401');
         localStorage.removeItem('currentUser');
         this.router.navigate(['/login']);
       }

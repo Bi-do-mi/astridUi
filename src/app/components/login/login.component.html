@@ -1,16 +1,16 @@
 <h2 class="text-center h2">Астрид</h2>
 <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
   <!--<div class="form-group">-->
-    <!--<label for="username">Username</label>-->
-    <!--<input type="text" formControlName="username" class="form-control"-->
-           <!--[ngClass]="{ 'is-invalid': submitted && f.username.errors }" />-->
-    <!--<div *ngIf="submitted && f.username.errors" class="invalid-feedback">-->
-      <!--<div *ngIf="f.username.errors.required">Username is required</div>-->
+    <!--<label for="login">Username</label>-->
+    <!--<input type="text" formControlName="login" class="form-control"-->
+           <!--[ngClass]="{ 'is-invalid': submitted && f.login.errors }" />-->
+    <!--<div *ngIf="submitted && f.login.errors" class="invalid-feedback">-->
+      <!--<div *ngIf="f.login.errors.required">Username is required</div>-->
     <!--</div>-->
   <!--</div>-->
   <mat-form-field class="example-full-width">
-    <input matInput placeholder="логин" formControlName="username">
-    <mat-error *ngIf="submitted && f.username.hasError('required')">
+    <input matInput placeholder="логин" formControlName="login">
+    <mat-error *ngIf="submitted && f.login.hasError('required')">
       введите логин</mat-error>
   </mat-form-field>
 

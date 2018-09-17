@@ -14,13 +14,12 @@ export class AuthenticationService {
 
   login(credentials) {
     const headers = new HttpHeaders(credentials ? {
-      Authorization: 'Basic ' + btoa(credentials.username + ':' + credentials.password)
+      Authorization: 'Basic ' + btoa(credentials.login + ':' + credentials.password)
     } : {});
 
     return this.http.get<any>(`/rest/users/user`, {headers: headers})
       .pipe(map(user => {
-        // login successful if there's a jwt token in the response
-        // if (user && user.token) {
+       this.logger.info(user);
         this.currentUser = user;
         if (this.currentUser) {
           // store user details and jwt token in local storage to keep user logged in between page refreshes
