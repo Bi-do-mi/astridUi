@@ -3,14 +3,14 @@
 <h3>All registered users:</h3>
 <ul>
   <li *ngFor="let user of users">
-    {{user.login}} ({{user.firstName}} {{user.lastName}})
+    {{user.username}} ({{user.firstName}} {{user.lastName}})
     - <a (click)="deleteUser(user.id)" class="text-danger">Delete</a>
   </li>
   <li>{{u}}</li>
   <li>
     {{currentUser.id}}
     <br>{{currentUser.password}}
-    <br>{{currentUser.login}}
+    <br>{{currentUser.username}}
     <br>{{currentUser.firstName}}
     <br>{{currentUser.lastName}}
     <br>{{currentUser.accountNonExpired}}

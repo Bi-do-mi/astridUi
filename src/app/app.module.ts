@@ -14,11 +14,10 @@ import {routing} from './app.routing';
 import {NgxSpinnerModule} from 'ngx-spinner';
 import {XhrInterceptor} from './_services/xhr.interceptor';
 import {LoggerModule, NgxLoggerLevel} from 'ngx-logger';
-import {AuthenticationService} from './_services/authentication.service';
 import {RequestInterceptor} from './_guards/RequestInterceptor';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {MatToolbarModule} from '@angular/material/toolbar';
-import {MatButtonModule, MatFormFieldModule, MatIconModule} from '@angular/material';
+import {MatButtonModule, MatFormFieldModule, MatIconModule, MatTabsModule} from '@angular/material';
 import {MatInputModule} from '@angular/material/input';
 
 export const httpInterceptorProviders = [
@@ -51,9 +50,10 @@ export const httpInterceptorProviders = [
     MatIconModule,
     MatInputModule,
     MatFormFieldModule,
-    MatButtonModule
+    MatButtonModule,
+    MatTabsModule
   ],
-  providers: [AuthGuard, AuthenticationService, httpInterceptorProviders],
+  providers: [AuthGuard, httpInterceptorProviders],
   bootstrap: [AppComponent]
 })
 export class AppModule {

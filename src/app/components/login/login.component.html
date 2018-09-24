@@ -1,37 +1,68 @@
-<h2 class="text-center h2">Астрид</h2>
-<form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-  <!--<div class="form-group">-->
-    <!--<label for="login">Username</label>-->
-    <!--<input type="text" formControlName="login" class="form-control"-->
-           <!--[ngClass]="{ 'is-invalid': submitted && f.login.errors }" />-->
-    <!--<div *ngIf="submitted && f.login.errors" class="invalid-feedback">-->
-      <!--<div *ngIf="f.login.errors.required">Username is required</div>-->
-    <!--</div>-->
-  <!--</div>-->
-  <mat-form-field class="example-full-width">
-    <input matInput placeholder="логин" formControlName="login">
-    <mat-error *ngIf="submitted && f.login.hasError('required')">
-      введите логин</mat-error>
-  </mat-form-field>
+<h2 class="text-center mat-h1">Астрид</h2>
+<mat-tab-group [selectedIndex]="tabIndex">
+  <mat-tab label="Вход" >
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
 
-  <!--<div class="form-group">-->
-    <!--<label for="password">Password</label>-->
-    <!--<input type="password" formControlName="password" class="form-control"-->
-           <!--[ngClass]="{ 'is-invalid': submitted && f.password.errors }" />-->
-    <!--<div *ngIf="submitted && f.password.errors" class="invalid-feedback">-->
-      <!--<div *ngIf="f.password.errors.required">Password is required</div>-->
-    <!--</div>-->
-  <!--</div>-->
-  <mat-form-field class="example-full-width">
-    <input matInput placeholder="пароль" formControlName="password" [type]="hide ? 'password' : 'text'">
-    <mat-icon matSuffix (click)=" hide=!hide">{{hide ? 'visibility' : 'visibility_off'}}</mat-icon>
-    <mat-error *ngIf="submitted && f.password.hasError('required')">
-      введите пароль</mat-error>
-  </mat-form-field>
-  <div class="form-group">
-    <button mat-raised-button="" [disabled]="loading" color="primary">Login</button>
-    <!--<img *ngIf="loading" src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==" />-->
-    <a mat-button routerLink="/register">Register</a>
-  </div>
-</form>
+      <mat-form-field class="example-full-width">
+        <input matInput placeholder="email" required formControlName="login">
+        <mat-error *ngIf="submitted && f.login.hasError('required')">
+          введите email
+        </mat-error>
+        <mat-error *ngIf="(f.login.hasError('email'))">
+          ввод некоректен
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field class="example-full-width">
+        <input matInput placeholder="пароль" required formControlName="password" [type]="hide ? 'password' : 'text'">
+        <mat-icon matSuffix (click)=" hide=!hide">{{hide ? 'visibility' : 'visibility_off'}}</mat-icon>
+        <mat-error *ngIf="submitted && f.password.hasError('required')">
+          введите пароль
+        </mat-error>
+        <mat-error *ngIf="f.password.hasError('pattern')">
+          некорректно
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field *ngIf="newPasswordShow" class="example-full-width">
+        <input matInput placeholder="новый пароль"
+               required formControlName="newPassword" [type]="hide ? 'password' : 'text'">
+        <mat-icon matSuffix (click)=" hide=!hide">{{hide ? 'visibility' : 'visibility_off'}}</mat-icon>
+        <mat-error *ngIf="submitted && f.newPassword.hasError('required')">
+          введите пароль
+        </mat-error>
+        <mat-error *ngIf="f.newPassword.hasError('pattern')">
+          некорректно
+        </mat-error>
+      </mat-form-field>
+      <div class="form-group">
+
+        <button mat-raised-button="" [disabled]="loading" color="primary">Войти</button>
+        <!--<img *ngIf="loading" src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==" />-->
+        <a mat-button routerLink="/register">Регистрация</a>
+      </div>
+    </form>
+  </mat-tab>
+  <mat-tab label="Восстановить пароль">
+    <form [formGroup]="repairForm" (ngSubmit)="onRepair()">
+
+      <mat-form-field class="example-full-width">
+        <input matInput placeholder="email" required formControlName="login">
+        <mat-error *ngIf="submitted && f.login.hasError('required')">
+          введите email
+        </mat-error>
+        <mat-error *ngIf="(f.login.hasError('email'))">
+          ввод некоректен
+        </mat-error>
+      </mat-form-field>
+
+      <div class="form-group">
+        <button mat-raised-button="" [disabled]="loading" color="primary">Отправить</button>
+        <!--<img *ngIf="loading" src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==" />-->
+      </div>
+    </form>
+  </mat-tab>
+</mat-tab-group>
+
+
 

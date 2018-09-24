@@ -3,9 +3,8 @@ import {AbstractControl, FormBuilder, FormGroup, ValidationErrors, Validators} f
 import {Router} from '@angular/router';
 import {UserService} from '../../_services/user.service';
 import {AlertService} from '../../_services/alert.service';
-import {first} from 'rxjs/operators';
+import {first, delay} from 'rxjs/operators';
 import {NgxSpinnerService} from 'ngx-spinner';
-import {AuthenticationService} from '../../_services/authentication.service';
 import {User} from '../../_model/User';
 import {HttpErrorResponse} from '@angular/common/http';
 import {NGXLogger} from 'ngx-logger';
@@ -29,7 +28,6 @@ export class RegisterComponent implements OnInit {
     private userService: UserService,
     private alertService: AlertService,
     private spinner: NgxSpinnerService,
-    private authenticationService: AuthenticationService,
     private logger: NGXLogger) {
   }
 
@@ -37,15 +35,19 @@ export class RegisterComponent implements OnInit {
     this.registerForm = this.formBuilder.group({
       login: ['', [Validators.maxLength(60),
         Validators.pattern('^(([^<>()\\[\\]\\\\.,;:\\s@"]+(\\.[^<>()\\[\\]\\\\.,;:\\s@"]+)*)' +
-          '|(".+"))@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}])' +
-          '|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))$|^(\\+7|8)?[-\\(]?\\d{3}\\)?-?\\d{3}-?\\d{2}-?\\d{2}$')]],
-      password: ['', [Validators.minLength(8)
+          '|(".+"))@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}])|(([a-zA-Z\\-0-9]+\\.)' +
+          '+[a-zA-Z]{2,}))$|^(\\+7|8)?[-\\(]?\\d{3}\\)?-?\\d{3}-?\\d{2}-?\\d{2}$')]],
+        // это паттерн на почту и телефон
+        // Validators.pattern('^(([^<>()\\[\\]\\\\.,;:\\s@"]+(\\.[^<>()\\[\\]\\\\.,;:\\s@"]+)*)' +
+        //   '|(".+"))@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}])' +
+        //   '|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))$|^(\\+7|8)?[-\\(]?\\d{3}\\)?-?\\d{3}-?\\d{2}-?\\d{2}$')]],
+     password: ['', [Validators.minLength(8)
         , Validators.maxLength(30)
         , Validators.pattern('^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[a-zA-Z\\d]{8,}$')]],
       firstName: [''],
       lastName: ['']
     });
-    this.authenticationService.logout();
+    this.userService.logout();
   }
 
   get f() {
@@ -53,9 +55,9 @@ export class RegisterComponent implements OnInit {
   }
 
   checkName(user_name: string) {
-    this.logger.info(this.registerForm.controls['login'].errors);
+    // this.logger.info(this.registerForm.controls['login'].errors);
     this.userService.getByName(user_name)
-      .pipe(first())
+      .pipe(first(), delay(1000))
       .subscribe(data => {
           if (user_name === data) {
             this.registerForm.controls['login'].setErrors({occupied: true});
@@ -82,7 +84,7 @@ export class RegisterComponent implements OnInit {
       .pipe(first())
       .subscribe(
         data => {
-          this.alertService.success('Регистрация прошла успешно.\n Введите логин и пароль.'
+          this.alertService.success('Подтвердите регистрацию в письме, которое мы Вам выслали.'
             , true);
           this.loading = false;
           this.spinner.hide();

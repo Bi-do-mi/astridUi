@@ -2,18 +2,16 @@
 <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
 
   <mat-form-field class="example-full-width">
-    <input matInput placeholder="email или телефон" formControlName="login" required
+    <input matInput placeholder="email" formControlName="login" required
            (change)="checkName($event.target.value)">
-    <!--<mat-icon matSuffix (click)="hide = !hide">{{hide ? 'visibility' : 'visibility_off'}}</mat-icon>-->
     <mat-error *ngIf=" submitted && f.login.hasError('required')">
-      введите email или телефон
+      введите email
     </mat-error>
     <mat-error *ngIf="(f.login.hasError('pattern'))">
       ввод некоректен
     </mat-error>
-    <mat-error *ngIf="f.login.hasError('occupied')
-    && !f.login.hasError('pattern')&& !f.login.hasError('required')">
-      email/телефон уже зарегестрирован
+    <mat-error *ngIf="f.login.hasError('occupied') && !f.login.hasError('required')">
+      email уже зарегестрирован
     </mat-error>
   </mat-form-field>
 
@@ -28,7 +26,7 @@
       не менее 8 знаков
     </mat-error>
     <mat-error *ngIf="f.password.hasError('pattern')&&!f.password.hasError('minlength')">
-      как минимум 1 заглавная, 1 прописная буква и 1 цифра
+      как минимум 1 заглавная, 1 прописная и 1 цифра
     </mat-error>
   </mat-form-field>
 

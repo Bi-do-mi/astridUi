@@ -1,14 +1,45 @@
 import {Injectable} from '@angular/core';
 import {Observable, of, Subject} from 'rxjs';
-import {HttpClient, HttpParams} from '@angular/common/http';
+import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import {User} from '../_model/User';
+import {NGXLogger} from 'ngx-logger';
+import {finalize, map} from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UserService {
+  authenticated = false;
+  currentUser: User;
+  private url: string;
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient, private logger: NGXLogger) {
+  }
+
+  login(credentials, token) {
+    const headers = new HttpHeaders(credentials ? {
+      Authorization: 'Basic ' + btoa(credentials.login + ':' + credentials.password)
+    } : {});
+    this.url = '/rest/users/sign_in?token=' + token + '&np=' + btoa(credentials.newPassword);
+    return this.http.get<any>(this.url, {headers: headers})
+      .pipe(map(user => {
+        this.logger.info(user);
+        this.currentUser = user;
+        if (this.currentUser) {
+          // this.currentUser.password = null;
+          localStorage.setItem('currentUser', JSON.stringify(this.currentUser));
+          this.authenticated = true;
+        }
+        return;
+      }));
+  }
+
+  logout() {
+    // remove user from local storage to log user out
+    localStorage.removeItem('currentUser');
+    this.http.get('logout', {}).pipe(finalize(() => {
+      this.authenticated = false;
+    })).subscribe();
   }
 
   getAll() {
@@ -40,11 +71,12 @@ export class UserService {
     return this.http.get<User>('/rest/byName', {params: param});
   }
 
-  // public getUsers(): Observable<User> {
-  //   return this.http.get <User>('/api/user/all');
-  // }
-
-  public getUser(): Observable<User> {
-    return this.http.get <User>('/api/all');
+  enableUser(token: string) {
+    return this.http.get('rest/users/enable_user?token=' + token, {'withCredentials': false, responseType: 'text'});
   }
+
+  setUserToken(login: string) {
+    return this.http.get('rest/users/set_user_token?login=' + login, {'withCredentials': false, responseType: 'text'});
+  }
+
 }
