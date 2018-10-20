@@ -1,25 +1,66 @@
-<h1>Hi {{currentUser.firstName}}!</h1>
-<p>You're logged in with Angular 6!!!</p>
-<h3>All registered users:</h3>
-<ul>
-  <li *ngFor="let user of users">
-    {{user.username}} ({{user.firstName}} {{user.lastName}})
-    - <a (click)="deleteUser(user.id)" class="text-danger">Delete</a>
-  </li>
-  <li>{{u}}</li>
-  <li>
-    {{currentUser.id}}
-    <br>{{currentUser.password}}
-    <br>{{currentUser.username}}
-    <br>{{currentUser.firstName}}
-    <br>{{currentUser.lastName}}
-    <br>{{currentUser.accountNonExpired}}
-    <br>{{currentUser.accountNonLocked}}
-    <br>{{currentUser.enabled}}
-    <br>{{currentUser.roles}}
-    <br>{{currentUser.credentialsNonExpired}}
-    <br>{{currentUser.lastVisit}}
-  </li>
-</ul>
-<p><a [routerLink]="['/login']">Logout</a></p>
+<mat-sidenav-container class="sidenav-container">
+  <mat-sidenav
+    #drawer
+    class="sidenav"
+    fixedInViewport="true"
+    [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
+    [mode]="(isHandset$ | async) ? 'over' : 'side'"
+    [opened]="!(isHandset$ | async)">
+    <mat-toolbar color="primary">Menu</mat-toolbar>
+    <mat-nav-list>
+      <a mat-list-item href="#">Link 1</a>
+      <a mat-list-item href="#">Link 2</a>
+      <a mat-list-item href="#">Link 3</a>
+    </mat-nav-list>
+  </mat-sidenav>
+  <mat-sidenav-content>
+    <!-- Add Content Here -->
+    <div id="a-canvas" fxLayout="column">
+      <div fxLayout="row">
+        <mat-toolbar color="primary">
+          <button
+            type="button"
+            aria-label="Toggle sidenav"
+            mat-icon-button
+            (click)="drawer.toggle()"
+            *ngIf="isHandset$ | async">
+            <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
+          </button>
+          <span>Астрид</span>
+        </mat-toolbar>
+      </div>
+      <div id="map-row" fxLayout="row" fxFlex="100">
+        <app-map-box fxFlex="100"></app-map-box>
+      </div>
+    </div>
+  </mat-sidenav-content>
+</mat-sidenav-container>
+
+
+
+
+<!--<h1>Hi {{currentUser.firstName}}!</h1>-->
+<!--<p>You're logged in with Angular 6!!!</p>-->
+<!--<h3>All registered users:</h3>-->
+<!--<ul>-->
+<!--<li *ngFor="let user of users">-->
+<!--{{user.username}} ({{user.firstName}} {{user.lastName}})-->
+<!-- - <a (click)="deleteUser(user.id)" class="text-danger">Delete</a>-->
+<!--</li>-->
+<!--&lt;!&ndash;<li>{{u}}</li>&ndash;&gt;-->
+<!--<li>-->
+<!--{{currentUser.id}}-->
+<!--<br>{{currentUser.password}}-->
+<!--<br>{{currentUser.username}}-->
+<!--<br>{{currentUser.firstName}}-->
+<!--<br>{{currentUser.lastName}}-->
+<!--<br>{{currentUser.accountNonExpired}}-->
+<!--<br>{{currentUser.accountNonLocked}}-->
+<!--<br>{{currentUser.enabled}}-->
+<!--<br>{{currentUser.roles}}-->
+<!--<br>{{currentUser.credentialsNonExpired}}-->
+<!--<br>{{currentUser.lastVisit}}-->
+<!--</li>-->
+<!--</ul>-->
+<!--<p><a [routerLink]="['/login']">Logout</a></p>-->
 

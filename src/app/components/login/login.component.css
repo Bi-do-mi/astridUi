@@ -7,3 +7,10 @@
 .example-full-width {
   width: 100%;
 }
+/*#loginContainer{*/
+  /*display: flex;*/
+  /*justify-content: center;*/
+/*}*/
+.row{
+  padding: 20px;
+}

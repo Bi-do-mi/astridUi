@@ -11,7 +11,6 @@ import {NGXLogger} from 'ngx-logger';
 export class RequestInterceptor implements HttpInterceptor {
 
   constructor(private router: Router, private logger: NGXLogger) {
-    this.logger.info('from RequestInterceptor constructor');
   }
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {

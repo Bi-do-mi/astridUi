@@ -17,8 +17,12 @@ import {LoggerModule, NgxLoggerLevel} from 'ngx-logger';
 import {RequestInterceptor} from './_guards/RequestInterceptor';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {MatToolbarModule} from '@angular/material/toolbar';
-import {MatButtonModule, MatFormFieldModule, MatIconModule, MatTabsModule} from '@angular/material';
+import {MatButtonModule, MatFormFieldModule, MatIconModule, MatSidenavModule, MatTabsModule, MatListModule} from '@angular/material';
 import {MatInputModule} from '@angular/material/input';
+import {NgxMapboxGLModule} from 'ngx-mapbox-gl';
+import { MapBoxComponent } from './components/map-box/map-box.component';
+import {FlexLayoutModule} from '@angular/flex-layout';
+import { LayoutModule } from '@angular/cdk/layout';
 
 export const httpInterceptorProviders = [
   {provide: HTTP_INTERCEPTORS, useClass: RequestInterceptor, multi: true},
@@ -32,7 +36,8 @@ export const httpInterceptorProviders = [
     MessagesComponent,
     AlertComponent,
     LoginComponent,
-    RegisterComponent
+    RegisterComponent,
+    MapBoxComponent,
   ],
   imports: [
     BrowserModule,
@@ -51,7 +56,18 @@ export const httpInterceptorProviders = [
     MatInputModule,
     MatFormFieldModule,
     MatButtonModule,
-    MatTabsModule
+    MatTabsModule,
+    MatSidenavModule,
+    NgxMapboxGLModule.withConfig({
+      // Optionnal, can also be set per map (accessToken input of mgl-map)
+      // accessToken: 'pk.eyJ1IjoiYmlkb21pIiwiYSI6ImNqbWt6dm05aTAydjQza3BianJwajV5ZmkifQ.46hioGSUTzMOdWqTFHwnDQ'
+      accessToken: 'VRgdrAzvUsWnu6iigRja'
+      // Optionnal, specify if different from the map access token, can also be set per mgl-geocoder (accessToken input of mgl-geocoder)
+      // , geocoderAccessToken: 'TOKEN'
+    }),
+    FlexLayoutModule,
+    LayoutModule,
+    MatListModule
   ],
   providers: [AuthGuard, httpInterceptorProviders],
   bootstrap: [AppComponent]
