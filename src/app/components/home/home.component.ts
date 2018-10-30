@@ -22,7 +22,11 @@ export class HomeComponent implements OnInit {
       map(result => result.matches)
     );
 
-  constructor(private userService: UserService, private logger: NGXLogger, private breakpointObserver: BreakpointObserver) {
+  constructor(
+    private userService: UserService,
+    private logger: NGXLogger,
+    private breakpointObserver: BreakpointObserver)
+  {
     this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
   }
 

@@ -17,12 +17,21 @@ import {LoggerModule, NgxLoggerLevel} from 'ngx-logger';
 import {RequestInterceptor} from './_guards/RequestInterceptor';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {MatToolbarModule} from '@angular/material/toolbar';
-import {MatButtonModule, MatFormFieldModule, MatIconModule, MatSidenavModule, MatTabsModule, MatListModule} from '@angular/material';
+import {
+  MatButtonModule,
+  MatFormFieldModule,
+  MatIconModule,
+  MatSidenavModule,
+  MatTabsModule,
+  MatListModule,
+  MatCardModule
+} from '@angular/material';
 import {MatInputModule} from '@angular/material/input';
 import {NgxMapboxGLModule} from 'ngx-mapbox-gl';
 import { MapBoxComponent } from './components/map-box/map-box.component';
 import {FlexLayoutModule} from '@angular/flex-layout';
 import { LayoutModule } from '@angular/cdk/layout';
+import { MainNavComponent } from './components/main-nav/main-nav.component';
 
 export const httpInterceptorProviders = [
   {provide: HTTP_INTERCEPTORS, useClass: RequestInterceptor, multi: true},
@@ -38,6 +47,7 @@ export const httpInterceptorProviders = [
     LoginComponent,
     RegisterComponent,
     MapBoxComponent,
+    MainNavComponent,
   ],
   imports: [
     BrowserModule,
@@ -56,6 +66,7 @@ export const httpInterceptorProviders = [
     MatInputModule,
     MatFormFieldModule,
     MatButtonModule,
+    MatCardModule,
     MatTabsModule,
     MatSidenavModule,
     NgxMapboxGLModule.withConfig({

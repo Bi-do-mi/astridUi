@@ -11,6 +11,11 @@
   /*display: flex;*/
   /*justify-content: center;*/
 /*}*/
-.row{
-  padding: 20px;
+.login-card{
+max-width: 95%;
+}
+#login_div{
+  min-width: 100%;
+  min-height: 100%;
+  position: absolute;
 }
