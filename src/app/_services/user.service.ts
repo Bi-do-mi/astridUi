@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {Observable, of, Subject} from 'rxjs';
+import {BehaviorSubject, Observable, of, Subject} from 'rxjs';
 import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import {User} from '../_model/User';
 import {NGXLogger} from 'ngx-logger';
@@ -10,10 +10,25 @@ import {finalize, map} from 'rxjs/operators';
 })
 export class UserService {
   authenticated = false;
-  currentUser: User;
+  private currentUser$ = new BehaviorSubject<User>(this.initCurrentUser());
+  currentUser = this.currentUser$.asObservable();
   private url: string;
 
   constructor(private http: HttpClient, private logger: NGXLogger) {
+    if (localStorage.getItem('currentUser')) {
+      this.updateCurrentUser(JSON.parse(localStorage.getItem('currentUser')));
+      this.authenticated = true;
+    }
+  }
+
+  updateCurrentUser(user: User) {
+    this.currentUser$.next(user);
+  }
+
+  initCurrentUser() {
+    const u = new User();
+    u.username = 'Гость';
+    return u;
   }
 
   login(credentials, token) {
@@ -24,10 +39,10 @@ export class UserService {
     return this.http.get<any>(this.url, {headers: headers})
       .pipe(map(user => {
         this.logger.info(user);
-        this.currentUser = user;
-        if (this.currentUser) {
+        this.updateCurrentUser(user);
+        if (user) {
           // this.currentUser.password = null;
-          localStorage.setItem('currentUser', JSON.stringify(this.currentUser));
+          localStorage.setItem('currentUser', JSON.stringify(user));
           this.authenticated = true;
         }
         return;
@@ -38,6 +53,7 @@ export class UserService {
     // remove user from local storage to log user out
     localStorage.removeItem('currentUser');
     this.http.get('logout', {}).pipe(finalize(() => {
+      this.updateCurrentUser(this.initCurrentUser());
       this.authenticated = false;
     })).subscribe();
   }

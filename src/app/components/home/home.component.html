@@ -1,5 +1,6 @@
-<div fxLayout="column" fxLayoutAlign="center center">
-    <mat-card class="a-card">
+<div class="a-card">
+  <div fxLayout="row" fxLayoutAlign="center none">
+    <mat-card fxFlex="95">
       <mat-card-content>
         <h1>Hi {{currentUser.firstName}}!</h1>
         <p>You're logged in with Angular 6!!!</p>
@@ -7,9 +8,9 @@
         <ul>
           <li *ngFor="let user of users">
             {{user.username}} ({{user.firstName}} {{user.lastName}})
-            - <a (click)="deleteUser(user.id)" class="text-danger">Delete</a>
+             - <a (click)="deleteUser(user.id)" class="text-danger">Delete</a>
           </li>
-          <li>{{u}}</li>
+          <!--<li>{{u}}</li>-->
           <li>
             {{currentUser.id}}
             <br>{{currentUser.password}}
@@ -27,5 +28,5 @@
         <p><a [routerLink]="['/login']">Logout</a></p>
       </mat-card-content>
     </mat-card>
-
+  </div>
 </div>

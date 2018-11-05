@@ -1,4 +1,6 @@
 
 .a-card{
-  max-width: 90%;
+  min-height: 100%;
+  min-width: 100%;
+  position: absolute;
 }
