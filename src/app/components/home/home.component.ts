@@ -25,8 +25,7 @@ export class HomeComponent implements OnInit {
   constructor(
     private userService: UserService,
     private logger: NGXLogger,
-    private breakpointObserver: BreakpointObserver)
-  {
+    private breakpointObserver: BreakpointObserver) {
     this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
   }
 
@@ -43,7 +42,6 @@ export class HomeComponent implements OnInit {
 
   private loadAllUsers() {
     this.userService.getAll().pipe(first()).subscribe(u => {
-      this.logger.info('from loadAllUsers');
       if (u) {
         this.users = u;
         this.u = localStorage.getItem('currentUser');
