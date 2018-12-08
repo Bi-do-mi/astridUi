@@ -10,10 +10,10 @@ import {BreakpointObserver, Breakpoints} from '@angular/cdk/layout';
 
 @Component({
   selector: 'app-home',
-  templateUrl: './home.component.html',
-  styleUrls: ['./home.component.css']
+  templateUrl: './user.options.component.html',
+  styleUrls: ['./user.options.component.scss']
 })
-export class HomeComponent implements OnInit {
+export class UserOptionsComponent implements OnInit {
   currentUser: User;
   users: User[] = [];
   u: string;

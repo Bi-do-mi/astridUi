@@ -10,7 +10,7 @@ import {finalize, map} from 'rxjs/operators';
 })
 export class UserService {
   authenticated = false;
-  private currentUser$ = new BehaviorSubject<User>(this.initCurrentUser());
+  private currentUser$ = new BehaviorSubject<User>(new User());
   currentUser = this.currentUser$.asObservable();
   private url: string;
 
@@ -23,12 +23,6 @@ export class UserService {
 
   updateCurrentUser(user: User) {
     this.currentUser$.next(user);
-  }
-
-  initCurrentUser() {
-    const u = new User();
-    u.username = 'Гость';
-    return u;
   }
 
   login(credentials, token) {
@@ -53,7 +47,7 @@ export class UserService {
     // remove user from local storage to log user out
     localStorage.removeItem('currentUser');
     this.http.get('logout', {}).pipe(finalize(() => {
-      this.updateCurrentUser(this.initCurrentUser());
+      this.updateCurrentUser(new User());
       this.authenticated = false;
     })).subscribe();
   }

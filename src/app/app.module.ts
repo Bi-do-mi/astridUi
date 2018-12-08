@@ -2,7 +2,7 @@ import {BrowserModule} from '@angular/platform-browser';
 import {NgModule} from '@angular/core';
 
 import {AppComponent} from './app.component';
-import {HomeComponent} from './components/home/home.component';
+import {UserOptionsComponent} from './components/userOptions/user.options.component';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
 import {MessagesComponent} from './components/messages/messages.component';
@@ -24,14 +24,16 @@ import {
   MatSidenavModule,
   MatTabsModule,
   MatListModule,
-  MatCardModule
+  MatCardModule,
+  MatSnackBarModule
 } from '@angular/material';
 import {MatInputModule} from '@angular/material/input';
 import {NgxMapboxGLModule} from 'ngx-mapbox-gl';
-import { MapBoxComponent } from './components/map-box/map-box.component';
+import {MapBoxComponent} from './components/map-box/map-box.component';
 import {FlexLayoutModule} from '@angular/flex-layout';
-import { LayoutModule } from '@angular/cdk/layout';
-import { MainNavComponent } from './components/main-nav/main-nav.component';
+import {LayoutModule} from '@angular/cdk/layout';
+import {MainNavComponent} from './components/main-nav/main-nav.component';
+import { PageNotFoundComponent } from './components/page-not-found/page-not-found.component';
 
 export const httpInterceptorProviders = [
   {provide: HTTP_INTERCEPTORS, useClass: RequestInterceptor, multi: true},
@@ -41,13 +43,14 @@ export const httpInterceptorProviders = [
 @NgModule({
   declarations: [
     AppComponent,
-    HomeComponent,
+    UserOptionsComponent,
     MessagesComponent,
     AlertComponent,
     LoginComponent,
     RegisterComponent,
     MapBoxComponent,
     MainNavComponent,
+    PageNotFoundComponent
   ],
   imports: [
     BrowserModule,
@@ -78,7 +81,8 @@ export const httpInterceptorProviders = [
     }),
     FlexLayoutModule,
     LayoutModule,
-    MatListModule
+    MatListModule,
+    MatSnackBarModule
   ],
   providers: [AuthGuard, httpInterceptorProviders],
   bootstrap: [AppComponent]

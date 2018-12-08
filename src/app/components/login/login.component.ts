@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
 import {AlertService} from '../../_services/alert.service';
@@ -7,11 +7,13 @@ import {NgxSpinnerService} from 'ngx-spinner';
 import {NGXLogger} from 'ngx-logger';
 import {HttpErrorResponse} from '@angular/common/http';
 import {UserService} from '../../_services/user.service';
+import {SnackBarService} from '../../_services/snack-bar.service';
+import {ok} from 'assert';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css']
+  styleUrls: ['./login.component.scss']
 })
 export class LoginComponent implements OnInit {
 
@@ -30,10 +32,10 @@ export class LoginComponent implements OnInit {
     private formBuilder: FormBuilder,
     private route: ActivatedRoute,
     private router: Router,
-    private alertService: AlertService,
     private spinner: NgxSpinnerService,
     private  logger: NGXLogger,
-    private userService: UserService) {
+    private userService: UserService,
+    private snackBarService: SnackBarService) {
   }
 
   ngOnInit() {
@@ -90,7 +92,7 @@ export class LoginComponent implements OnInit {
           this.loading = false;
           this.spinner.hide();
           if (error instanceof HttpErrorResponse && error.status === 401) {
-            this.alertService.error('Неправильный логин или пароль.');
+            this.snackBarService.error('Неправильный логин или пароль.');
           }
         }
       );
@@ -112,14 +114,14 @@ export class LoginComponent implements OnInit {
             this.loading = false;
             this.spinner.hide();
             this.changeTab();
-            this.alertService.success('Для смены пароля проверьте почту.');
+            this.snackBarService.success('Для смены пароля проверьте почту.');
           }
         },
         error => {
           this.loading = false;
           this.spinner.hide();
           if (error instanceof HttpErrorResponse && error.status === 401) {
-            this.alertService.error('Этот логин не зарегистрирован.');
+            this.snackBarService.error('Этот логин не зарегистрирован.');
           }
         }
       );

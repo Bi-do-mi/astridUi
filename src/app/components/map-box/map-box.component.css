@@ -1,5 +1,6 @@
-
 #map_container {
   width: 100%;
   min-height: 100%;
-}
+  position: absolute; }
+
+/*# sourceMappingURL=map-box.component.css.map */

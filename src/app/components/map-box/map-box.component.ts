@@ -7,7 +7,7 @@ import {NGXLogger} from 'ngx-logger';
 @Component({
   selector: 'app-map-box',
   templateUrl: './map-box.component.html',
-  styleUrls: ['./map-box.component.css']
+  styleUrls: ['./map-box.component.scss']
 })
 
 export class MapBoxComponent implements OnInit, OnDestroy {

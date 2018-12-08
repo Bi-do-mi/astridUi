@@ -1,0 +1,24 @@
+@import '../node_modules/@angular/material/_theming';
+@include mat-core();
+
+$astrid-primary: mat-palette($mat-gray, 900);
+$astrid-accent: mat-palette($mat-yellow, 700);
+
+$astrid-theme: mat-light-theme($astrid-primary, $astrid-accent);
+@include angular-material-theme($astrid-theme);
+
+.snack-bar-info{
+
+  position: relative;
+  top: 70px;
+}
+.snack-bar-error{
+  background-color: mat-color($astrid-accent);
+  color: mat-color($astrid-primary);
+  position: relative;
+  top: 70px;
+  border-color: mat-color($astrid-primary);
+  border-style: solid;
+  border-width: thick;
+}
+

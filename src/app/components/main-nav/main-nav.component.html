@@ -6,34 +6,42 @@
     fixedInViewport="true"
     [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'">
     <mat-toolbar color="primary"
-                 (click)="drawer.toggle()">{{currentUser.username}}
+                 (click)="drawer.toggle()">{{currentUser?.username}}
+      <a routerLink="/login" *ngIf="! currentUser.username">Войти</a>
     </mat-toolbar>
     <mat-nav-list>
       <a mat-list-item href="#">Link 1</a>
       <a mat-list-item href="#">Link 2</a>
-      <a mat-list-item href="#">Link 3</a>
+      <a mat-list-item (click)="logout()">Выйти</a>
     </mat-nav-list>
   </mat-sidenav>
   <mat-sidenav-content>
     <div id="a-canvas" fxLayout="column">
       <div fxLayout="row">
         <mat-toolbar color="primary" class="mat-elevation-z6"
-                     fxLayout="row" fxLayoutAlign="space-between center">
+                     fxLayout="row">
           <span>Астрид</span>
+          <div fxFlex></div>
+          <a mat-button routerLink="/login" *ngIf="!currentUser.firstName">Войти</a>
+          <div class="user-header-image" mat-card-avatar fxLayout="row" fxLayoutAlign="center center"
+                *ngIf="currentUser.firstName">
+            <span>{{currentUser?.firstName?.charAt(0) | uppercase}}</span>
+          </div>
           <button
             type="button"
             aria-label="Toggle sidenav"
             mat-icon-button
-            (click)="drawer.toggle()">
+            (click)="drawer.toggle()"
+            *ngIf="currentUser.firstName">
             <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
           </button>
         </mat-toolbar>
       </div>
       <!-- Add Content Here -->
-      <div id="map_div" class="map-row" fxLayout="row" fxFlex="100" *ngIf="!'ng_content'">
-        <app-map-box fxFlex="100"></app-map-box>
-      </div>
-      <div id="content_div" class="map-row" fxLayout="row"  fxFlex="100" >
+      <!--<div id="map_div" class="map-row" fxLayout="row" fxFlex="100" *ngIf="!'ng_content'">-->
+      <!--<app-map-box fxFlex="100"></app-map-box>-->
+      <!--</div>-->
+      <div id="content_div" class="map-row" fxLayout="row" fxFlex="100">
         <ng-content></ng-content>
       </div>
     </div>

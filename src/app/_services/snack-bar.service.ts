@@ -1,0 +1,32 @@
+import {Injectable} from '@angular/core';
+import {MatSnackBar, MatSnackBarConfig} from '@angular/material';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class SnackBarService {
+
+  constructor(private snackBar: MatSnackBar) {
+  }
+
+  success(message: string,
+          action?: '',
+          config?: MatSnackBarConfig) {
+    const conf = config || {
+      duration: 20000, verticalPosition: 'top',
+      panelClass: ['snack-bar-info']
+    };
+    this.snackBar.open(message, action, conf);
+  }
+
+  error(message: string,
+        action?: '',
+        config?: MatSnackBarConfig) {
+    const conf = config || {
+      duration: 20000, verticalPosition: 'top',
+      panelClass: ['snack-bar-error']
+    };
+    this.snackBar.open(message, action, conf);
+  }
+
+}
