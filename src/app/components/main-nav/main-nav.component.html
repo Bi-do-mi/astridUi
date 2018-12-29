@@ -20,11 +20,12 @@
       <div fxLayout="row">
         <mat-toolbar color="primary" class="mat-elevation-z6"
                      fxLayout="row">
-          <span>Астрид</span>
+          <a [ngStyle]="{'text-decoration': 'none','color': 'white'}" href="#" (click)="router.navigate(['/']);">Астрид</a>
           <div fxFlex></div>
-          <a mat-button routerLink="/login" *ngIf="!currentUser.firstName">Войти</a>
-          <div class="user-header-image" mat-card-avatar fxLayout="row" fxLayoutAlign="center center"
-                *ngIf="currentUser.firstName">
+          <a mat-button (click)="routingToLoginPage()" *ngIf="!currentUser.firstName
+&& url !== '/login'">Войти</a>
+          <div mat-card-avatar class="user-header-image" fxLayout="row" fxLayoutAlign="center center"
+               *ngIf="currentUser.firstName">
             <span>{{currentUser?.firstName?.charAt(0) | uppercase}}</span>
           </div>
           <button

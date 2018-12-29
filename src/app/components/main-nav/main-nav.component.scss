@@ -30,8 +30,13 @@
 }
 
 .user-header-image {
+  height: 40px;
+  width: 40px;
+  border-radius: 50%;
+
   background-color: mat-color($astrid-accent);
   color: mat-color($astrid-primary);
+
   //background-image: url('https://material.angular.io/assets/img/examples/shiba1.jpg');
   //background-size: cover;
 }

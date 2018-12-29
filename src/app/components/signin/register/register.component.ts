@@ -1,13 +1,13 @@
 import {Component, OnChanges, OnInit, SimpleChanges} from '@angular/core';
 import {AbstractControl, FormBuilder, FormGroup, ValidationErrors, Validators} from '@angular/forms';
 import {Router} from '@angular/router';
-import {UserService} from '../../_services/user.service';
-import {AlertService} from '../../_services/alert.service';
+import {UserService} from '../../../_services/user.service';
 import {first, delay} from 'rxjs/operators';
 import {NgxSpinnerService} from 'ngx-spinner';
-import {User} from '../../_model/User';
+import {User} from '../../../_model/User';
 import {HttpErrorResponse} from '@angular/common/http';
 import {NGXLogger} from 'ngx-logger';
+import {SnackBarService} from '../../../_services/snack-bar.service';
 
 @Component({
   selector: 'app-register',
@@ -26,7 +26,7 @@ export class RegisterComponent implements OnInit {
     private formBuilder: FormBuilder,
     private router: Router,
     private userService: UserService,
-    private alertService: AlertService,
+    private snackBarService: SnackBarService,
     private spinner: NgxSpinnerService,
     private logger: NGXLogger) {
   }
@@ -37,11 +37,11 @@ export class RegisterComponent implements OnInit {
         Validators.pattern('^(([^<>()\\[\\]\\\\.,;:\\s@"]+(\\.[^<>()\\[\\]\\\\.,;:\\s@"]+)*)' +
           '|(".+"))@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}])|(([a-zA-Z\\-0-9]+\\.)' +
           '+[a-zA-Z]{2,}))$|^(\\+7|8)?[-\\(]?\\d{3}\\)?-?\\d{3}-?\\d{2}-?\\d{2}$')]],
-        // это паттерн на почту и телефон
-        // Validators.pattern('^(([^<>()\\[\\]\\\\.,;:\\s@"]+(\\.[^<>()\\[\\]\\\\.,;:\\s@"]+)*)' +
-        //   '|(".+"))@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}])' +
-        //   '|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))$|^(\\+7|8)?[-\\(]?\\d{3}\\)?-?\\d{3}-?\\d{2}-?\\d{2}$')]],
-     password: ['', [Validators.minLength(8)
+      // это паттерн на почту и телефон
+      // Validators.pattern('^(([^<>()\\[\\]\\\\.,;:\\s@"]+(\\.[^<>()\\[\\]\\\\.,;:\\s@"]+)*)' +
+      //   '|(".+"))@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}])' +
+      //   '|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))$|^(\\+7|8)?[-\\(]?\\d{3}\\)?-?\\d{3}-?\\d{2}-?\\d{2}$')]],
+      password: ['', [Validators.minLength(8)
         , Validators.maxLength(30)
         , Validators.pattern('^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[a-zA-Z\\d]{8,}$')]],
       firstName: [''],
@@ -84,17 +84,17 @@ export class RegisterComponent implements OnInit {
       .pipe(first())
       .subscribe(
         data => {
-          this.alertService.success('Подтвердите регистрацию в письме, которое мы Вам выслали.'
-            , true);
           this.loading = false;
           this.spinner.hide();
           this.router.navigate(['/login']);
+          this.snackBarService.success('Для завершения регистрации проверьте почту.',
+            'OK', 100000);
         },
         error => {
           this.loading = false;
           this.spinner.hide();
           if (error instanceof HttpErrorResponse && error.status === 409) {
-            this.alertService.error('Логин "' + this.newUser.username
+            this.snackBarService.error('Логин "' + this.newUser.username
               + '" занят. Выберите другой логин.');
           }
         });

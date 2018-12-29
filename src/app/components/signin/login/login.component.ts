@@ -1,14 +1,12 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {ActivatedRoute, Router} from '@angular/router';
-import {AlertService} from '../../_services/alert.service';
-import {delay, first} from 'rxjs/operators';
+import {ActivatedRoute, NavigationStart, Router} from '@angular/router';
+import {filter, first} from 'rxjs/operators';
 import {NgxSpinnerService} from 'ngx-spinner';
 import {NGXLogger} from 'ngx-logger';
 import {HttpErrorResponse} from '@angular/common/http';
-import {UserService} from '../../_services/user.service';
-import {SnackBarService} from '../../_services/snack-bar.service';
-import {ok} from 'assert';
+import {UserService} from '../../../_services/user.service';
+import {SnackBarService} from '../../../_services/snack-bar.service';
 
 @Component({
   selector: 'app-login',
@@ -23,7 +21,8 @@ export class LoginComponent implements OnInit {
   submitted = false;
   returnUrl: string;
   credentials = {login: '', password: '', newPassword: '', token: ''};
-  hide = true;
+  hidePresentPassword = true;
+  hideNewPassword = true;
   tabIndex = 0;
   token = '';
   newPasswordShow = false;
@@ -36,6 +35,9 @@ export class LoginComponent implements OnInit {
     private  logger: NGXLogger,
     private userService: UserService,
     private snackBarService: SnackBarService) {
+    router.events.pipe(
+      filter(a => a instanceof NavigationStart)
+    ).subscribe(_ => this.snackBarService.close());
   }
 
   ngOnInit() {
@@ -48,7 +50,7 @@ export class LoginComponent implements OnInit {
       login: ['', Validators.email]
     });
     this.userService.logout();
-    this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
+    this.returnUrl = this.route.snapshot.paramMap.get('returnUrl') || '/';
     if (this.route.snapshot.queryParams['token'] &&
       this.route.snapshot.queryParams['target'] === 'enable_user') {
       this.enableUser(this.route.snapshot.queryParams['token']);
@@ -75,27 +77,48 @@ export class LoginComponent implements OnInit {
     this.loading = true;
     this.spinner.show();
     this.credentials.login = this.f.login.value;
-    this.credentials.password = this.f.password.value;
+    this.credentials.password = this.f.password.value || this.f.newPassword.value;
     this.credentials.newPassword = this.f.newPassword.value;
     if (this.route.snapshot.queryParams['token']) {
       this.token = this.route.snapshot.queryParams['token'];
     }
-    this.userService.login(this.credentials, this.token)
-      .pipe(first())
-      .subscribe(
-        data => {
-          this.loading = false;
-          this.spinner.hide();
-          this.router.navigate([this.returnUrl]);
-        },
-        error => {
-          this.loading = false;
-          this.spinner.hide();
-          if (error instanceof HttpErrorResponse && error.status === 401) {
-            this.snackBarService.error('Неправильный логин или пароль.');
+    if (this.route.snapshot.queryParams['target'] === 'new_password') {
+      this.userService.changePassword(this.credentials, this.token)
+        .pipe(first())
+        .subscribe(
+          data => {
+            this.loading = false;
+            this.spinner.hide();
+            // this.logger.info('from login component change password');
+            this.router.navigate([this.returnUrl]);
+            this.snackBarService.success('Пароль был изменен', 'OK');
+          },
+          error => {
+            this.loading = false;
+            this.spinner.hide();
+            this.snackBarService.error(error.toString().replace('Error:', 'Ошибка: '),
+              'OK');
           }
-        }
-      );
+        );
+    } else {
+      this.userService.login(this.credentials, this.token)
+        .pipe(first())
+        .subscribe(
+          data => {
+            this.loading = false;
+            this.spinner.hide();
+            // this.logger.info('from login/// returnURL=', this.returnUrl);
+            this.router.navigate([this.returnUrl]);
+          },
+          error => {
+            this.loading = false;
+            this.spinner.hide();
+            if (error instanceof HttpErrorResponse && error.status === 401) {
+              this.snackBarService.error('Неправильный логин или пароль.');
+            }
+          }
+        );
+    }
   }
 
   onRepair() {
@@ -114,7 +137,13 @@ export class LoginComponent implements OnInit {
             this.loading = false;
             this.spinner.hide();
             this.changeTab();
-            this.snackBarService.success('Для смены пароля проверьте почту.');
+            this.snackBarService.success('Для смены пароля проверьте почту.',
+              'OK', 100000);
+          }
+          if (data === 'No value present') {
+            this.loading = false;
+            this.spinner.hide();
+            this.snackBarService.error('Этот логин не зарегистрирован.');
           }
         },
         error => {

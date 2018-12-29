@@ -3,7 +3,7 @@ import {BehaviorSubject, Observable, of, Subject} from 'rxjs';
 import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import {User} from '../_model/User';
 import {NGXLogger} from 'ngx-logger';
-import {finalize, map} from 'rxjs/operators';
+import {finalize, first, map} from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -29,13 +29,11 @@ export class UserService {
     const headers = new HttpHeaders(credentials ? {
       Authorization: 'Basic ' + btoa(credentials.login + ':' + credentials.password)
     } : {});
-    this.url = '/rest/users/sign_in?token=' + token + '&np=' + btoa(credentials.newPassword);
-    return this.http.get<any>(this.url, {headers: headers})
+    return this.http.get<any>('/rest/users/sign_in', {headers: headers})
       .pipe(map(user => {
-        this.logger.info(user);
-        this.updateCurrentUser(user);
+        // this.logger.info('From UserService:\n', user);
         if (user) {
-          // this.currentUser.password = null;
+          this.updateCurrentUser(user);
           localStorage.setItem('currentUser', JSON.stringify(user));
           this.authenticated = true;
         }
@@ -89,4 +87,24 @@ export class UserService {
     return this.http.get('rest/users/set_user_token?login=' + login, {'withCredentials': false, responseType: 'text'});
   }
 
+  changePassword(credentials, token) {
+    this.url = '/rest/users/change_password?token=' + token + '&login=' + credentials.login
+      + '&np=' + btoa(credentials.newPassword);
+    return this.http.get(this.url, {'withCredentials': false, responseType: 'text'})
+      .pipe(map(data => {
+          // this.logger.info('From UserService -change password:\n', data);
+          if (data === 'true') {
+            this.login(credentials, token).pipe(first())
+              .subscribe(d => {
+              });
+          }  else {
+            throw new Error('Пароль не был изменен. Проверьте правильность вводимых данных.');
+          }
+        },
+        error => {
+          // this.logger.info('From UserService -change password ERROR:\n',
+          //   error.getMessage());
+          throw error;
+        }));
+  }
 }

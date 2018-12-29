@@ -8,9 +8,6 @@ import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
 import {MessagesComponent} from './components/messages/messages.component';
 import {AlertComponent} from './_directives/alert/alert.component';
 import {AuthGuard} from './_guards/auth.guard';
-import {LoginComponent} from './components/login/login.component';
-import {RegisterComponent} from './components/register/register.component';
-import {routing} from './app.routing';
 import {NgxSpinnerModule} from 'ngx-spinner';
 import {XhrInterceptor} from './_services/xhr.interceptor';
 import {LoggerModule, NgxLoggerLevel} from 'ngx-logger';
@@ -34,6 +31,8 @@ import {FlexLayoutModule} from '@angular/flex-layout';
 import {LayoutModule} from '@angular/cdk/layout';
 import {MainNavComponent} from './components/main-nav/main-nav.component';
 import { PageNotFoundComponent } from './components/page-not-found/page-not-found.component';
+import { AppRoutingModule } from './app-routing.module';
+import {SigninModule} from './components/signin/signin.module';
 
 export const httpInterceptorProviders = [
   {provide: HTTP_INTERCEPTORS, useClass: RequestInterceptor, multi: true},
@@ -46,8 +45,6 @@ export const httpInterceptorProviders = [
     UserOptionsComponent,
     MessagesComponent,
     AlertComponent,
-    LoginComponent,
-    RegisterComponent,
     MapBoxComponent,
     MainNavComponent,
     PageNotFoundComponent
@@ -58,7 +55,6 @@ export const httpInterceptorProviders = [
     FormsModule,
     HttpClientModule,
     ReactiveFormsModule,
-    routing,
     NgxSpinnerModule,
     LoggerModule.forRoot({
       level: NgxLoggerLevel.INFO,
@@ -82,7 +78,9 @@ export const httpInterceptorProviders = [
     FlexLayoutModule,
     LayoutModule,
     MatListModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    SigninModule,
+    AppRoutingModule
   ],
   providers: [AuthGuard, httpInterceptorProviders],
   bootstrap: [AppComponent]

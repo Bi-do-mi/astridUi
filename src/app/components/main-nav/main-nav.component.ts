@@ -15,36 +15,39 @@ import {SidenavService} from '../../_services/sidenav.service';
   styleUrls: ['./main-nav.component.scss']
 })
 export class MainNavComponent implements OnInit {
-  @ViewChild('drawer') drawer: MatSidenav;
+  @ViewChild('drawer')
+  drawer: MatSidenav;
   currentUser: User;
-  public href = '';
-  menuTitleLink: string;
   isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset)
     .pipe(
       map(result => result.matches)
     );
+  private url: string;
 
   constructor(private breakpointObserver: BreakpointObserver,
               private router: Router,
               private sidenav: SidenavService,
               public uService: UserService,
               private logger: NGXLogger) {
-    router.events.pipe(
-      filter(a => a instanceof NavigationEnd)
-    ).subscribe(_ => this.drawer.close());
   }
 
   ngOnInit() {
+    this.router.events.pipe(
+      filter(a => a instanceof NavigationEnd)
+    ).subscribe(_ => {
+      this.drawer.close();
+      this.url = this.router.routerState.snapshot.url.split(/[;?]/)[0];
+      // this.logger.info(this.url);
+    });
     this.uService.currentUser.subscribe(u => {
       this.currentUser = u;
-      if (!u.username) {
-        this.menuTitleLink = '<a mat-button routerLink="/login">Войти</a>';
-      } else {
-        this.menuTitleLink = null;
-      }
     });
     this.sidenav.sidenav = this.drawer;
-    this.href = this.router.url;
+  }
+
+  routingToLoginPage() {
+    this.router.navigate(['/login',
+      {returnUrl: this.router.routerState.snapshot.url}]);
   }
 
   logout() {

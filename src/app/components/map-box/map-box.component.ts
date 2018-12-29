@@ -1,4 +1,4 @@
-import {Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import * as mapboxgl from 'mapbox-gl';
 import {MapService} from '../../_services/map.service';
 import {NGXLogger} from 'ngx-logger';
@@ -12,40 +12,42 @@ import {NGXLogger} from 'ngx-logger';
 
 export class MapBoxComponent implements OnInit, OnDestroy {
   map: mapboxgl.Map;
-  style = 'https://maps.tilehosting.com/styles/basic/style.json?key=VRgdrAzvUsWnu6iigRja';
-  lat = 37.622504;
-  lng = 55.753215;
-  zoom = 9;
+  style: string;
+  lng: number;
+  lat: number;
+  zoom: number;
   source: any;
   markers: any;
 
   constructor(private mapService: MapService, private logger: NGXLogger) {
-    this.map = mapService.map;
+    // this.logger.info('MapBoxComponent - constructor\n',
+    //   this.mapService.mapOps, 'isFirstLoading: ', mapService.isFirstLoading);
   }
 
   ngOnInit() {
-    if (!this.map) {
-      this.initializeMap();
-      // this.logger.info('map initializing ' + this.map.getContainer().getAttribute('id'));
-      this.mapService.map = this.map;
-    }
+    this.initializeMap();
+    // this.logger.info('map initializing ' + this.map.getContainer().getAttribute('id'));
+    // this.setMapOps(this.map);
+    // this.logger.info('MapBoxComponent - ngOnInit, ');
   }
 
   ngOnDestroy() {
-    this.mapService.map = this.map;
+    this.setMapOps(this.map);
   }
 
   private initializeMap() {
-    if (navigator.geolocation) {
+    this.getMapOps(this.mapService.mapOps);
+    this.buildMap();
+    if (navigator.geolocation && this.mapService.isFirstLoading) {
+      // this.logger.info('MapBoxComponent - Navigator works!');
       navigator.geolocation.getCurrentPosition(position => {
-        this.lat = position.coords.latitude;
         this.lng = position.coords.longitude;
-        this.map.flyTo({
-          center: [this.lng, this.lat]
-        });
+        this.lat = position.coords.latitude;
+        setTimeout(() => {
+          this.map.flyTo({center: [this.lng, this.lat]});
+        }, 1000);
       });
     }
-    this.buildMap();
   }
 
   buildMap() {
@@ -57,7 +59,34 @@ export class MapBoxComponent implements OnInit, OnDestroy {
     });
 
     /// Add map controls
-    this.map.addControl(new mapboxgl.NavigationControl(),);
+    this.map.addControl(new mapboxgl.NavigationControl());
+    this.map.addControl(new mapboxgl.GeolocateControl({
+      positionOptions: {
+        enableHighAccuracy: true
+      }
+    }));
+    this.map.addControl(new mapboxgl.ScaleControl());
+    this.map.addControl(new mapboxgl.FullscreenControl());
+  }
 
+  private getMapOps(mapOps: {
+    lng: number; lat: number;
+    zoom: number; source: any; markers: any
+  }) {
+    this.style = this.mapService.style;
+    this.lng = mapOps.lng;
+    this.lat = mapOps.lat;
+    this.zoom = mapOps.zoom;
+  }
+
+  private setMapOps(map: mapboxgl.Map) {
+    const mapOps = {
+      lng: map.getCenter().lng,
+      lat: map.getCenter().lat,
+      zoom: map.getZoom(),
+      source: null,
+      markers: null
+    };
+    this.mapService.mapOps = mapOps;
   }
 }

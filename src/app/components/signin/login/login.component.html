@@ -1,0 +1,79 @@
+<div class="leanerBack" id="login_div">
+  <div fxLayout="row" fxLayoutAlign="center center" fxFlex="100">
+    <mat-card>
+      <h2 class="text-center mat-h1" [innerHTML]="newPasswordShow?'Восстановление пароля':'Вход'"></h2>
+      <mat-tab-group class="align-content-center" color="accent" [selectedIndex]="tabIndex">
+        <mat-tab label="Вход">
+          <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+
+            <!--електронный адрес-->
+            <mat-form-field class="example-full-width">
+              <input matInput placeholder="email" required autofocus formControlName="login">
+              <mat-error *ngIf="submitted && f.login.hasError('required')">
+                введите email
+              </mat-error>
+              <mat-error *ngIf="(f.login.hasError('email'))">
+                ввод некоректен
+              </mat-error>
+            </mat-form-field>
+
+            <!--пароль-->
+            <mat-form-field class="example-full-width" *ngIf="!newPasswordShow">
+              <input matInput placeholder="пароль" required formControlName="password"
+                     [type]="hidePresentPassword ? 'password' : 'text'">
+              <mat-icon matSuffix (click)=" hidePresentPassword=!hidePresentPassword">
+                {{hidePresentPassword ? 'visibility' : 'visibility_off'}}
+              </mat-icon>
+              <mat-error *ngIf="submitted && f.password.hasError('required')">
+                введите пароль
+              </mat-error>
+              <mat-error *ngIf="f.password.hasError('pattern')">
+                некорректно
+              </mat-error>
+            </mat-form-field>
+
+            <!--новый пароль-->
+            <mat-form-field *ngIf="newPasswordShow" class="example-full-width">
+              <input matInput placeholder="новый пароль" required formControlName="newPassword"
+                     [type]="hideNewPassword ? 'password' : 'text'">
+              <mat-icon matSuffix (click)=" hideNewPassword=!hideNewPassword">
+                {{hideNewPassword ? 'visibility' : 'visibility_off'}}
+              </mat-icon>
+              <mat-error *ngIf="submitted && f.newPassword.hasError('required')">
+                введите пароль
+              </mat-error>
+              <mat-error *ngIf="f.newPassword.hasError('pattern')">
+                некорректно
+              </mat-error>
+            </mat-form-field>
+            <div class="form-group">
+
+              <button mat-raised-button="" [disabled]="loading" color="accent">Войти</button>
+              <!--<img *ngIf="loading" src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==" />-->
+              <a mat-button routerLink="/register">Регистрация</a>
+            </div>
+          </form>
+        </mat-tab>
+        <mat-tab label="Восстановить пароль">
+          <form [formGroup]="repairForm" (ngSubmit)="onRepair()">
+
+            <mat-form-field class="example-full-width">
+              <input matInput placeholder="email" required formControlName="login">
+              <mat-error *ngIf="submitted && f.login.hasError('required')">
+                введите email
+              </mat-error>
+              <mat-error *ngIf="(f.login.hasError('email'))">
+                ввод некоректен
+              </mat-error>
+            </mat-form-field>
+
+            <div class="form-group">
+              <button mat-raised-button="" [disabled]="loading" color="accent">Отправить</button>
+              <!--<img *ngIf="loading" src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==" />-->
+            </div>
+          </form>
+        </mat-tab>
+      </mat-tab-group>
+    </mat-card>
+  </div>
+</div>

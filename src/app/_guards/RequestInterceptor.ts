@@ -21,6 +21,9 @@ export class RequestInterceptor implements HttpInterceptor {
         localStorage.removeItem('currentUser');
         this.router.navigate(['/login']);
       }
+      if (err.status === 500) {
+        this.logger.error('From requestInterceptor: error - ', err.message);
+      }
     }));
   }
 }
