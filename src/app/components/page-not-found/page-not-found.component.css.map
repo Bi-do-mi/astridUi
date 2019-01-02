@@ -1,6 +1,6 @@
 {
 "version": 3,
-"mappings": "AAAA,CAAC;EACC,SAAS,EAAE,KAAK;EAChB,UAAU,EAAE,MAAM",
+"mappings": "AAAA,CAAC;EACC,SAAS,EAAE,KAAK;EAChB,UAAU,EAAE,MAAM;;AAEpB,mBAAmB;EACjB,SAAS,EAAE,IAAI;EACf,UAAU,EAAE,IAAI;EAChB,QAAQ,EAAE,QAAQ;;AAEpB,QAAQ;EACN,SAAS,EAAE,GAAG",
 "sources": ["page-not-found.component.scss"],
 "names": [],
 "file": "page-not-found.component.css"

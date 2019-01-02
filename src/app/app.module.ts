@@ -2,7 +2,6 @@ import {BrowserModule} from '@angular/platform-browser';
 import {NgModule} from '@angular/core';
 
 import {AppComponent} from './app.component';
-import {UserOptionsComponent} from './components/userOptions/user.options.component';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
 import {MessagesComponent} from './components/messages/messages.component';
@@ -32,7 +31,7 @@ import {LayoutModule} from '@angular/cdk/layout';
 import {MainNavComponent} from './components/main-nav/main-nav.component';
 import { PageNotFoundComponent } from './components/page-not-found/page-not-found.component';
 import { AppRoutingModule } from './app-routing.module';
-import {SigninModule} from './components/signin/signin.module';
+import {SigninModule} from './components/preload/signin.module';
 
 export const httpInterceptorProviders = [
   {provide: HTTP_INTERCEPTORS, useClass: RequestInterceptor, multi: true},
@@ -42,7 +41,6 @@ export const httpInterceptorProviders = [
 @NgModule({
   declarations: [
     AppComponent,
-    UserOptionsComponent,
     MessagesComponent,
     AlertComponent,
     MapBoxComponent,

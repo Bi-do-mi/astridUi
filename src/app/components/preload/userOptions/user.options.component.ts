@@ -1,7 +1,7 @@
 import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
-import {UserService} from '../../_services/user.service';
-import {User} from '../../_model/User';
-import {AlertService} from '../../_services/alert.service';
+import {UserService} from '../../../_services/user.service';
+import {User} from '../../../_model/User';
+import {AlertService} from '../../../_services/alert.service';
 import {first, map} from 'rxjs/operators';
 import {assertNumber} from '@angular/core/src/render3/assert';
 import {NGXLogger} from 'ngx-logger';

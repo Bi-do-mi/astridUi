@@ -7,6 +7,7 @@ import {NGXLogger} from 'ngx-logger';
 import {HttpErrorResponse} from '@angular/common/http';
 import {UserService} from '../../../_services/user.service';
 import {SnackBarService} from '../../../_services/snack-bar.service';
+import {MessageService} from '../../../_services/message.service';
 
 @Component({
   selector: 'app-login',
@@ -31,6 +32,7 @@ export class LoginComponent implements OnInit {
     private formBuilder: FormBuilder,
     private route: ActivatedRoute,
     private router: Router,
+    private messageService: MessageService,
     private spinner: NgxSpinnerService,
     private  logger: NGXLogger,
     private userService: UserService,
@@ -51,11 +53,11 @@ export class LoginComponent implements OnInit {
     });
     this.userService.logout();
     this.returnUrl = this.route.snapshot.paramMap.get('returnUrl') || '/';
-    if (this.route.snapshot.queryParams['token'] &&
-      this.route.snapshot.queryParams['target'] === 'enable_user') {
-      this.enableUser(this.route.snapshot.queryParams['token']);
+    if (this.route.snapshot.queryParamMap.get('token') &&
+      this.route.snapshot.queryParamMap.get('target') === 'enable_user') {
+      this.enableUser(this.route.snapshot.queryParamMap.get('token'));
     }
-    if (this.route.snapshot.queryParams['target'] === 'new_password') {
+    if (this.route.snapshot.queryParamMap.get('target') === 'new_password') {
       this.newPasswordShow = true;
     }
   }
@@ -79,10 +81,10 @@ export class LoginComponent implements OnInit {
     this.credentials.login = this.f.login.value;
     this.credentials.password = this.f.password.value || this.f.newPassword.value;
     this.credentials.newPassword = this.f.newPassword.value;
-    if (this.route.snapshot.queryParams['token']) {
-      this.token = this.route.snapshot.queryParams['token'];
+    if (this.route.snapshot.queryParamMap.get('token')) {
+      this.token = this.route.snapshot.queryParamMap.get('token');
     }
-    if (this.route.snapshot.queryParams['target'] === 'new_password') {
+    if (this.route.snapshot.queryParamMap.get('target') === 'new_password') {
       this.userService.changePassword(this.credentials, this.token)
         .pipe(first())
         .subscribe(
@@ -137,8 +139,10 @@ export class LoginComponent implements OnInit {
             this.loading = false;
             this.spinner.hide();
             this.changeTab();
-            this.snackBarService.success('Для смены пароля проверьте почту.',
-              'OK', 100000);
+            this.messageService.add(['Смена пароля', 'Для завершения' +
+              ' процесса изменения пароля, пожалуйста, проверьте свой электронный ' +
+              'почтовый ящик. Пройдите по ссылке, которую мы выслали Вам в письме.']);
+            this.router.navigate(['info']);
           }
           if (data === 'No value present') {
             this.loading = false;
@@ -161,7 +165,7 @@ export class LoginComponent implements OnInit {
     this.userService.enableUser(token)
       .pipe(first())
       .subscribe(data => {
-          if (data) {
+          if (data === 'true') {
             this.spinner.hide();
           }
         },

@@ -1,0 +1,9 @@
+#info_card_div {
+  min-width: 100%;
+  min-height: 100%;
+  position: absolute; }
+
+mat-card {
+  max-width: 90%; }
+
+/*# sourceMappingURL=info-card.component.css.map */

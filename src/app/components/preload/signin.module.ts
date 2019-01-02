@@ -21,7 +21,8 @@ import {NgxSpinnerModule} from 'ngx-spinner';
 import {LoggerModule, NgxLoggerLevel} from 'ngx-logger';
 import {FlexLayoutModule} from '@angular/flex-layout';
 import {LayoutModule} from '@angular/cdk/layout';
-import {InfoCardComponent} from '../info-card/info-card.component';
+import {InfoCardComponent} from './info-card/info-card.component';
+import {UserOptionsComponent} from './userOptions/user.options.component';
 
 @NgModule({
   imports: [
@@ -51,7 +52,8 @@ import {InfoCardComponent} from '../info-card/info-card.component';
   declarations: [
     LoginComponent,
     RegisterComponent,
-    InfoCardComponent
+    InfoCardComponent,
+    UserOptionsComponent
   ]
 })
 export class SigninModule { }

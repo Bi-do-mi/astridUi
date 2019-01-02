@@ -1,7 +1,7 @@
 <div class="leanerBack" id="login_div">
   <div fxLayout="row" fxLayoutAlign="center center" fxFlex="100">
     <mat-card>
-      <h2 class="text-center mat-h1" [innerHTML]="newPasswordShow?'Восстановление пароля':'Вход'"></h2>
+      <!--<h2 class="text-center mat-h1" [innerHTML]="newPasswordShow?'Восстановление пароля':'Вход'"></h2>-->
       <mat-tab-group class="align-content-center" color="accent" [selectedIndex]="tabIndex">
         <mat-tab label="Вход">
           <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">

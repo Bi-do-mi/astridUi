@@ -2,4 +2,12 @@ p {
   font-size: large;
   text-align: center; }
 
+#page_not_found_div {
+  min-width: 100%;
+  min-height: 100%;
+  position: absolute; }
+
+mat-card {
+  max-width: 90%; }
+
 /*# sourceMappingURL=page-not-found.component.css.map */
