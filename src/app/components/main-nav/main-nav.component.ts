@@ -5,9 +5,10 @@ import {filter, first, map} from 'rxjs/operators';
 import {User} from '../../_model/User';
 import {UserService} from '../../_services/user.service';
 import {NGXLogger} from 'ngx-logger';
-import {MatSidenav} from '@angular/material';
+import {MatDialog, MatSidenav} from '@angular/material';
 import {NavigationEnd, Router, RouterStateSnapshot} from '@angular/router';
 import {SidenavService} from '../../_services/sidenav.service';
+import {UserOptionsDialogComponent} from '../user-options-dialog/user-options-dialog.component';
 
 @Component({
   selector: 'app-main-nav',
@@ -28,7 +29,8 @@ export class MainNavComponent implements OnInit {
               private router: Router,
               private sidenav: SidenavService,
               public uService: UserService,
-              private logger: NGXLogger) {
+              private logger: NGXLogger,
+              private dialog: MatDialog) {
   }
 
   ngOnInit() {
@@ -46,12 +48,27 @@ export class MainNavComponent implements OnInit {
   }
 
   routingToLoginPage() {
-    this.router.navigate(['/login',
+    this.router.navigate(['/preload/login',
       {returnUrl: this.router.routerState.snapshot.url}]);
   }
 
   logout() {
     this.uService.logout();
     this.sidenav.close();
+    if (this.router.routerState.snapshot.url === '/preload/user_options') {
+      this.router.navigate(['']);
+    }
   }
+
+  openUserOptionsDialog(): void {
+    this.sidenav.close();
+    const dialogRef = this.dialog.open(UserOptionsDialogComponent, {
+      minHeight: '250px'
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      // console.log('The dialog was closed');
+    });
+  }
+
 }

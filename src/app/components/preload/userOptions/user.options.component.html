@@ -1,6 +1,6 @@
-<div class="a-card">
+<div class="leanerBack a-card">
   <div fxLayout="row" fxLayoutAlign="center none">
-    <mat-card fxFlex="95">
+    <mat-card>
       <mat-card-content>
         <h1>Hi {{currentUser.firstName}}!</h1>
         <p>You're logged in with Angular 6!!!</p>
@@ -25,8 +25,6 @@
             <br>{{currentUser.lastVisit}}
           </li>
         </ul>
-        <button mat-raised-button routerLink='/login'>Logout</button>
-        <p><a routerLink='/login'>Logout</a></p>
       </mat-card-content>
     </mat-card>
   </div>

@@ -21,7 +21,7 @@ import {
   MatTabsModule,
   MatListModule,
   MatCardModule,
-  MatSnackBarModule
+  MatSnackBarModule, MatDialogModule
 } from '@angular/material';
 import {MatInputModule} from '@angular/material/input';
 import {NgxMapboxGLModule} from 'ngx-mapbox-gl';
@@ -31,7 +31,7 @@ import {LayoutModule} from '@angular/cdk/layout';
 import {MainNavComponent} from './components/main-nav/main-nav.component';
 import { PageNotFoundComponent } from './components/page-not-found/page-not-found.component';
 import { AppRoutingModule } from './app-routing.module';
-import {SigninModule} from './components/preload/signin.module';
+import {UserOptionsDialogComponent} from './components/user-options-dialog/user-options-dialog.component';
 
 export const httpInterceptorProviders = [
   {provide: HTTP_INTERCEPTORS, useClass: RequestInterceptor, multi: true},
@@ -45,7 +45,8 @@ export const httpInterceptorProviders = [
     AlertComponent,
     MapBoxComponent,
     MainNavComponent,
-    PageNotFoundComponent
+    PageNotFoundComponent,
+    UserOptionsDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -66,6 +67,7 @@ export const httpInterceptorProviders = [
     MatCardModule,
     MatTabsModule,
     MatSidenavModule,
+    MatDialogModule,
     NgxMapboxGLModule.withConfig({
       // Optionnal, can also be set per map (accessToken input of mgl-map)
       // accessToken: 'pk.eyJ1IjoiYmlkb21pIiwiYSI6ImNqbWt6dm05aTAydjQza3BianJwajV5ZmkifQ.46hioGSUTzMOdWqTFHwnDQ'
@@ -77,8 +79,10 @@ export const httpInterceptorProviders = [
     LayoutModule,
     MatListModule,
     MatSnackBarModule,
-    SigninModule,
     AppRoutingModule
+  ],
+  entryComponents: [
+    UserOptionsDialogComponent
   ],
   providers: [AuthGuard, httpInterceptorProviders],
   bootstrap: [AppComponent]

@@ -8,8 +8,10 @@ import {RegisterComponent} from './components/preload/register/register.componen
 
 
 const appRoutes: Routes = [
+  {path: 'preload', loadChildren: './components/preload/preload.module#PreloadModule'},
+  {path: '404', component: PageNotFoundComponent},
   {path: '', component: MapBoxComponent},
-  {path: '**', component: PageNotFoundComponent}
+  {path: '**', redirectTo: '404', pathMatch: 'full'}
 ];
 @NgModule({
   imports: [

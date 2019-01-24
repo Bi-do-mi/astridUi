@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-import { SigninRoutingModule } from './signin-routing.module';
+import { PreloadRoutingModule } from './preload-routing.module';
 import {LoginComponent} from './login/login.component';
 import {RegisterComponent} from './register/register.component';
 import {
@@ -30,7 +30,7 @@ import {UserOptionsComponent} from './userOptions/user.options.component';
     HttpClientModule,
     ReactiveFormsModule,
     CommonModule,
-    SigninRoutingModule,
+    PreloadRoutingModule,
     NgxSpinnerModule,
     LoggerModule.forRoot({
       level: NgxLoggerLevel.INFO,
@@ -47,7 +47,7 @@ import {UserOptionsComponent} from './userOptions/user.options.component';
     MatButtonModule,
     MatCardModule,
     MatTabsModule,
-    MatSidenavModule,
+    MatSidenavModule
   ],
   declarations: [
     LoginComponent,
@@ -56,4 +56,4 @@ import {UserOptionsComponent} from './userOptions/user.options.component';
     UserOptionsComponent
   ]
 })
-export class SigninModule { }
+export class PreloadModule { }

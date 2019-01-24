@@ -60,6 +60,9 @@ export class LoginComponent implements OnInit {
     if (this.route.snapshot.queryParamMap.get('target') === 'new_password') {
       this.newPasswordShow = true;
     }
+    if (this.route.snapshot.queryParamMap.get('tab2') === 'tab2') {
+      this.changeTab();
+    }
   }
 
   get f() {
@@ -142,7 +145,7 @@ export class LoginComponent implements OnInit {
             this.messageService.add(['Смена пароля', 'Для завершения' +
               ' процесса изменения пароля, пожалуйста, проверьте свой электронный ' +
               'почтовый ящик. Пройдите по ссылке, которую мы выслали Вам в письме.']);
-            this.router.navigate(['info']);
+            this.router.navigate(['/preload/info']);
           }
           if (data === 'No value present') {
             this.loading = false;

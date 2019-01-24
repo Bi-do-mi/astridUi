@@ -1,7 +1,9 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {AfterViewInit, Component, OnDestroy, OnInit} from '@angular/core';
 import * as mapboxgl from 'mapbox-gl';
 import {MapService} from '../../_services/map.service';
 import {NGXLogger} from 'ngx-logger';
+import {delay} from 'rxjs/operators';
+import {timer} from 'rxjs';
 
 
 @Component({
@@ -25,10 +27,10 @@ export class MapBoxComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.initializeMap();
-    // this.logger.info('map initializing ' + this.map.getContainer().getAttribute('id'));
-    // this.setMapOps(this.map);
-    // this.logger.info('MapBoxComponent - ngOnInit, ');
+    // отступ по времени для правильного отображения карты
+    setTimeout(() => {
+      this.initializeMap();
+    }, 10);
   }
 
   ngOnDestroy() {

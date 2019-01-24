@@ -12,4 +12,5 @@ export class User {
   credentialsNonExpired = true;
   enabled = true;
   lastVisit: Date;
+  phoneNumber: string;
 }

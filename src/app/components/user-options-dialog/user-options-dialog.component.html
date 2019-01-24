@@ -1,0 +1,38 @@
+<h1 mat-dialog-title>Личные данные</h1>
+<div mat-dialog-content>
+  <form [formGroup]="updateForm" class="form-group-size" (ngSubmit)="onSubmit()">
+    <!--Имя-->
+    <mat-form-field class="form-field-size">
+      <input matInput placeholder="Имя" formControlName="firstName" required>
+      <mat-error *ngIf="submitted && f.firstName.hasError('required')">
+        введите свое имя
+      </mat-error>
+    </mat-form-field>
+    <!--Фамилия-->
+    <mat-form-field class="form-field-size">
+      <input matInput placeholder="Фамилия" formControlName="lastName" required>
+      <mat-error *ngIf="submitted && f.lastName.hasError('required')">
+        введите свою фамилию
+      </mat-error>
+    </mat-form-field>
+
+    <h1 mat-dialog-title>Контактные данные</h1>
+    <!--Электронный адрес-->
+    <mat-form-field class="form-field-size">
+      <input matInput placeholder="Электронный адрес" formControlName="login">
+    </mat-form-field>
+    <!--Номер телефона-->
+    <mat-form-field class="form-field-size">
+      <input matInput placeholder="Телефон" formControlName="phoneNumber">
+      <mat-error *ngIf="(f.phoneNumber.hasError('pattern'))">
+        ввод некоректен
+      </mat-error>
+    </mat-form-field>
+  </form>
+</div>
+<div mat-dialog-actions align="end">
+  <button mat-button (click)="onCancel()">Отмена</button>
+  <button mat-raised-button color="accent" (click)="onSubmit()"
+          [disabled]="loading">Сохранить
+  </button>
+</div>

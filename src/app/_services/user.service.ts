@@ -41,6 +41,18 @@ export class UserService {
       }));
   }
 
+  updateUser(user: User) {
+    return this.http.put<any>('rest/users/update_user', user)
+      .pipe(map(u => {
+        if (u) {
+          this.updateCurrentUser(u);
+          localStorage.setItem('currentUser', JSON.stringify(u));
+          this.authenticated = true;
+        }
+        return;
+      }));
+  }
+
   logout() {
     // remove user from local storage to log user out
     localStorage.removeItem('currentUser');
@@ -64,10 +76,6 @@ export class UserService {
 
   register(user: User) {
     return this.http.post('rest/users/sign_up', user);
-  }
-
-  update(user: User) {
-    return this.http.put('rest/users/' + user.id, user);
   }
 
   delete(id: number) {
@@ -97,7 +105,7 @@ export class UserService {
             this.login(credentials, token).pipe(first())
               .subscribe(d => {
               });
-          }  else {
+          } else {
             throw new Error('Пароль не был изменен. Проверьте правильность вводимых данных.');
           }
         },
