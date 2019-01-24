@@ -6,6 +6,7 @@ import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {NgxSpinnerService} from 'ngx-spinner';
 import {SnackBarService} from '../../_services/snack-bar.service';
 import {first} from 'rxjs/operators';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-user-options-dialog',
@@ -22,6 +23,7 @@ export class UserOptionsDialogComponent implements OnInit {
   constructor(
     public dialogRef: MatDialogRef<UserOptionsDialogComponent>,
     private userService: UserService,
+    private router: Router,
     private formBuilder: FormBuilder,
     private spinner: NgxSpinnerService,
     private snackBarService: SnackBarService) {
@@ -43,12 +45,21 @@ export class UserOptionsDialogComponent implements OnInit {
     return this.updateForm.controls;
   }
 
+  onChangePass() {
+    this.onCancel();
+    this.router.navigate(['/preload/login',
+      {returnUrl: this.router.routerState.snapshot.url,
+      tab: '1'}]);
+  }
   onCancel(): void {
     this.dialogRef.close();
   }
 
   onSubmit() {
     this.submitted = true;
+    if (this.updateForm.invalid) {
+      return;
+    }
     this.loading = true;
     this.spinner.show();
     this.updateUser();

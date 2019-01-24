@@ -60,8 +60,8 @@ export class LoginComponent implements OnInit {
     if (this.route.snapshot.queryParamMap.get('target') === 'new_password') {
       this.newPasswordShow = true;
     }
-    if (this.route.snapshot.queryParamMap.get('tab2') === 'tab2') {
-      this.changeTab();
+    if (this.route.snapshot.paramMap.get('tab')) {
+      this.tabIndex = +this.route.snapshot.paramMap.get('tab');
     }
   }
 
@@ -184,6 +184,7 @@ export class LoginComponent implements OnInit {
     } else {
       this.tabIndex = 0;
     }
+    this.logger.log('changeTab() work!');
   }
 
 }
