@@ -11,6 +11,7 @@ export class User {
   accountNonLocked = true;
   credentialsNonExpired = true;
   enabled = true;
-  lastVisit: Date;
+  registrationDate: number;
+  lastVisit: number;
   phoneNumber: string;
 }

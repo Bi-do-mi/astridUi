@@ -23,13 +23,13 @@
     </mat-form-field>
     <!--Номер телефона-->
     <mat-form-field class="form-field-size">
-      <input matInput placeholder="Телефон" formControlName="phoneNumber">
+      <input matInput autocomplete="phone" placeholder="Телефон" formControlName="phoneNumber">
       <mat-error *ngIf="(f.phoneNumber.hasError('pattern'))">
         ввод некоректен
       </mat-error>
     </mat-form-field>
 
-    <h1 mat-dialog-title>Изменить пароль</h1>
+    <h1 mat-dialog-title>Пароль</h1>
     <a mat-button (click)="onChangePass()">Изменить пароль</a>
   </form>
 </div>

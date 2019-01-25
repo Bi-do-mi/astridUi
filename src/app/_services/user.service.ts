@@ -33,6 +33,8 @@ export class UserService {
       .pipe(map(user => {
         // this.logger.info('From UserService:\n', user);
         if (user) {
+          // this.logger.info('getTimezoneOffset=' + new Date(user.lastVisit)
+          //   + (user.lastVisit as Date) + JSON.stringify(user));
           this.updateCurrentUser(user);
           localStorage.setItem('currentUser', JSON.stringify(user));
           this.authenticated = true;

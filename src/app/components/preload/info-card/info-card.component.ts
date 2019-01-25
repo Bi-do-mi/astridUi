@@ -19,7 +19,7 @@ export class InfoCardComponent implements OnInit {
   ngOnInit() {
     if (this.messageService.messages[0] !== undefined) {
       this.messageService.messages.forEach(m => this.messages.push(m));
-      this.logger.info('from info-card: ', this.messages[0]);
+      // this.logger.info('from info-card: ', this.messages[0]);
     } else {
       this.router.navigate(['**']);
     }

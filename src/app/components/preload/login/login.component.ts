@@ -59,6 +59,7 @@ export class LoginComponent implements OnInit {
     }
     if (this.route.snapshot.queryParamMap.get('target') === 'new_password') {
       this.newPasswordShow = true;
+      this.enableUser(this.route.snapshot.queryParamMap.get('token'));
     }
     if (this.route.snapshot.paramMap.get('tab')) {
       this.tabIndex = +this.route.snapshot.paramMap.get('tab');
@@ -143,8 +144,8 @@ export class LoginComponent implements OnInit {
             this.spinner.hide();
             this.changeTab();
             this.messageService.add(['Смена пароля', 'Для завершения' +
-              ' процесса изменения пароля, пожалуйста, проверьте свой электронный ' +
-              'почтовый ящик. Пройдите по ссылке, которую мы выслали Вам в письме.']);
+            ' процесса изменения пароля, пожалуйста, проверьте свой электронный ' +
+            'почтовый ящик. Пройдите по ссылке, которую мы выслали Вам в письме.']);
             this.router.navigate(['/preload/info']);
           }
           if (data === 'No value present') {
@@ -170,6 +171,12 @@ export class LoginComponent implements OnInit {
       .subscribe(data => {
           if (data === 'true') {
             this.spinner.hide();
+          }
+          if (data === 'not found') {
+            this.newPasswordShow = false;
+            this.spinner.hide();
+            this.router.navigate(['/preload/login']);
+            this.snackBarService.error('Эта ссылка больше неактивна');
           }
         },
         error => {

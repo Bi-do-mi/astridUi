@@ -32,6 +32,9 @@ import {MainNavComponent} from './components/main-nav/main-nav.component';
 import { PageNotFoundComponent } from './components/page-not-found/page-not-found.component';
 import { AppRoutingModule } from './app-routing.module';
 import {UserOptionsDialogComponent} from './components/user-options-dialog/user-options-dialog.component';
+// import {registerLocaleData} from '@angular/common';
+// import localeRu from '@angular/common/locales/ru';
+// registerLocaleData(localeRu, 'ru-RU');
 
 export const httpInterceptorProviders = [
   {provide: HTTP_INTERCEPTORS, useClass: RequestInterceptor, multi: true},

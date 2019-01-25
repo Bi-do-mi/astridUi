@@ -124,6 +124,8 @@ export class RegisterComponent implements OnInit {
           if (error instanceof HttpErrorResponse && error.status === 409) {
             this.snackBarService.error('Логин "' + this.newUser.username
               + '" занят. Выберите другой логин.');
+          } else {
+            this.logger.error(error);
           }
         });
   }

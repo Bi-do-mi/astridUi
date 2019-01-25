@@ -37,7 +37,7 @@ export class UserOptionsDialogComponent implements OnInit {
       lastName: [this.user.lastName, [Validators.minLength(1),
         Validators.maxLength(60)]],
       login: [{value: this.user.username, disabled: true}],
-      phoneNumber: ['', Validators.pattern('^\\+?[\\d\\(\\)\\-]{10,15}\\d+$')]
+      phoneNumber: [this.user.phoneNumber, Validators.pattern('^\\+?[\\d\\(\\)\\-]{10,15}\\d+$')]
     });
   }
 
