@@ -35,7 +35,7 @@ export class UserOptionsComponent implements OnInit {
 
 
   deleteUser(id: number) {
-    this.userService.delete(id).pipe(first()).subscribe(() => {
+    this.userService.delete(this.currentUser).pipe(first()).subscribe(() => {
       this.loadAllUsers();
     });
   }

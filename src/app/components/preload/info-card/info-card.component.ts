@@ -9,7 +9,7 @@ import {MessageService} from '../../../_services/message.service';
   styleUrls: ['./info-card.component.scss']
 })
 export class InfoCardComponent implements OnInit {
-  private messages: string[] = [];
+  messages: string[] = [];
 
   constructor(private messageService: MessageService,
               private router: Router,

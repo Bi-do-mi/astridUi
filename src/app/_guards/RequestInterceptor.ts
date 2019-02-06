@@ -28,7 +28,7 @@ export class RequestInterceptor implements HttpInterceptor {
         this.logger.error('From requestInterceptor: error - ', err.message);
       }
       if (err instanceof HttpErrorResponse && err.status === 504) {
-        this.snackBarService.error('Сервер временно недоступен');
+        this.snackBarService.error('Сервер временно недоступен', 'OK');
       }
     }));
   }

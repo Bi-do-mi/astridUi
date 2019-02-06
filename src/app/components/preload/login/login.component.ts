@@ -59,7 +59,6 @@ export class LoginComponent implements OnInit {
     }
     if (this.route.snapshot.queryParamMap.get('target') === 'new_password') {
       this.newPasswordShow = true;
-      this.enableUser(this.route.snapshot.queryParamMap.get('token'));
     }
     if (this.route.snapshot.paramMap.get('tab')) {
       this.tabIndex = +this.route.snapshot.paramMap.get('tab');
@@ -120,7 +119,7 @@ export class LoginComponent implements OnInit {
             this.loading = false;
             this.spinner.hide();
             if (error instanceof HttpErrorResponse && error.status === 401) {
-              this.snackBarService.error('Неправильный логин или пароль.');
+              this.snackBarService.error('Неправильный логин или пароль.', 'OK');
             }
           }
         );

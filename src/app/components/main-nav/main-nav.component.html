@@ -22,8 +22,18 @@
                      fxLayout="row">
           <a [ngStyle]="{'text-decoration': 'none','color': 'white'}" href="" [routerLink]="['/']">Астрид</a>
           <div fxFlex></div>
-          <a mat-button (click)="routingToLoginPage()" *ngIf="!currentUser.firstName
-&& url !== '/preload/login' && url !== '/preload/register' && url !== '/preload/info' && url !== '/404'">Вход / Регистрация</a>
+          <a mat-button (click)="routingToLoginPage()" *ngIf="!currentUser.firstName && !(isHandset$ | async)
+&& url !== '/preload/login' && url !== '/preload/register' && url !== '/preload/info'
+&& url !== '/404'">Вход / Регистрация</a>
+          <button id="login_button"
+            type="button"
+            aria-label="Log in button"
+            mat-icon-button
+            (click)="routingToLoginPage()"
+            *ngIf="!currentUser.firstName && (isHandset$ | async) && url !== '/preload/login'
+            && url !== '/preload/register' && url !== '/preload/info' && url !== '/404'">
+            <mat-icon aria-label="Log in icon">exit_to_app</mat-icon>
+          </button>
           <div mat-card-avatar class="user-header-image" fxLayout="row" fxLayoutAlign="center center"
                *ngIf="currentUser.firstName">
             <span>{{currentUser?.firstName?.charAt(0) | uppercase}}</span>

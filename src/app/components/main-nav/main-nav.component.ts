@@ -9,6 +9,7 @@ import {MatDialog, MatSidenav} from '@angular/material';
 import {NavigationEnd, Router, RouterStateSnapshot} from '@angular/router';
 import {SidenavService} from '../../_services/sidenav.service';
 import {UserOptionsDialogComponent} from '../user-options-dialog/user-options-dialog.component';
+import {environment} from 'src/environments/environment';
 
 @Component({
   selector: 'app-main-nav',
@@ -23,7 +24,7 @@ export class MainNavComponent implements OnInit {
     .pipe(
       map(result => result.matches)
     );
-  private url: string;
+  url: string;
 
   constructor(private breakpointObserver: BreakpointObserver,
               private router: Router,
@@ -39,7 +40,7 @@ export class MainNavComponent implements OnInit {
     ).subscribe(_ => {
       this.drawer.close();
       this.url = this.router.routerState.snapshot.url.split(/[;?]/)[0];
-      // this.logger.info(this.url);
+      // this.logger.info(environment);
     });
     this.uService.currentUser.subscribe(u => {
       this.currentUser = u;

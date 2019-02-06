@@ -20,10 +20,9 @@ import {
   MatSidenavModule,
   MatTabsModule,
   MatListModule,
-  MatCardModule,
-  MatSnackBarModule, MatDialogModule
+  MatCardModule, MatInputModule,
+  MatSnackBarModule, MatDialogModule, MatCheckboxModule
 } from '@angular/material';
-import {MatInputModule} from '@angular/material/input';
 import {NgxMapboxGLModule} from 'ngx-mapbox-gl';
 import {MapBoxComponent} from './components/map-box/map-box.component';
 import {FlexLayoutModule} from '@angular/flex-layout';
@@ -32,6 +31,9 @@ import {MainNavComponent} from './components/main-nav/main-nav.component';
 import { PageNotFoundComponent } from './components/page-not-found/page-not-found.component';
 import { AppRoutingModule } from './app-routing.module';
 import {UserOptionsDialogComponent} from './components/user-options-dialog/user-options-dialog.component';
+import { ServiceWorkerModule } from '@angular/service-worker';
+import {environment} from '../environments/environment.prod';
+import { DeleteUserDialogComponent } from './components/delete-user-dialog/delete-user-dialog.component';
 // import {registerLocaleData} from '@angular/common';
 // import localeRu from '@angular/common/locales/ru';
 // registerLocaleData(localeRu, 'ru-RU');
@@ -49,7 +51,8 @@ export const httpInterceptorProviders = [
     MapBoxComponent,
     MainNavComponent,
     PageNotFoundComponent,
-    UserOptionsDialogComponent
+    UserOptionsDialogComponent,
+    DeleteUserDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -65,6 +68,7 @@ export const httpInterceptorProviders = [
     MatToolbarModule,
     MatIconModule,
     MatInputModule,
+    MatCheckboxModule,
     MatFormFieldModule,
     MatButtonModule,
     MatCardModule,
@@ -83,9 +87,11 @@ export const httpInterceptorProviders = [
     MatListModule,
     MatSnackBarModule,
     AppRoutingModule
+    // ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production })
   ],
   entryComponents: [
-    UserOptionsDialogComponent
+    UserOptionsDialogComponent,
+    DeleteUserDialogComponent
   ],
   providers: [AuthGuard, httpInterceptorProviders],
   bootstrap: [AppComponent]

@@ -80,8 +80,9 @@ export class UserService {
     return this.http.post('rest/users/sign_up', user);
   }
 
-  delete(id: number) {
-    return this.http.delete('rest/users/' + id);
+  delete(user: User) {
+    return this.http.delete('rest/users/deleteUser?id=' + user.id
+      + '&token=' + user.registrationDate);
   }
 
   public getUsers(): Observable<User> {

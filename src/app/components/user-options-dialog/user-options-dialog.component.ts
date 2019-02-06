@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {MatDialogRef} from '@angular/material';
+import {MatDialog, MatDialogRef} from '@angular/material';
 import {UserService} from '../../_services/user.service';
 import {User} from '../../_model/User';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
@@ -7,6 +7,7 @@ import {NgxSpinnerService} from 'ngx-spinner';
 import {SnackBarService} from '../../_services/snack-bar.service';
 import {first} from 'rxjs/operators';
 import {Router} from '@angular/router';
+import {DeleteUserDialogComponent} from '../delete-user-dialog/delete-user-dialog.component';
 
 @Component({
   selector: 'app-user-options-dialog',
@@ -21,7 +22,8 @@ export class UserOptionsDialogComponent implements OnInit {
   submitted = false;
 
   constructor(
-    public dialogRef: MatDialogRef<UserOptionsDialogComponent>,
+    private dialogRef: MatDialogRef<UserOptionsDialogComponent>,
+    private dialog: MatDialog,
     private userService: UserService,
     private router: Router,
     private formBuilder: FormBuilder,
@@ -48,9 +50,25 @@ export class UserOptionsDialogComponent implements OnInit {
   onChangePass() {
     this.onCancel();
     this.router.navigate(['/preload/login',
-      {returnUrl: this.router.routerState.snapshot.url,
-      tab: '1'}]);
+      {
+        returnUrl: this.router.routerState.snapshot.url,
+        tab: '1'
+      }]);
   }
+
+  onDeleteAc() {
+    const dial = this.dialog.open(DeleteUserDialogComponent, {
+    });
+    this.onCancel();
+    dial.afterClosed().subscribe(result => {
+      if ( result ) {
+        this.onCancel();
+        this.userService.logout();
+        this.router.navigate(['/']);
+      }
+    });
+  }
+
   onCancel(): void {
     this.dialogRef.close();
   }
