@@ -16,7 +16,13 @@ export class RequestInterceptor implements HttpInterceptor {
   }
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-
+    // if (localStorage.getItem('aheadt')) {
+    //   request.clone({
+    //     setHeaders: {
+    //       'Authorization': localStorage.getItem('ahead').Authorization
+    //     }
+    //   });
+    // }
     return next.handle(request).pipe(tap((event: HttpEvent<any>) => {
     }, (err: any) => {
       if (err instanceof HttpErrorResponse && err.status === 401) {

@@ -1,39 +1,44 @@
-<h1 mat-dialog-title>Личные данные</h1>
 <div mat-dialog-content>
   <form [formGroup]="updateForm" class="form-group-size" (ngSubmit)="onSubmit()">
-    <!--Имя-->
-    <mat-form-field class="form-field-size">
-      <input matInput placeholder="Имя" formControlName="firstName" required>
-      <mat-error *ngIf="submitted && f.firstName.hasError('required')">
-        введите свое имя
-      </mat-error>
-    </mat-form-field>
-    <!--Фамилия-->
-    <mat-form-field class="form-field-size">
-      <input matInput placeholder="Фамилия" formControlName="lastName" required>
-      <mat-error *ngIf="submitted && f.lastName.hasError('required')">
-        введите свою фамилию
-      </mat-error>
-    </mat-form-field>
+    <fieldset>
+      <legend>Личные данные</legend>
+      <!--Имя-->
+      <mat-form-field class="form-field-size">
+        <input matInput placeholder="Имя" formControlName="firstName" required>
+        <mat-error *ngIf="submitted && f.firstName.hasError('required')">
+          введите свое имя
+        </mat-error>
+      </mat-form-field>
+      <!--Фамилия-->
+      <mat-form-field class="form-field-size">
+        <input matInput placeholder="Фамилия" formControlName="lastName">
+      </mat-form-field>
+    </fieldset>
 
-    <h1 mat-dialog-title>Контактные данные</h1>
-    <!--Электронный адрес-->
-    <mat-form-field class="form-field-size">
-      <input matInput placeholder="Электронный адрес" formControlName="login">
-    </mat-form-field>
-    <!--Номер телефона-->
-    <mat-form-field class="form-field-size">
-      <input matInput autocomplete="phone" placeholder="Телефон" formControlName="phoneNumber">
-      <mat-error *ngIf="(f.phoneNumber.hasError('pattern'))">
-        ввод некоректен
-      </mat-error>
-    </mat-form-field>
+    <fieldset>
+      <legend>Контактные данные</legend>
+      <!--Электронный адрес-->
+      <mat-form-field class="form-field-size">
+        <input matInput placeholder="Электронный адрес" formControlName="login">
+      </mat-form-field>
+      <!--Номер телефона-->
+      <mat-form-field class="form-field-size">
+        <input matInput autocomplete="phone" placeholder="Телефон" formControlName="phoneNumber">
+        <mat-error *ngIf="(f.phoneNumber.hasError('pattern'))">
+          ввод некоректен
+        </mat-error>
+      </mat-form-field>
+    </fieldset>
 
-    <h1 mat-dialog-title>Пароль</h1>
-    <a mat-button (click)="onChangePass()">Изменить пароль</a>
+    <fieldset>
+      <legend>Пароль</legend>
+      <a mat-button (click)="onChangePass()">Изменить пароль</a>
+    </fieldset>
 
-    <h1 mat-dialog-title>Удалить аккаунт</h1>
-    <a mat-button (click)="onDeleteAc()">Удалить аккаунт</a>
+    <fieldset>
+      <legend>Удалить аккаунт</legend>
+      <a mat-button (click)="onDeleteAc()">Удалить аккаунт</a>
+    </fieldset>
   </form>
 </div>
 <div mat-dialog-actions align="end">

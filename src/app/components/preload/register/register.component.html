@@ -7,7 +7,7 @@
         <!--электронный адрес-->
         <mat-form-field class="example-full-width">
           <input matInput placeholder="email" formControlName="login" required
-                 (change)="checkName($event.target.value)">
+                 (change)="checkUserName($event.target.value)">
           <mat-error *ngIf=" submitted && f.login.hasError('required')">
             введите email
           </mat-error>
@@ -57,10 +57,7 @@
 
         <!--family-->
         <mat-form-field class="example-full-width">
-          <input matInput placeholder="фамилия" formControlName="lastName" required>
-          <mat-error *ngIf="submitted && f.lastName.hasError('required')">
-            введите свою фамилию
-          </mat-error>
+          <input matInput placeholder="фамилия (необязательно)" formControlName="lastName">
         </mat-form-field>
 
         <div class="form-group">

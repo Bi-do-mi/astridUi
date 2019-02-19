@@ -13,12 +13,16 @@ export class UserService {
   private currentUser$ = new BehaviorSubject<User>(new User());
   currentUser = this.currentUser$.asObservable();
   private url: string;
+  private authHeader = new HttpHeaders();
 
   constructor(private http: HttpClient, private logger: NGXLogger) {
     if (localStorage.getItem('currentUser')) {
       this.updateCurrentUser(JSON.parse(localStorage.getItem('currentUser')));
       this.authenticated = true;
     }
+    // if (localStorage.getItem('ahead')) {
+    //   this.authHeader = JSON.parse(localStorage.getItem('ahead'));
+    // }
   }
 
   updateCurrentUser(user: User) {
@@ -26,10 +30,10 @@ export class UserService {
   }
 
   login(credentials, token) {
-    const headers = new HttpHeaders(credentials ? {
+    const ahead = new HttpHeaders(credentials ? {
       Authorization: 'Basic ' + btoa(credentials.login + ':' + credentials.password)
     } : {});
-    return this.http.get<any>('/rest/users/sign_in', {headers: headers})
+    return this.http.get<any>('/rest/users/sign_in', {headers: ahead})
       .pipe(map(user => {
         // this.logger.info('From UserService:\n', user);
         if (user) {
@@ -37,6 +41,7 @@ export class UserService {
           //   + (user.lastVisit as Date) + JSON.stringify(user));
           this.updateCurrentUser(user);
           localStorage.setItem('currentUser', JSON.stringify(user));
+          // localStorage.setItem('ahead', JSON.stringify(ahead));
           this.authenticated = true;
         }
         return;
@@ -57,9 +62,11 @@ export class UserService {
 
   logout() {
     // remove user from local storage to log user out
-    localStorage.removeItem('currentUser');
     this.http.get('logout', {}).pipe(finalize(() => {
+      localStorage.removeItem('currentUser');
+      // localStorage.removeItem('ahead');
       this.updateCurrentUser(new User());
+      this.authHeader = new HttpHeaders();
       this.authenticated = false;
     })).subscribe();
   }
@@ -81,8 +88,7 @@ export class UserService {
   }
 
   delete(user: User) {
-    return this.http.delete('rest/users/deleteUser?id=' + user.id
-      + '&token=' + user.registrationDate);
+    return this.http.delete('rest/users/deleteUser?id=' + user.id);
   }
 
   public getUsers(): Observable<User> {

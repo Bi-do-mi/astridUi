@@ -8,6 +8,7 @@ import {SnackBarService} from '../../_services/snack-bar.service';
 import {first} from 'rxjs/operators';
 import {Router} from '@angular/router';
 import {DeleteUserDialogComponent} from '../delete-user-dialog/delete-user-dialog.component';
+import {logger} from 'codelyzer/util/logger';
 
 @Component({
   selector: 'app-user-options-dialog',
@@ -76,6 +77,7 @@ export class UserOptionsDialogComponent implements OnInit {
   onSubmit() {
     this.submitted = true;
     if (this.updateForm.invalid) {
+      console.log('onSubmit error: updateForm invalid!');
       return;
     }
     this.loading = true;
@@ -94,7 +96,8 @@ export class UserOptionsDialogComponent implements OnInit {
           this.loading = false;
           this.spinner.hide();
           console.log(error);
-          this.snackBarService.error('Что-то пошло не так.');
+          this.dialogRef.close();
+          this.snackBarService.error('Что-то пошло не так.', 'OK');
         });
   }
 

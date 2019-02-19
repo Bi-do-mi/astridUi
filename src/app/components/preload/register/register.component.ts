@@ -78,7 +78,7 @@ export class RegisterComponent implements OnInit {
     return this.registerForm.controls;
   }
 
-  checkName(user_name: string) {
+  checkUserName(user_name: string) {
     // this.logger.info(this.registerForm.controls['login'].errors);
     this.userService.getByName(user_name)
       .pipe(first(), delay(1000))

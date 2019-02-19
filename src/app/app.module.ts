@@ -21,7 +21,7 @@ import {
   MatTabsModule,
   MatListModule,
   MatCardModule, MatInputModule,
-  MatSnackBarModule, MatDialogModule, MatCheckboxModule
+  MatSnackBarModule, MatDialogModule, MatCheckboxModule, MatTooltipModule
 } from '@angular/material';
 import {NgxMapboxGLModule} from 'ngx-mapbox-gl';
 import {MapBoxComponent} from './components/map-box/map-box.component';
@@ -34,6 +34,7 @@ import {UserOptionsDialogComponent} from './components/user-options-dialog/user-
 import { ServiceWorkerModule } from '@angular/service-worker';
 import {environment} from '../environments/environment.prod';
 import { DeleteUserDialogComponent } from './components/delete-user-dialog/delete-user-dialog.component';
+import { ParkDialogComponent } from './components/park-dialog/park-dialog.component';
 // import {registerLocaleData} from '@angular/common';
 // import localeRu from '@angular/common/locales/ru';
 // registerLocaleData(localeRu, 'ru-RU');
@@ -52,7 +53,8 @@ export const httpInterceptorProviders = [
     MainNavComponent,
     PageNotFoundComponent,
     UserOptionsDialogComponent,
-    DeleteUserDialogComponent
+    DeleteUserDialogComponent,
+    ParkDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -74,6 +76,7 @@ export const httpInterceptorProviders = [
     MatCardModule,
     MatTabsModule,
     MatSidenavModule,
+    MatTooltipModule,
     MatDialogModule,
     NgxMapboxGLModule.withConfig({
       // Optionnal, can also be set per map (accessToken input of mgl-map)
@@ -91,7 +94,8 @@ export const httpInterceptorProviders = [
   ],
   entryComponents: [
     UserOptionsDialogComponent,
-    DeleteUserDialogComponent
+    DeleteUserDialogComponent,
+    ParkDialogComponent
   ],
   providers: [AuthGuard, httpInterceptorProviders],
   bootstrap: [AppComponent]

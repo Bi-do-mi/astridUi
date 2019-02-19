@@ -54,6 +54,9 @@
       <!--</div>-->
       <div id="content_div" class="map-row" fxLayout="row" fxFlex="100">
         <ng-content></ng-content>
+        <button mat-raised-button="" (click)="openParkDialog()" class="overflow-button" matTooltip="добавить технику"
+                matTooltipPosition="above" *ngIf="url == '/'"
+                aria-label="Button that displays a tooltip in various positions">добавить технику</button>
       </div>
     </div>
   </mat-sidenav-content>

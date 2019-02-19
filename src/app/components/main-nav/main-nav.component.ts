@@ -10,6 +10,7 @@ import {NavigationEnd, Router, RouterStateSnapshot} from '@angular/router';
 import {SidenavService} from '../../_services/sidenav.service';
 import {UserOptionsDialogComponent} from '../user-options-dialog/user-options-dialog.component';
 import {environment} from 'src/environments/environment';
+import {ParkDialogComponent} from '../park-dialog/park-dialog.component';
 
 @Component({
   selector: 'app-main-nav',
@@ -70,6 +71,17 @@ export class MainNavComponent implements OnInit {
     dialogRef.afterClosed().subscribe(result => {
       // console.log('The dialog was closed');
     });
+  }
+
+  addUnit() {
+    if (!this.currentUser.basePoint) {
+      this.openParkDialog();
+    }
+  }
+
+  openParkDialog() {
+    this.sidenav.close();
+    const diaalogRef = this.dialog.open(ParkDialogComponent);
   }
 
 }

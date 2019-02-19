@@ -1,6 +1,11 @@
 import {Injectable} from '@angular/core';
 import * as mapboxgl from 'mapbox-gl';
 import {NGXLogger} from 'ngx-logger';
+import {Observable} from 'rxjs';
+import {HttpClient} from '@angular/common/http';
+import {Point} from 'mapbox-gl';
+
+declare var require: any;
 
 @Injectable({
   providedIn: 'root'
@@ -17,7 +22,8 @@ export class MapService {
   private _isFirstLoading: boolean;
 
 
-  constructor(private logger: NGXLogger) {
+  constructor(private logger: NGXLogger,
+              private http: HttpClient) {
     this.mapOps = {
       lng: 37.622504,
       lat: 55.753215,
@@ -54,4 +60,27 @@ export class MapService {
   get isFirstLoading(): boolean {
     return this._isFirstLoading;
   }
+
+  getMarkers(): Observable<any> {
+    return this.http.get<any>('rest/markers/all');
+  }
+
+  createMarker(point: Point) {
+    const wkt = 'POINT(' + point.x + ' ' + point.y + ')';
+    console.log(wkt);
+    this.http.get('https://geocoder.tilehosting.com/r/' + point.x + '/' + point.y + '.js?key=hg1h55E0Z3ft5je5zeKI')
+      .subscribe(stname => {
+        console.log(stname);
+      });
+    return this.http.put<any>('rest/geo/create-markers', wkt).subscribe(data => {
+      console.log(data);
+    }, error => {
+      console.log(error);
+      // throw error;
+    });
+  }
+
+  // removeMarker(marker: GeoJson) {
+  //   return this.http.delete('rest/markers/delete-marker?id=' + marker.properties.id);
+  // }
 }

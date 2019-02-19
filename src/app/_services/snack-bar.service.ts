@@ -12,17 +12,17 @@ export class SnackBarService {
   success(message: string,
           action?: string,
           dur?: number) {
-    const conf: MatSnackBarConfig =  {
+    const conf: MatSnackBarConfig = {
       duration: dur || 20000, verticalPosition: 'top',
       panelClass: ['snack-bar-info']
     };
     this.snackBar.open(message, action, conf);
   }
 
-  error(message: string,
-        action?: string,
-        dur?: number) {
-    const conf: MatSnackBarConfig =  {
+  public error(message: string,
+               action?: string,
+               dur?: number) {
+    const conf: MatSnackBarConfig = {
       duration: dur || 20000, verticalPosition: 'top',
       panelClass: ['snack-bar-error']
     };
