@@ -1,7 +1,0 @@
-{
-"version": 3,
-"mappings": "AAAA,YAAa;EACX,SAAS,EAAE,KAAK;;AAElB,gBAAiB;EACf,KAAK,EAAE,IAAI;;AAEb,gBAAiB;EACf,SAAS,EAAE,KAAK",
-"sources": ["park-dialog.component.scss"],
-"names": [],
-"file": "park-dialog.component.css"
-}

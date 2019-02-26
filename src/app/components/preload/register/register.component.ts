@@ -60,10 +60,8 @@ export class RegisterComponent implements OnInit {
         , Validators.maxLength(30)
         , Validators.pattern('^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[a-zA-Z\\d]{8,}$')]],
       repeat_password: [''],
-      firstName: ['', [Validators.minLength(1),
-      Validators.maxLength(60)]],
-      lastName: ['', [Validators.minLength(1),
-        Validators.maxLength(60)]]
+      name: ['', [Validators.minLength(1),
+      Validators.maxLength(60)]]
     }, {validators: this.checkPasswords});
     this.userService.logout();
   }
@@ -133,8 +131,7 @@ export class RegisterComponent implements OnInit {
   initUser() {
     this.newUser.username = this.registerForm.controls['login'].value;
     this.newUser.password = this.registerForm.controls['password'].value;
-    this.newUser.firstName = this.registerForm.controls['firstName'].value;
-    this.newUser.lastName = this.registerForm.controls['lastName'].value;
+    this.newUser.name = this.registerForm.controls['name'].value;
   }
 }
 

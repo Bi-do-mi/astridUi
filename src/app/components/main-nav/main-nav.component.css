@@ -534,7 +534,8 @@ input.mat-input-element {
 
 .cdk-global-scrollblock {
   position: fixed;
-  width: 100%; }
+  width: 100%;
+  overflow-y: scroll; }
 
 @keyframes cdk-text-field-autofill-start {
   /*!*/ }
@@ -2333,8 +2334,17 @@ textarea.cdk-textarea-autosize-measuring {
 .sidenav-container {
   height: 100%; }
 
-.sidenav {
-  width: 200px;
+.start-sidenav {
+  min-width: 300px;
+  max-width: 500px;
+  background-color: #fafafa; }
+
+.start-sidenav-phone {
+  width: 100%;
+  background-color: #fafafa; }
+
+.end-sidenav {
+  min-width: 200px;
   background-color: #fafafa; }
 
 .mat-toolbar.mat-primary {
@@ -2348,9 +2358,13 @@ textarea.cdk-textarea-autosize-measuring {
 .map-row {
   position: relative; }
 
-.overflow-button {
+.search-button {
   position: absolute;
   margin-top: 50px; }
+
+.park-button {
+  position: absolute;
+  margin-top: 90px; }
 
 .title {
   min-height: 100%; }

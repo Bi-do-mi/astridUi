@@ -16,17 +16,26 @@ export class UserService {
   private authHeader = new HttpHeaders();
 
   constructor(private http: HttpClient, private logger: NGXLogger) {
+    // console.log('UserService constructor triggered!');
     if (localStorage.getItem('currentUser')) {
-      this.updateCurrentUser(JSON.parse(localStorage.getItem('currentUser')));
-      this.authenticated = true;
+      try {
+        // console.log('UserService check-auth!');
+        this.http.post<any>('/rest/users/check-auth', null)
+          .pipe(map((u) => {
+            this.updateCurrentUser(u, true);
+            this.authenticated = true;
+          })).subscribe();
+      } catch (e) {
+        console.log(e.toString());
+      }
     }
-    // if (localStorage.getItem('ahead')) {
-    //   this.authHeader = JSON.parse(localStorage.getItem('ahead'));
-    // }
   }
 
-  updateCurrentUser(user: User) {
+  updateCurrentUser(user: User, updateUserInLocalStore: boolean) {
     this.currentUser$.next(user);
+    if (updateUserInLocalStore) {
+      localStorage.setItem('currentUser', JSON.stringify(user));
+    }
   }
 
   login(credentials, token) {
@@ -39,9 +48,7 @@ export class UserService {
         if (user) {
           // this.logger.info('getTimezoneOffset=' + new Date(user.lastVisit)
           //   + (user.lastVisit as Date) + JSON.stringify(user));
-          this.updateCurrentUser(user);
-          localStorage.setItem('currentUser', JSON.stringify(user));
-          // localStorage.setItem('ahead', JSON.stringify(ahead));
+          this.updateCurrentUser(user , true);
           this.authenticated = true;
         }
         return;
@@ -52,8 +59,7 @@ export class UserService {
     return this.http.put<any>('rest/users/update_user', user)
       .pipe(map(u => {
         if (u) {
-          this.updateCurrentUser(u);
-          localStorage.setItem('currentUser', JSON.stringify(u));
+          this.updateCurrentUser(u, true);
           this.authenticated = true;
         }
         return;
@@ -65,7 +71,7 @@ export class UserService {
     this.http.get('logout', {}).pipe(finalize(() => {
       localStorage.removeItem('currentUser');
       // localStorage.removeItem('ahead');
-      this.updateCurrentUser(new User());
+      this.updateCurrentUser(new User(), false);
       this.authHeader = new HttpHeaders();
       this.authenticated = false;
     })).subscribe();
@@ -92,7 +98,7 @@ export class UserService {
   }
 
   public getUsers(): Observable<User> {
-    const param = new HttpParams().set('firstName', 'Alla');
+    const param = new HttpParams().set('name', 'Alla');
     return this.http.get<User>('/rest/byName', {params: param});
   }
 

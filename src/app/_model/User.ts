@@ -3,10 +3,8 @@ import {BasePoint} from './BasePoint';
 
 export class User {
   id: number;
-  firstName: string;
-  lastName: string;
+  name: string;
   roles: Role[];
-  parkName: string;
   password: string;
   username: string;
   accountNonExpired = true;

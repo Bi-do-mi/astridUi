@@ -4,14 +4,10 @@
       <legend>Личные данные</legend>
       <!--Имя-->
       <mat-form-field class="form-field-size">
-        <input matInput placeholder="Имя" formControlName="firstName" required>
-        <mat-error *ngIf="submitted && f.firstName.hasError('required')">
+        <input matInput placeholder="Имя" formControlName="name" required>
+        <mat-error *ngIf="submitted && f.name.hasError('required')">
           введите свое имя
         </mat-error>
-      </mat-form-field>
-      <!--Фамилия-->
-      <mat-form-field class="form-field-size">
-        <input matInput placeholder="Фамилия" formControlName="lastName">
       </mat-form-field>
     </fieldset>
 

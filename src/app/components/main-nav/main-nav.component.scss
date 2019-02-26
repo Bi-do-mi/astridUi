@@ -5,9 +5,17 @@
 .sidenav-container {
   height: 100%;
 }
-
-.sidenav {
-  width: 200px;
+.start-sidenav {
+  min-width: 300px;
+  max-width: 400px;
+  background-color: #fafafa;
+}
+.start-sidenav-phone {
+  width: 100%;
+  background-color: #fafafa;
+}
+.end-sidenav {
+  min-width: 200px;
   background-color: #fafafa;
 }
 
@@ -25,9 +33,13 @@
   position: relative;
 }
 
-.overflow-button {
+.search-button {
   position: absolute;
   margin-top: 50px;
+}
+.park-button {
+  position: absolute;
+  margin-top: 90px;
 }
 
 .title {
@@ -45,4 +57,5 @@
   //background-image: url('https://material.angular.io/assets/img/examples/shiba1.jpg');
   //background-size: cover;
 }
+
 

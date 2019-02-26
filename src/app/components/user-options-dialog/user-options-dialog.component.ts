@@ -35,9 +35,7 @@ export class UserOptionsDialogComponent implements OnInit {
   ngOnInit() {
     this.userService.currentUser.subscribe(u => this.user = u);
     this.updateForm = this.formBuilder.group({
-      firstName: [this.user.firstName, [Validators.minLength(1),
-        Validators.maxLength(60)]],
-      lastName: [this.user.lastName, [Validators.minLength(1),
+      name: [this.user.name, [Validators.minLength(1),
         Validators.maxLength(60)]],
       login: [{value: this.user.username, disabled: true}],
       phoneNumber: [this.user.phoneNumber, Validators.pattern('^\\+?[\\d\\(\\)\\-]{10,15}\\d+$')]
@@ -102,8 +100,7 @@ export class UserOptionsDialogComponent implements OnInit {
   }
 
   updateUser() {
-    this.user.firstName = this.updateForm.controls['firstName'].value;
-    this.user.lastName = this.updateForm.controls['lastName'].value;
+    this.user.name = this.updateForm.controls['name'].value;
     this.user.phoneNumber = this.updateForm.controls['phoneNumber'].value;
   }
 }

@@ -1,12 +1,44 @@
-<mat-sidenav-container class="sidenav-container">
+<mat-sidenav-container class="sidenav-container" [hasBackdrop]="hasBackdrop">
+  <!--Левый сайд бар-->
+  <mat-sidenav #left_drawer mode="over" position="start" role="region"
+               [ngClass]="{'start-sidenav':!(isHandset$ | async),
+     'start-sidenav-phone':(isHandset$|async), 'mat-elevation-z4':true}"
+               [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'">
+    <!--тулбар левого сайдбара-->
+    <mat-toolbar color="accent" (click)="leftDrawer.toggle()">{{searchContent?'Поиск'
+      :parkContent?'Мой парк техники':''}}
+      <div fxFlex></div>
+      <mat-icon aria-label="Arrow back icon">arrow_back_ios</mat-icon>
+    </mat-toolbar>
+    <!--раздел парка техники-->
+    <div fxLayout="column" *ngIf="parkContent && uService.authenticated">
+      <mat-divider></mat-divider>
+      <div fxLayout="column" fxLayoutAlign="start center">
+        <img width="150px" height="150px"
+             src="../../assets/pics/park_init.jpg" alt="Photo of a machins"/>
+
+      </div>
+    </div>
+    <!--если не авторизован-->
+    <div *ngIf="parkContent && !uService.authenticated">
+      <p>Пожалуйста, авторизуйтесь или зарегистрируйтесь как новый пользователь.</p>
+      <div fxLayout="row" fxLayoutAlign="center start">
+        <button mat-raised-button="" tabindex="-1" (click)="sidenavService.close()"
+                routerLink="/preload/login" color="accent">Войти
+        </button>
+      </div>
+    </div>
+  </mat-sidenav>
+  <!--Правый сайд бар-->
   <mat-sidenav
-    #drawer
+    #right_drawer
     position="end"
-    class="sidenav mat-elevation-z4"
+    role="navigation"
+    class="end-sidenav mat-elevation-z4"
     fixedInViewport="true"
     [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'">
     <mat-toolbar color="primary"
-                 (click)="drawer.toggle()">{{currentUser?.username}}
+                 (click)="toggleMenu()">{{currentUser?.username}}
       <a routerLink="/preload/login" *ngIf="! currentUser.username">Войти</a>
     </mat-toolbar>
     <mat-nav-list>
@@ -15,36 +47,37 @@
       <a mat-list-item (click)="logout()">Выйти</a>
     </mat-nav-list>
   </mat-sidenav>
-  <mat-sidenav-content>
+  <mat-sidenav-content role="main">
     <div id="a-canvas" fxLayout="column">
       <div fxLayout="row">
-        <mat-toolbar color="primary" class="mat-elevation-z6"
-                     fxLayout="row">
-          <a [ngStyle]="{'text-decoration': 'none','color': 'white'}" href="" [routerLink]="['/']">Астрид</a>
+        <mat-toolbar color="primary" class="mat-elevation-z6" fxLayout="row">
+          <a tabindex="-1" [ngStyle]="{'text-decoration': 'none','color': 'white'}" href=""
+             [routerLink]="['/']">Астрид</a>
           <div fxFlex></div>
-          <a mat-button (click)="routingToLoginPage()" *ngIf="!currentUser.firstName && !(isHandset$ | async)
+          <a mat-button (click)="routingToLoginPage()" *ngIf="!currentUser.name && !(isHandset$ | async)
 && url !== '/preload/login' && url !== '/preload/register' && url !== '/preload/info'
 && url !== '/404'">Вход / Регистрация</a>
+          <!--кнопка входа для мобильных-->
           <button id="login_button"
-            type="button"
-            aria-label="Log in button"
-            mat-icon-button
-            (click)="routingToLoginPage()"
-            *ngIf="!currentUser.firstName && (isHandset$ | async) && url !== '/preload/login'
+                  type="button"
+                  aria-label="Log in button"
+                  mat-icon-button
+                  (click)="routingToLoginPage()"
+                  *ngIf="!currentUser.name && (isHandset$ | async) && url !== '/preload/login'
             && url !== '/preload/register' && url !== '/preload/info' && url !== '/404'">
             <mat-icon aria-label="Log in icon">exit_to_app</mat-icon>
           </button>
+          <!--аватар в кружке-->
           <div mat-card-avatar class="user-header-image" fxLayout="row" fxLayoutAlign="center center"
-               *ngIf="currentUser.firstName">
-            <span>{{currentUser?.firstName?.charAt(0) | uppercase}}</span>
+               *ngIf="currentUser.name">
+            <span>{{currentUser?.name?.charAt(0) | uppercase}}</span>
           </div>
+          <!--кнопка меню-->
           <button
-            type="button"
-            aria-label="Toggle sidenav"
-            mat-icon-button
-            (click)="drawer.toggle()"
-            *ngIf="currentUser.firstName">
-            <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
+            type="button" aria-label="Toggle end_sidenav"
+            mat-icon-button (click)="toggleMenu()" tabindex="-1"
+            *ngIf="currentUser.name">
+            <mat-icon aria-label="Side end nav toggle icon">menu</mat-icon>
           </button>
         </mat-toolbar>
       </div>
@@ -54,9 +87,20 @@
       <!--</div>-->
       <div id="content_div" class="map-row" fxLayout="row" fxFlex="100">
         <ng-content></ng-content>
-        <button mat-raised-button="" (click)="openParkDialog()" class="overflow-button" matTooltip="добавить технику"
-                matTooltipPosition="above" *ngIf="url == '/'"
-                aria-label="Button that displays a tooltip in various positions">добавить технику</button>
+        <!--кнопка поиска-->
+        <button
+          type="button" class="search-button" matTooltip="искать технику"
+          matTooltipPosition="above" *ngIf="url == '/'" aria-label="Toggle start_sidenav"
+          mat-icon-button (click)="toggleSearchBar()">
+          <mat-icon aria-label="Search nav toggle icon">search</mat-icon>
+        </button>
+        <!--кнопка технопарка-->
+        <button
+          type="button" class="park-button" matTooltip="мой технопарк"
+          matTooltipPosition="above" *ngIf="url == '/'" aria-label="Toggle start_sidenav"
+          mat-icon-button (click)="toggleParkBar()">
+          <mat-icon aria-label="Park nav toggle icon">local_shipping</mat-icon>
+        </button>
       </div>
     </div>
   </mat-sidenav-content>

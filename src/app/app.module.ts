@@ -34,7 +34,6 @@ import {UserOptionsDialogComponent} from './components/user-options-dialog/user-
 import { ServiceWorkerModule } from '@angular/service-worker';
 import {environment} from '../environments/environment.prod';
 import { DeleteUserDialogComponent } from './components/delete-user-dialog/delete-user-dialog.component';
-import { ParkDialogComponent } from './components/park-dialog/park-dialog.component';
 // import {registerLocaleData} from '@angular/common';
 // import localeRu from '@angular/common/locales/ru';
 // registerLocaleData(localeRu, 'ru-RU');
@@ -53,8 +52,7 @@ export const httpInterceptorProviders = [
     MainNavComponent,
     PageNotFoundComponent,
     UserOptionsDialogComponent,
-    DeleteUserDialogComponent,
-    ParkDialogComponent
+    DeleteUserDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -94,8 +92,7 @@ export const httpInterceptorProviders = [
   ],
   entryComponents: [
     UserOptionsDialogComponent,
-    DeleteUserDialogComponent,
-    ParkDialogComponent
+    DeleteUserDialogComponent
   ],
   providers: [AuthGuard, httpInterceptorProviders],
   bootstrap: [AppComponent]

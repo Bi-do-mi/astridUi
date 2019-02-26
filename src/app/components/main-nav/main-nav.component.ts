@@ -10,7 +10,6 @@ import {NavigationEnd, Router, RouterStateSnapshot} from '@angular/router';
 import {SidenavService} from '../../_services/sidenav.service';
 import {UserOptionsDialogComponent} from '../user-options-dialog/user-options-dialog.component';
 import {environment} from 'src/environments/environment';
-import {ParkDialogComponent} from '../park-dialog/park-dialog.component';
 
 @Component({
   selector: 'app-main-nav',
@@ -18,8 +17,13 @@ import {ParkDialogComponent} from '../park-dialog/park-dialog.component';
   styleUrls: ['./main-nav.component.scss']
 })
 export class MainNavComponent implements OnInit {
-  @ViewChild('drawer')
-  drawer: MatSidenav;
+  @ViewChild('left_drawer')
+  leftDrawer: MatSidenav;
+  @ViewChild('right_drawer')
+  rightDrawer: MatSidenav;
+  hasBackdrop: boolean;
+  searchContent: boolean;
+  parkContent: boolean;
   currentUser: User;
   isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset)
     .pipe(
@@ -29,7 +33,7 @@ export class MainNavComponent implements OnInit {
 
   constructor(private breakpointObserver: BreakpointObserver,
               private router: Router,
-              private sidenav: SidenavService,
+              private sidenavService: SidenavService,
               public uService: UserService,
               private logger: NGXLogger,
               private dialog: MatDialog) {
@@ -39,14 +43,15 @@ export class MainNavComponent implements OnInit {
     this.router.events.pipe(
       filter(a => a instanceof NavigationEnd)
     ).subscribe(_ => {
-      this.drawer.close();
+      this.rightDrawer.close();
       this.url = this.router.routerState.snapshot.url.split(/[;?]/)[0];
       // this.logger.info(environment);
     });
     this.uService.currentUser.subscribe(u => {
       this.currentUser = u;
     });
-    this.sidenav.sidenav = this.drawer;
+    this.sidenavService.right_sidenav = this.rightDrawer;
+    this.sidenavService.left_sidenav = this.leftDrawer;
   }
 
   routingToLoginPage() {
@@ -56,14 +61,14 @@ export class MainNavComponent implements OnInit {
 
   logout() {
     this.uService.logout();
-    this.sidenav.close();
+    this.sidenavService.close();
     if (this.router.routerState.snapshot.url === '/preload/user_options') {
       this.router.navigate(['']);
     }
   }
 
   openUserOptionsDialog(): void {
-    this.sidenav.close();
+    this.sidenavService.close();
     const dialogRef = this.dialog.open(UserOptionsDialogComponent, {
       minHeight: '250px'
     });
@@ -80,8 +85,29 @@ export class MainNavComponent implements OnInit {
   }
 
   openParkDialog() {
-    this.sidenav.close();
-    const diaalogRef = this.dialog.open(ParkDialogComponent);
+    this.sidenavService.close();
+    // const diaalogRef = this.dialog.open(ParkDialogComponent);
+  }
+
+  toggleMenu(hasBackdrop?: boolean) {
+    this.sidenavService.closeLeft();
+    this.hasBackdrop =  true;
+    this.rightDrawer.toggle();
+  }
+
+  toggleSearchBar(hasBackdrop?: boolean) {
+    this.searchContent = true;
+    this.parkContent = false;
+    this.sidenavService.closeRight();
+    this.hasBackdrop =  false;
+    this.leftDrawer.toggle();
+  }
+  toggleParkBar(hasBackdrop?: boolean) {
+    this.searchContent = false;
+    this.parkContent = true;
+    this.sidenavService.closeRight();
+    this.hasBackdrop =  false;
+    this.leftDrawer.toggle();
   }
 
 }

@@ -49,15 +49,10 @@
 
         <!--name-->
         <mat-form-field class="example-full-width">
-          <input matInput placeholder="имя" formControlName="firstName" required>
-          <mat-error *ngIf="submitted && f.firstName.hasError('required')">
+          <input matInput placeholder="имя" formControlName="name" required>
+          <mat-error *ngIf="submitted && f.name.hasError('required')">
             введите свое имя
           </mat-error>
-        </mat-form-field>
-
-        <!--family-->
-        <mat-form-field class="example-full-width">
-          <input matInput placeholder="фамилия (необязательно)" formControlName="lastName">
         </mat-form-field>
 
         <div class="form-group">
