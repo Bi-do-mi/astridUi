@@ -1,14 +1,15 @@
-import {Injectable} from '@angular/core';
+import {Injectable, OnDestroy} from '@angular/core';
 import {BehaviorSubject, Observable, of, Subject} from 'rxjs';
 import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import {User} from '../_model/User';
 import {NGXLogger} from 'ngx-logger';
 import {finalize, first, map} from 'rxjs/operators';
+import {untilDestroyed} from 'ngx-take-until-destroy';
 
 @Injectable({
   providedIn: 'root'
 })
-export class UserService {
+export class UserService implements OnDestroy {
   authenticated = false;
   private currentUser$ = new BehaviorSubject<User>(new User());
   currentUser = this.currentUser$.asObservable();
@@ -24,7 +25,7 @@ export class UserService {
           .pipe(map((u) => {
             this.updateCurrentUser(u, true);
             this.authenticated = true;
-          })).subscribe();
+          }), untilDestroyed(this)).subscribe();
       } catch (e) {
         console.log(e.toString());
       }
@@ -48,7 +49,7 @@ export class UserService {
         if (user) {
           // this.logger.info('getTimezoneOffset=' + new Date(user.lastVisit)
           //   + (user.lastVisit as Date) + JSON.stringify(user));
-          this.updateCurrentUser(user , true);
+          this.updateCurrentUser(user, true);
           this.authenticated = true;
         }
         return;
@@ -74,7 +75,7 @@ export class UserService {
       this.updateCurrentUser(new User(), false);
       this.authHeader = new HttpHeaders();
       this.authenticated = false;
-    })).subscribe();
+    }), untilDestroyed(this)).subscribe();
   }
 
   getAll() {
@@ -117,7 +118,8 @@ export class UserService {
       .pipe(map(data => {
           // this.logger.info('From UserService -change password:\n', data);
           if (data === 'true') {
-            this.login(credentials, token).pipe(first())
+            this.login(credentials, token).pipe(first(),
+              untilDestroyed(this))
               .subscribe(d => {
               });
           } else {
@@ -129,5 +131,8 @@ export class UserService {
           //   error.getMessage());
           throw error;
         }));
+  }
+
+  ngOnDestroy() {
   }
 }

@@ -1,4 +1,4 @@
-import {Component, OnChanges, OnInit, SimpleChanges} from '@angular/core';
+import {Component, OnChanges, OnDestroy, OnInit, SimpleChanges} from '@angular/core';
 import {
   AbstractControl,
   FormBuilder,
@@ -19,13 +19,14 @@ import {NGXLogger} from 'ngx-logger';
 import {SnackBarService} from '../../../_services/snack-bar.service';
 import {ErrorStateMatcher} from '@angular/material';
 import {MessageService} from '../../../_services/message.service';
+import {untilDestroyed} from 'ngx-take-until-destroy';
 
 @Component({
   selector: 'app-register',
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.scss']
 })
-export class RegisterComponent implements OnInit {
+export class RegisterComponent implements OnInit, OnDestroy {
 
   registerForm: FormGroup;
   loading = false;
@@ -61,9 +62,12 @@ export class RegisterComponent implements OnInit {
         , Validators.pattern('^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[a-zA-Z\\d]{8,}$')]],
       repeat_password: [''],
       name: ['', [Validators.minLength(1),
-      Validators.maxLength(60)]]
+        Validators.maxLength(60)]]
     }, {validators: this.checkPasswords});
     this.userService.logout();
+  }
+
+  ngOnDestroy() {
   }
 
   checkPasswords(group: FormGroup) { // here we have the 'passwords' group
@@ -79,7 +83,7 @@ export class RegisterComponent implements OnInit {
   checkUserName(user_name: string) {
     // this.logger.info(this.registerForm.controls['login'].errors);
     this.userService.getByName(user_name)
-      .pipe(first(), delay(1000))
+      .pipe(first(), delay(1000), untilDestroyed(this))
       .subscribe(data => {
           if (user_name === data) {
             this.registerForm.controls['login'].setErrors({occupied: true});
@@ -103,7 +107,7 @@ export class RegisterComponent implements OnInit {
     this.spinner.show();
     this.initUser();
     this.userService.register(this.newUser)
-      .pipe(first())
+      .pipe(first(), untilDestroyed(this))
       .subscribe(
         data => {
           this.loading = false;

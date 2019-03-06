@@ -18,6 +18,12 @@
              src="../../assets/pics/park_init.jpg" alt="Photo of a machins"/>
 
       </div>
+      <div fxLayout="row" fxLayoutAlign="center start">
+        <button mat-raised-button="" tabindex="-1" (click)="addUnit()"
+               color="accent">Добавить
+        </button>
+      </div>
+      <p>{{clickedPoint.x}}</p>
     </div>
     <!--если не авторизован-->
     <div *ngIf="parkContent && !uService.authenticated">

@@ -3,15 +3,11 @@ import {Routes, RouterModule} from '@angular/router';
 import {LoginComponent} from './login/login.component';
 import {RegisterComponent} from './register/register.component';
 import {InfoCardComponent} from './info-card/info-card.component';
-import {UserOptionsComponent} from './userOptions/user.options.component';
-import {NGXLogger} from 'ngx-logger';
-import {AuthGuard} from '../../_guards/auth.guard';
 
 const routes: Routes = [
   {path: 'login', component: LoginComponent},
   {path: 'register', component: RegisterComponent},
-  {path: 'info', component: InfoCardComponent},
-  {path: 'user_options', component: UserOptionsComponent, canActivate: [AuthGuard]}
+  {path: 'info', component: InfoCardComponent}
 ];
 
 @NgModule({

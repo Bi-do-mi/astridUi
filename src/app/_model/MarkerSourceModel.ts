@@ -7,13 +7,15 @@ export interface IGeoJson {
   type: string;
   geometry: IGeometry;
   properties?: any;
+  id?: number;
+  ounerId?: number;
 }
 
 export class GeoJson implements IGeoJson {
   type = 'Feature';
   geometry: IGeometry;
 
-  constructor(coordinates, public properties?) {
+  constructor(coordinates, public properties?, id?, ounerId?) {
     this.geometry = {
       type: 'Point',
       coordinates: coordinates

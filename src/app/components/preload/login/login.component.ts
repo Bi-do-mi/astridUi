@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {ActivatedRoute, NavigationStart, Router} from '@angular/router';
 import {filter, first} from 'rxjs/operators';
@@ -8,13 +8,14 @@ import {HttpErrorResponse} from '@angular/common/http';
 import {UserService} from '../../../_services/user.service';
 import {SnackBarService} from '../../../_services/snack-bar.service';
 import {MessageService} from '../../../_services/message.service';
+import {untilDestroyed} from 'ngx-take-until-destroy';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss']
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent implements OnInit, OnDestroy {
 
   loginForm: FormGroup;
   repairForm: FormGroup;
@@ -38,7 +39,8 @@ export class LoginComponent implements OnInit {
     private userService: UserService,
     private snackBarService: SnackBarService) {
     router.events.pipe(
-      filter(a => a instanceof NavigationStart)
+      filter(a => a instanceof NavigationStart),
+      untilDestroyed(this)
     ).subscribe(_ => this.snackBarService.close());
   }
 
@@ -65,6 +67,9 @@ export class LoginComponent implements OnInit {
     }
   }
 
+  ngOnDestroy() {
+  }
+
   get f() {
     return this.loginForm.controls;
   }
@@ -89,7 +94,7 @@ export class LoginComponent implements OnInit {
     }
     if (this.route.snapshot.queryParamMap.get('target') === 'new_password') {
       this.userService.changePassword(this.credentials, this.token)
-        .pipe(first())
+        .pipe(first(), untilDestroyed(this))
         .subscribe(
           data => {
             this.loading = false;
@@ -107,7 +112,7 @@ export class LoginComponent implements OnInit {
         );
     } else {
       this.userService.login(this.credentials, this.token)
-        .pipe(first())
+        .pipe(first(), untilDestroyed(this))
         .subscribe(
           data => {
             this.loading = false;
@@ -135,7 +140,7 @@ export class LoginComponent implements OnInit {
     this.loading = true;
     this.spinner.show();
     this.userService.setUserToken(this.r.login.value)
-      .pipe(first())
+      .pipe(first(), untilDestroyed(this))
       .subscribe(
         data => {
           if (data === 'set_user_token true') {
@@ -166,7 +171,7 @@ export class LoginComponent implements OnInit {
   enableUser(token: string) {
     this.spinner.show();
     this.userService.enableUser(token)
-      .pipe(first())
+      .pipe(first(), untilDestroyed(this))
       .subscribe(data => {
           if (data === 'true') {
             this.spinner.hide();

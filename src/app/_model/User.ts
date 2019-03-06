@@ -1,4 +1,5 @@
 import {Role} from './Role';
+import {Unit} from './Unit';
 import {BasePoint} from './BasePoint';
 
 export class User {
@@ -15,4 +16,5 @@ export class User {
   lastVisit: number;
   phoneNumber: string;
   basePoint: BasePoint;
+  units: Unit[];
 }

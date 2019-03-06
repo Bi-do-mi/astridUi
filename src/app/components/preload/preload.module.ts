@@ -22,7 +22,6 @@ import {LoggerModule, NgxLoggerLevel} from 'ngx-logger';
 import {FlexLayoutModule} from '@angular/flex-layout';
 import {LayoutModule} from '@angular/cdk/layout';
 import {InfoCardComponent} from './info-card/info-card.component';
-import {UserOptionsComponent} from './userOptions/user.options.component';
 
 @NgModule({
   imports: [
@@ -52,8 +51,7 @@ import {UserOptionsComponent} from './userOptions/user.options.component';
   declarations: [
     LoginComponent,
     RegisterComponent,
-    InfoCardComponent,
-    UserOptionsComponent
+    InfoCardComponent
   ]
 })
 export class PreloadModule { }

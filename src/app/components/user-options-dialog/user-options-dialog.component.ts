@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {MatDialog, MatDialogRef} from '@angular/material';
 import {UserService} from '../../_services/user.service';
 import {User} from '../../_model/User';
@@ -9,13 +9,15 @@ import {first} from 'rxjs/operators';
 import {Router} from '@angular/router';
 import {DeleteUserDialogComponent} from '../delete-user-dialog/delete-user-dialog.component';
 import {logger} from 'codelyzer/util/logger';
+import {untilDestroyed} from 'ngx-take-until-destroy';
+import {interval} from 'rxjs';
 
 @Component({
   selector: 'app-user-options-dialog',
   templateUrl: './user-options-dialog.component.html',
   styleUrls: ['./user-options-dialog.component.scss']
 })
-export class UserOptionsDialogComponent implements OnInit {
+export class UserOptionsDialogComponent implements OnInit, OnDestroy {
 
   user = new User();
   updateForm: FormGroup;
@@ -33,13 +35,17 @@ export class UserOptionsDialogComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.userService.currentUser.subscribe(u => this.user = u);
+     this.userService.currentUser.pipe(untilDestroyed(this))
+      .subscribe(u => this.user = u);
     this.updateForm = this.formBuilder.group({
       name: [this.user.name, [Validators.minLength(1),
         Validators.maxLength(60)]],
       login: [{value: this.user.username, disabled: true}],
       phoneNumber: [this.user.phoneNumber, Validators.pattern('^\\+?[\\d\\(\\)\\-]{10,15}\\d+$')]
     });
+  }
+
+  ngOnDestroy() {
   }
 
   get f() {
@@ -56,11 +62,10 @@ export class UserOptionsDialogComponent implements OnInit {
   }
 
   onDeleteAc() {
-    const dial = this.dialog.open(DeleteUserDialogComponent, {
-    });
+    const dial = this.dialog.open(DeleteUserDialogComponent, {});
     this.onCancel();
-    dial.afterClosed().subscribe(result => {
-      if ( result ) {
+    dial.afterClosed().pipe(untilDestroyed(this)).subscribe(result => {
+      if (result) {
         this.onCancel();
         this.userService.logout();
         this.router.navigate(['/']);
@@ -82,7 +87,7 @@ export class UserOptionsDialogComponent implements OnInit {
     this.spinner.show();
     this.updateUser();
     this.userService.updateUser(this.user)
-      .pipe(first())
+      .pipe(first(), untilDestroyed(this))
       .subscribe(u => {
           this.loading = false;
           this.spinner.hide();

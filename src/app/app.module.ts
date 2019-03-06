@@ -34,6 +34,7 @@ import {UserOptionsDialogComponent} from './components/user-options-dialog/user-
 import { ServiceWorkerModule } from '@angular/service-worker';
 import {environment} from '../environments/environment.prod';
 import { DeleteUserDialogComponent } from './components/delete-user-dialog/delete-user-dialog.component';
+import { UnitOptionsDialogComponent } from './components/unit-options-dialog/unit-options-dialog.component';
 // import {registerLocaleData} from '@angular/common';
 // import localeRu from '@angular/common/locales/ru';
 // registerLocaleData(localeRu, 'ru-RU');
@@ -52,7 +53,8 @@ export const httpInterceptorProviders = [
     MainNavComponent,
     PageNotFoundComponent,
     UserOptionsDialogComponent,
-    DeleteUserDialogComponent
+    DeleteUserDialogComponent,
+    UnitOptionsDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -92,6 +94,7 @@ export const httpInterceptorProviders = [
   ],
   entryComponents: [
     UserOptionsDialogComponent,
+    UnitOptionsDialogComponent,
     DeleteUserDialogComponent
   ],
   providers: [AuthGuard, httpInterceptorProviders],
