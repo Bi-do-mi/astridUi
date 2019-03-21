@@ -59,8 +59,8 @@ export class MapService implements OnInit, OnDestroy {
           // click listener
           this._map.on('click', (event) => {
             const p = new GeoJson([
-                +event.lngLat.lng.toPrecision(8),
-                +event.lngLat.lat.toPrecision(8)]);
+                +event.lngLat.lng.toFixed(6),
+                +event.lngLat.lat.toFixed(6)]);
             this.clickedPoint$.next(p);
           });
           this.navigatorCheck();

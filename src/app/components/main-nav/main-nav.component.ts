@@ -14,6 +14,7 @@ import {SnackBarService} from '../../_services/snack-bar.service';
 import {MapService} from '../../_services/map.service';
 import {untilDestroyed} from 'ngx-take-until-destroy';
 import {Point} from 'mapbox-gl';
+import {GeoJson} from '../../_model/MarkerSourceModel';
 
 @Component({
   selector: 'app-main-nav',
@@ -34,7 +35,7 @@ export class MainNavComponent implements OnInit, OnDestroy {
       map(result => result.matches)
     );
   url: string;
-  clickedPoint: Point = new Point(0, 0);
+  clickedPoint: GeoJson;
 
 
   constructor(private breakpointObserver: BreakpointObserver,
@@ -101,8 +102,9 @@ export class MainNavComponent implements OnInit, OnDestroy {
       this.mapService.map.getCanvas().style.cursor = '';
     }), untilDestroyed(this))
       .subscribe(point => {
-        console.log('clickedPoint mainnavcomponent: ' + point.x);
         this.clickedPoint = point;
+        console.log('clickedPoint mainnavcomponent: '
+          + this.clickedPoint.toString());
         this.currentUser.location = point;
         this.uService.dataWatch(this.currentUser)
           .pipe(first(), untilDestroyed(this)).subscribe(u => {

@@ -46,7 +46,7 @@ export class UserService implements OnDestroy {
     } : {});
     return this.http.get<any>('/rest/users/sign_in?token=' + token, {headers: ahead})
       .pipe(map(user => {
-        this.logger.info('From UserService:\n', user);
+        // this.logger.info('From UserService:\n', user);
         if (user) {
           // this.logger.info('getTimezoneOffset=' + new Date(user.lastVisit)
           //   + (user.lastVisit as Date) + JSON.stringify(user));

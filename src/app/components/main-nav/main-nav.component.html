@@ -23,7 +23,7 @@
                color="accent">Добавить
         </button>
       </div>
-      <p>{{clickedPoint.x}}</p>
+      <p *ngIf="clickedPoint">{{clickedPoint.geometry.coordinates[0]}}</p>
     </div>
     <!--если не авторизован-->
     <div *ngIf="parkContent && !uService.authenticated">
