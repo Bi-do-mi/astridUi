@@ -3,10 +3,11 @@ import * as mapboxgl from 'mapbox-gl';
 import {NGXLogger} from 'ngx-logger';
 import {BehaviorSubject, Observable, Subject} from 'rxjs';
 import {HttpClient} from '@angular/common/http';
-import {Marker, Point} from 'mapbox-gl';
 import {User} from '../_model/User';
 import {SnackBarService} from './snack-bar.service';
 import {untilDestroyed} from 'ngx-take-until-destroy';
+import {GeoJson} from '../_model/MarkerSourceModel';
+
 
 @Injectable({
   providedIn: 'root'
@@ -24,9 +25,8 @@ export class MapService implements OnInit, OnDestroy {
   private _isFirstLoading: boolean;
   private _mapTemplateId$ = new BehaviorSubject<string>('');
   currentMapId = this._mapTemplateId$.asObservable();
-  private clickedPoint$ = new Subject<Point>();
+  private clickedPoint$ = new Subject<GeoJson>();
   private _clickedPoint = this.clickedPoint$.asObservable();
-
 
   constructor(private logger: NGXLogger,
               private snackBarService: SnackBarService,
@@ -58,9 +58,10 @@ export class MapService implements OnInit, OnDestroy {
           this._map.addControl(new mapboxgl.FullscreenControl());
           // click listener
           this._map.on('click', (event) => {
-            this.clickedPoint$.next(new Point(
-              +event.lngLat.lng.toPrecision(8),
-              +event.lngLat.lat.toPrecision(8)));
+            const p = new GeoJson([
+                +event.lngLat.lng.toPrecision(8),
+                +event.lngLat.lat.toPrecision(8)]);
+            this.clickedPoint$.next(p);
           });
           this.navigatorCheck();
         }, 10);
@@ -190,7 +191,7 @@ export class MapService implements OnInit, OnDestroy {
   }
 
 
-  get clickedPoint(): Observable<mapboxgl.Point> {
+  get clickedPoint(): Observable<GeoJson> {
     return this._clickedPoint;
   }
 

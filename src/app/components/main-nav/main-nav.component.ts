@@ -12,8 +12,8 @@ import {UserOptionsDialogComponent} from '../user-options-dialog/user-options-di
 import {environment} from 'src/environments/environment';
 import {SnackBarService} from '../../_services/snack-bar.service';
 import {MapService} from '../../_services/map.service';
-import {Point} from 'mapbox-gl';
 import {untilDestroyed} from 'ngx-take-until-destroy';
+import {Point} from 'mapbox-gl';
 
 @Component({
   selector: 'app-main-nav',
@@ -35,6 +35,7 @@ export class MainNavComponent implements OnInit, OnDestroy {
     );
   url: string;
   clickedPoint: Point = new Point(0, 0);
+
 
   constructor(private breakpointObserver: BreakpointObserver,
               private router: Router,
@@ -89,7 +90,9 @@ export class MainNavComponent implements OnInit, OnDestroy {
   }
 
   addUnit() {
-    // this.sidenavService.close();
+    if (this.isHandset$) {
+      this.sidenavService.close();
+    }
     this.mapService.map.getCanvas().style.cursor = 'auto';
     this.snackBarService.success(
       'Укажите на карте местоположение добавляемой техники', null, 100000);
@@ -98,7 +101,13 @@ export class MainNavComponent implements OnInit, OnDestroy {
       this.mapService.map.getCanvas().style.cursor = '';
     }), untilDestroyed(this))
       .subscribe(point => {
+        console.log('clickedPoint mainnavcomponent: ' + point.x);
         this.clickedPoint = point;
+        this.currentUser.location = point;
+        this.uService.dataWatch(this.currentUser)
+          .pipe(first(), untilDestroyed(this)).subscribe(u => {
+          console.log(u);
+        });
       });
   }
 

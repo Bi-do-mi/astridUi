@@ -1,6 +1,5 @@
 import {Role} from './Role';
-import {Unit} from './Unit';
-import {BasePoint} from './BasePoint';
+import {GeoJson} from './MarkerSourceModel';
 
 export class User {
   id: number;
@@ -15,6 +14,5 @@ export class User {
   registrationDate: number;
   lastVisit: number;
   phoneNumber: string;
-  basePoint: BasePoint;
-  units: Unit[];
+  location: GeoJson;
 }

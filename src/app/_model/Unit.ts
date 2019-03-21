@@ -1,4 +1,5 @@
-import {BasePoint} from './BasePoint';
+import {Point} from 'mapbox-gl';
+
 
 export class Unit {
   id: number;
@@ -6,6 +7,6 @@ export class Unit {
   brand: string;
   model: string;
   subModel: string;
-  location: BasePoint;
+  location: Point;
   enabled: boolean;
 }

@@ -55,9 +55,8 @@ export class LoginComponent implements OnInit, OnDestroy {
     });
     this.userService.logout();
     this.returnUrl = this.route.snapshot.paramMap.get('returnUrl') || '/';
-    if (this.route.snapshot.queryParamMap.get('token') &&
-      this.route.snapshot.queryParamMap.get('target') === 'enable_user') {
-      this.enableUser(this.route.snapshot.queryParamMap.get('token'));
+    if (this.route.snapshot.queryParamMap.get('token')) {
+      this.token = this.route.snapshot.queryParamMap.get('token');
     }
     if (this.route.snapshot.queryParamMap.get('target') === 'new_password') {
       this.newPasswordShow = true;
@@ -89,9 +88,6 @@ export class LoginComponent implements OnInit, OnDestroy {
     this.credentials.login = this.f.login.value;
     this.credentials.password = this.f.password.value || this.f.newPassword.value;
     this.credentials.newPassword = this.f.newPassword.value;
-    if (this.route.snapshot.queryParamMap.get('token')) {
-      this.token = this.route.snapshot.queryParamMap.get('token');
-    }
     if (this.route.snapshot.queryParamMap.get('target') === 'new_password') {
       this.userService.changePassword(this.credentials, this.token)
         .pipe(first(), untilDestroyed(this))
@@ -111,24 +107,37 @@ export class LoginComponent implements OnInit, OnDestroy {
           }
         );
     } else {
-      this.userService.login(this.credentials, this.token)
-        .pipe(first(), untilDestroyed(this))
-        .subscribe(
-          data => {
-            this.loading = false;
-            this.spinner.hide();
-            // this.logger.info('from login/// returnURL=', this.returnUrl);
-            this.router.navigate([this.returnUrl]);
-          },
-          error => {
-            this.loading = false;
-            this.spinner.hide();
-            if (error instanceof HttpErrorResponse && error.status === 401) {
-              this.snackBarService.error('Неправильный логин или пароль.', 'OK');
-            }
-          }
-        );
+      if (this.token &&
+        this.route.snapshot.queryParamMap.get('target') === 'enable_user') {
+        this.enableUser(this.credentials, this.token);
+      } else {
+        this.login(this.credentials, this.token);
+      }
     }
+  }
+
+  login(credentials, token) {
+    this.userService.login(this.credentials, this.token)
+      .pipe(first(), untilDestroyed(this))
+      .subscribe(
+        data => {
+          this.loading = false;
+          this.spinner.hide();
+          console.log('from login: data - ' + data);
+          // this.logger.info('from login/// returnURL=', this.returnUrl);
+          this.router.navigate([this.returnUrl]);
+        },
+        error => {
+          this.loading = false;
+          this.spinner.hide();
+          if (error instanceof HttpErrorResponse && error.status === 401) {
+            this.snackBarService.error('Неправильный логин или пароль.', 'OK');
+          } else {
+            this.snackBarService.error(error.toString().replace('Error:', 'Ошибка: '),
+              'OK');
+          }
+        }
+      );
   }
 
   onRepair() {
@@ -168,13 +177,14 @@ export class LoginComponent implements OnInit, OnDestroy {
       );
   }
 
-  enableUser(token: string) {
-    this.spinner.show();
+  enableUser(credentials, token: string) {
+    // this.spinner.show();
     this.userService.enableUser(token)
       .pipe(first(), untilDestroyed(this))
       .subscribe(data => {
           if (data === 'true') {
-            this.spinner.hide();
+            this.login(credentials, token);
+            // this.spinner.hide();
           }
           if (data === 'not found') {
             this.newPasswordShow = false;

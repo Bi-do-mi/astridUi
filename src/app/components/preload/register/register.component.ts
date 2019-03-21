@@ -31,7 +31,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
   registerForm: FormGroup;
   loading = false;
   submitted = false;
-  newUser = new User();
+  userCredentials = {username: '', password: '', name: ''};
   hide = true;
   matcher = new MyErrorStateMatcher();
 
@@ -106,7 +106,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
     this.loading = true;
     this.spinner.show();
     this.initUser();
-    this.userService.register(this.newUser)
+    this.userService.register(this.userCredentials)
       .pipe(first(), untilDestroyed(this))
       .subscribe(
         data => {
@@ -124,7 +124,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
           this.loading = false;
           this.spinner.hide();
           if (error instanceof HttpErrorResponse && error.status === 409) {
-            this.snackBarService.error('Логин "' + this.newUser.username
+            this.snackBarService.error('Логин "' + this.userCredentials.username
               + '" занят. Выберите другой логин.');
           } else {
             this.logger.error(error);
@@ -133,9 +133,9 @@ export class RegisterComponent implements OnInit, OnDestroy {
   }
 
   initUser() {
-    this.newUser.username = this.registerForm.controls['login'].value;
-    this.newUser.password = this.registerForm.controls['password'].value;
-    this.newUser.name = this.registerForm.controls['name'].value;
+    this.userCredentials.username = this.registerForm.controls['login'].value;
+    this.userCredentials.password = this.registerForm.controls['password'].value;
+    this.userCredentials.name = this.registerForm.controls['name'].value;
   }
 }
 

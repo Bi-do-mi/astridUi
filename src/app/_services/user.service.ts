@@ -21,9 +21,10 @@ export class UserService implements OnDestroy {
     if (localStorage.getItem('currentUser')) {
       try {
         // console.log('UserService check-auth!');
-        this.http.post<any>('/rest/users/check-auth', null)
+        this.http.get<any>('/rest/users/check-auth')
           .pipe(map((u) => {
             this.updateCurrentUser(u, true);
+            console.log('incoming string User: ' + u);
             this.authenticated = true;
           }), untilDestroyed(this)).subscribe();
       } catch (e) {
@@ -32,7 +33,7 @@ export class UserService implements OnDestroy {
     }
   }
 
-  updateCurrentUser(user: User, updateUserInLocalStore: boolean) {
+  updateCurrentUser(user: User, updateUserInLocalStore?: boolean) {
     this.currentUser$.next(user);
     if (updateUserInLocalStore) {
       localStorage.setItem('currentUser', JSON.stringify(user));
@@ -43,9 +44,9 @@ export class UserService implements OnDestroy {
     const ahead = new HttpHeaders(credentials ? {
       Authorization: 'Basic ' + btoa(credentials.login + ':' + credentials.password)
     } : {});
-    return this.http.get<any>('/rest/users/sign_in', {headers: ahead})
+    return this.http.get<any>('/rest/users/sign_in?token=' + token, {headers: ahead})
       .pipe(map(user => {
-        // this.logger.info('From UserService:\n', user);
+        this.logger.info('From UserService:\n', user);
         if (user) {
           // this.logger.info('getTimezoneOffset=' + new Date(user.lastVisit)
           //   + (user.lastVisit as Date) + JSON.stringify(user));
@@ -65,6 +66,12 @@ export class UserService implements OnDestroy {
         }
         return;
       }));
+  }
+
+  dataWatch(user: User) {
+    const header = new HttpHeaders({'content-type': 'application/json'});
+    return this.http.put<any>('rest/users/data_watch', user, {headers: header})
+      .pipe();
   }
 
   logout() {
@@ -90,8 +97,9 @@ export class UserService implements OnDestroy {
     return this.http.get('rest/users/name_check?name=' + name, {'withCredentials': false, responseType: 'text'});
   }
 
-  register(user: User) {
-    return this.http.post('rest/users/sign_up', user);
+  register(userCredentials) {
+    userCredentials.password = btoa(userCredentials.password);
+    return this.http.post('rest/users/sign_up', userCredentials);
   }
 
   delete(user: User) {

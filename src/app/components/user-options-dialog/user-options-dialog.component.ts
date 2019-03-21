@@ -35,7 +35,7 @@ export class UserOptionsDialogComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-     this.userService.currentUser.pipe(untilDestroyed(this))
+    this.userService.currentUser.pipe(untilDestroyed(this))
       .subscribe(u => this.user = u);
     this.updateForm = this.formBuilder.group({
       name: [this.user.name, [Validators.minLength(1),
@@ -64,7 +64,7 @@ export class UserOptionsDialogComponent implements OnInit, OnDestroy {
   onDeleteAc() {
     const dial = this.dialog.open(DeleteUserDialogComponent, {});
     this.onCancel();
-    dial.afterClosed().pipe(untilDestroyed(this)).subscribe(result => {
+    dial.afterClosed().subscribe(result => {
       if (result) {
         this.onCancel();
         this.userService.logout();
