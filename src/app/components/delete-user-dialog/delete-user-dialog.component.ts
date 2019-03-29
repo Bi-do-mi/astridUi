@@ -25,7 +25,6 @@ export class DeleteUserDialogComponent implements OnInit, OnDestroy {
     private dialogRef: MatDialogRef<DeleteUserDialogComponent>,
     private userService: UserService,
     private snackBarService: SnackBarService,
-    private spinner: NgxSpinnerService,
     private router: Router
   ) {
   }
@@ -41,20 +40,17 @@ export class DeleteUserDialogComponent implements OnInit, OnDestroy {
   onSubmit() {
     this.submitted = true;
     this.loading = true;
-    this.spinner.show();
     this.userService.delete(this.user)
       .pipe(first(), untilDestroyed(this))
       .subscribe(u => {
           if (u === true) {
             // console.log(u);
             this.loading = false;
-            this.spinner.hide();
             this.dialogRef.close(true);
             this.snackBarService.success('Ваш аккаунт был удален.',
               'OK', 10000);
           } else {
             this.loading = false;
-            this.spinner.hide();
             this.dialogRef.close(false);
             this.snackBarService.error('Процесс удаления прерван.',
               'OK', 10000);
@@ -62,7 +58,6 @@ export class DeleteUserDialogComponent implements OnInit, OnDestroy {
         },
         error => {
           this.loading = false;
-          this.spinner.hide();
           console.log(error);
           this.snackBarService.error('Что-то пошло не так.');
         });

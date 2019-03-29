@@ -30,13 +30,14 @@ export class UserOptionsDialogComponent implements OnInit, OnDestroy {
     private userService: UserService,
     private router: Router,
     private formBuilder: FormBuilder,
-    private spinner: NgxSpinnerService,
     private snackBarService: SnackBarService) {
   }
 
   ngOnInit() {
     this.userService.currentUser.pipe(untilDestroyed(this))
-      .subscribe(u => this.user = u);
+      .subscribe(u => {
+        this.user = u;
+      });
     this.updateForm = this.formBuilder.group({
       name: [this.user.name, [Validators.minLength(1),
         Validators.maxLength(60)]],
@@ -84,20 +85,17 @@ export class UserOptionsDialogComponent implements OnInit, OnDestroy {
       return;
     }
     this.loading = true;
-    this.spinner.show();
     this.updateUser();
     this.userService.updateUser(this.user)
       .pipe(first(), untilDestroyed(this))
       .subscribe(u => {
           this.loading = false;
-          this.spinner.hide();
           this.dialogRef.close();
           this.snackBarService.success('Данные успешно сохранены.',
             'OK', 10000);
         },
         error => {
           this.loading = false;
-          this.spinner.hide();
           console.log(error);
           this.dialogRef.close();
           this.snackBarService.error('Что-то пошло не так.', 'OK');

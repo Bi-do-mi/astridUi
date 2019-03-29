@@ -1,4 +1,5 @@
 <mat-sidenav-container class="sidenav-container" [hasBackdrop]="hasBackdrop">
+
   <!--Левый сайд бар-->
   <mat-sidenav #left_drawer mode="over" position="start" role="region"
                [ngClass]="{'start-sidenav':!(isHandset$ | async),
@@ -12,18 +13,26 @@
     </mat-toolbar>
     <!--раздел парка техники-->
     <div fxLayout="column" *ngIf="parkContent && uService.authenticated">
-      <mat-divider></mat-divider>
       <div fxLayout="column" fxLayoutAlign="start center">
         <img width="150px" height="150px"
              src="../../assets/pics/park_init.jpg" alt="Photo of a machins"/>
-
+        <div fxLayout="row">
+          <h6>Местоположение:   </h6>
+          <p *ngIf="currentUser.location">{{currentUser.location}}</p>
+          <p *ngIf="!currentUser.location">не указано</p>
+          <button #editParkLocation
+            type="button" matTooltip="редактировать"
+            matTooltipPosition="above" aria-label="Toggle edit park location"
+            mat-icon-button (click)="setParkLocation()">
+            <mat-icon aria-label="Edit toggle icon">edit</mat-icon>
+          </button>
+        </div>
       </div>
       <div fxLayout="row" fxLayoutAlign="center start">
-        <button mat-raised-button="" tabindex="-1" (click)="addUnit()"
+        <button mat-raised-button="" tabindex="-1" (click)="setParkLocation()"
                color="accent">Добавить
         </button>
       </div>
-      <p *ngIf="clickedPoint">{{clickedPoint.geometry.coordinates[0]}}</p>
     </div>
     <!--если не авторизован-->
     <div *ngIf="parkContent && !uService.authenticated">
@@ -35,6 +44,7 @@
       </div>
     </div>
   </mat-sidenav>
+
   <!--Правый сайд бар-->
   <mat-sidenav
     #right_drawer
@@ -53,6 +63,8 @@
       <a mat-list-item (click)="logout()">Выйти</a>
     </mat-nav-list>
   </mat-sidenav>
+
+  <!--основной контент-->
   <mat-sidenav-content role="main">
     <div id="a-canvas" fxLayout="column">
       <div fxLayout="row">
@@ -105,7 +117,7 @@
           type="button" class="park-button" matTooltip="мой технопарк"
           matTooltipPosition="above" *ngIf="url == '/'" aria-label="Toggle start_sidenav"
           mat-icon-button (click)="toggleParkBar()">
-          <mat-icon aria-label="Park nav toggle icon">local_shipping</mat-icon>
+          <mat-icon aria-label="Park nav toggle icon">home</mat-icon>
         </button>
       </div>
     </div>

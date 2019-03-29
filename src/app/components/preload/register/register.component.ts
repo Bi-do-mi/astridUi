@@ -40,7 +40,6 @@ export class RegisterComponent implements OnInit, OnDestroy {
     private router: Router,
     private userService: UserService,
     private snackBarService: SnackBarService,
-    private spinner: NgxSpinnerService,
     private logger: NGXLogger,
     private messageService: MessageService) {
   }
@@ -104,14 +103,12 @@ export class RegisterComponent implements OnInit, OnDestroy {
       return;
     }
     this.loading = true;
-    this.spinner.show();
     this.initUser();
     this.userService.register(this.userCredentials)
       .pipe(first(), untilDestroyed(this))
       .subscribe(
         data => {
           this.loading = false;
-          this.spinner.hide();
           this.router.navigate(['/preload/login']);
           // this.snackBarService.success('Для завершения регистрации проверьте почту.',
           //   'OK', 100000);
@@ -122,7 +119,6 @@ export class RegisterComponent implements OnInit, OnDestroy {
         },
         error => {
           this.loading = false;
-          this.spinner.hide();
           if (error instanceof HttpErrorResponse && error.status === 409) {
             this.snackBarService.error('Логин "' + this.userCredentials.username
               + '" занят. Выберите другой логин.');

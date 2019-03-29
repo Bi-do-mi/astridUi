@@ -1,5 +1,6 @@
 import {Role} from './Role';
 import {GeoJson} from './MarkerSourceModel';
+import {ZonedDateTime} from 'js-joda';
 
 export class User {
   id: number;
@@ -11,8 +12,8 @@ export class User {
   accountNonLocked = true;
   credentialsNonExpired = true;
   enabled = true;
-  registrationDate: number;
-  lastVisit: number;
+  registrationDate: ZonedDateTime;
+  lastVisit: ZonedDateTime;
   phoneNumber: string;
   location: GeoJson;
 }

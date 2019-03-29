@@ -34,7 +34,6 @@ export class LoginComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private router: Router,
     private messageService: MessageService,
-    private spinner: NgxSpinnerService,
     private  logger: NGXLogger,
     private userService: UserService,
     private snackBarService: SnackBarService) {
@@ -84,7 +83,6 @@ export class LoginComponent implements OnInit, OnDestroy {
       return;
     }
     this.loading = true;
-    this.spinner.show();
     this.credentials.login = this.f.login.value;
     this.credentials.password = this.f.password.value || this.f.newPassword.value;
     this.credentials.newPassword = this.f.newPassword.value;
@@ -94,14 +92,12 @@ export class LoginComponent implements OnInit, OnDestroy {
         .subscribe(
           data => {
             this.loading = false;
-            this.spinner.hide();
             // this.logger.info('from login component change password');
             this.router.navigate([this.returnUrl]);
             this.snackBarService.success('Пароль был изменен', 'OK');
           },
           error => {
             this.loading = false;
-            this.spinner.hide();
             this.snackBarService.error(error.toString().replace('Error:', 'Ошибка: '),
               'OK');
           }
@@ -122,14 +118,10 @@ export class LoginComponent implements OnInit, OnDestroy {
       .subscribe(
         data => {
           this.loading = false;
-          this.spinner.hide();
-          console.log('from login: data - ' + data);
-          // this.logger.info('from login/// returnURL=', this.returnUrl);
           this.router.navigate([this.returnUrl]);
         },
         error => {
           this.loading = false;
-          this.spinner.hide();
           if (error instanceof HttpErrorResponse && error.status === 401) {
             this.snackBarService.error('Неправильный логин или пароль.', 'OK');
           } else {
@@ -147,14 +139,12 @@ export class LoginComponent implements OnInit, OnDestroy {
       return;
     }
     this.loading = true;
-    this.spinner.show();
     this.userService.setUserToken(this.r.login.value)
       .pipe(first(), untilDestroyed(this))
       .subscribe(
         data => {
           if (data === 'set_user_token true') {
             this.loading = false;
-            this.spinner.hide();
             this.changeTab();
             this.messageService.add(['Смена пароля', 'Для завершения' +
             ' процесса изменения пароля, пожалуйста, проверьте свой электронный ' +
@@ -163,13 +153,11 @@ export class LoginComponent implements OnInit, OnDestroy {
           }
           if (data === 'No value present') {
             this.loading = false;
-            this.spinner.hide();
             this.snackBarService.error('Этот логин не зарегистрирован.');
           }
         },
         error => {
           this.loading = false;
-          this.spinner.hide();
           if (error instanceof HttpErrorResponse && error.status === 401) {
             this.snackBarService.error('Этот логин не зарегистрирован.');
           }
@@ -188,13 +176,11 @@ export class LoginComponent implements OnInit, OnDestroy {
           }
           if (data === 'not found') {
             this.newPasswordShow = false;
-            this.spinner.hide();
             this.router.navigate(['/preload/login']);
             this.snackBarService.error('Эта ссылка больше неактивна');
           }
         },
         error => {
-          this.spinner.hide();
           this.logger.info(error);
         });
   }

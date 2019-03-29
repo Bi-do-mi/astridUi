@@ -14,4 +14,12 @@ html, body {
   min-height: 100%;
   position: absolute; }
 
+.marker {
+  border: none;
+  cursor: pointer;
+  height: 56px;
+  width: 56px;
+  background-image: url(assets/icons/marker.png);
+  background-color: rgba(0, 0, 0, 0); }
+
 /*# sourceMappingURL=styles.css.map */

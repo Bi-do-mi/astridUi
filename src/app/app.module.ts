@@ -21,20 +21,22 @@ import {
   MatTabsModule,
   MatListModule,
   MatCardModule, MatInputModule,
-  MatSnackBarModule, MatDialogModule, MatCheckboxModule, MatTooltipModule
+  MatSnackBarModule, MatDialogModule,
+  MatCheckboxModule, MatTooltipModule,
+  MatDividerModule
 } from '@angular/material';
 import {NgxMapboxGLModule} from 'ngx-mapbox-gl';
 import {MapBoxComponent} from './components/map-box/map-box.component';
 import {FlexLayoutModule} from '@angular/flex-layout';
 import {LayoutModule} from '@angular/cdk/layout';
 import {MainNavComponent} from './components/main-nav/main-nav.component';
-import { PageNotFoundComponent } from './components/page-not-found/page-not-found.component';
-import { AppRoutingModule } from './app-routing.module';
+import {PageNotFoundComponent} from './components/page-not-found/page-not-found.component';
+import {AppRoutingModule} from './app-routing.module';
 import {UserOptionsDialogComponent} from './components/user-options-dialog/user-options-dialog.component';
-import { ServiceWorkerModule } from '@angular/service-worker';
+import {ServiceWorkerModule} from '@angular/service-worker';
 import {environment} from '../environments/environment.prod';
-import { DeleteUserDialogComponent } from './components/delete-user-dialog/delete-user-dialog.component';
-import { UnitOptionsDialogComponent } from './components/unit-options-dialog/unit-options-dialog.component';
+import {DeleteUserDialogComponent} from './components/delete-user-dialog/delete-user-dialog.component';
+import {UnitOptionsDialogComponent} from './components/unit-options-dialog/unit-options-dialog.component';
 // import {registerLocaleData} from '@angular/common';
 // import localeRu from '@angular/common/locales/ru';
 // registerLocaleData(localeRu, 'ru-RU');
@@ -76,12 +78,14 @@ export const httpInterceptorProviders = [
     MatCardModule,
     MatTabsModule,
     MatSidenavModule,
+    MatDividerModule,
     MatTooltipModule,
     MatDialogModule,
     NgxMapboxGLModule.withConfig({
       // Optionnal, can also be set per map (accessToken input of mgl-map)
       // accessToken: 'pk.eyJ1IjoiYmlkb21pIiwiYSI6ImNqbWt6dm05aTAydjQza3BianJwajV5ZmkifQ.46hioGSUTzMOdWqTFHwnDQ'
-      accessToken: 'VRgdrAzvUsWnu6iigRja'
+      accessToken: environment.mapbox.accessToken,
+      geocoderAccessToken: environment.mapbox.geocoderAccessToken
       // Optionnal, specify if different from the map access token, can also be set per mgl-geocoder (accessToken input of mgl-geocoder)
       // , geocoderAccessToken: 'TOKEN'
     }),

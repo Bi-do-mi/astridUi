@@ -1,19 +1,17 @@
-import {Component, OnChanges, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {BreakpointObserver, Breakpoints, BreakpointState} from '@angular/cdk/layout';
-import {from, Observable} from 'rxjs';
+import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {BreakpointObserver, Breakpoints} from '@angular/cdk/layout';
+import {Observable} from 'rxjs';
 import {filter, finalize, first, map} from 'rxjs/operators';
 import {User} from '../../_model/User';
 import {UserService} from '../../_services/user.service';
 import {NGXLogger} from 'ngx-logger';
 import {MatDialog, MatSidenav} from '@angular/material';
-import {NavigationEnd, Router, RouterStateSnapshot} from '@angular/router';
+import {NavigationEnd, Router} from '@angular/router';
 import {SidenavService} from '../../_services/sidenav.service';
 import {UserOptionsDialogComponent} from '../user-options-dialog/user-options-dialog.component';
-import {environment} from 'src/environments/environment';
 import {SnackBarService} from '../../_services/snack-bar.service';
 import {MapService} from '../../_services/map.service';
 import {untilDestroyed} from 'ngx-take-until-destroy';
-import {Point} from 'mapbox-gl';
 import {GeoJson} from '../../_model/MarkerSourceModel';
 
 @Component({
@@ -30,18 +28,15 @@ export class MainNavComponent implements OnInit, OnDestroy {
   searchContent: boolean;
   parkContent: boolean;
   currentUser: User;
-  isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset)
-    .pipe(
-      map(result => result.matches)
-    );
+  isHandset$: Observable<boolean> = this.breakpointObserver.observe(
+    Breakpoints.Handset).pipe(map(result => result.matches));
   url: string;
-  clickedPoint: GeoJson;
 
 
   constructor(private breakpointObserver: BreakpointObserver,
               private router: Router,
               private sidenavService: SidenavService,
-              public uService: UserService,
+              private uService: UserService,
               private logger: NGXLogger,
               private mapService: MapService,
               private snackBarService: SnackBarService,
@@ -90,29 +85,27 @@ export class MainNavComponent implements OnInit, OnDestroy {
     // });
   }
 
-  addUnit() {
+  setParkLocation() {
     if (this.isHandset$) {
       this.sidenavService.close();
     }
     this.mapService.map.getCanvas().style.cursor = 'auto';
     this.snackBarService.success(
-      'Укажите на карте местоположение добавляемой техники', null, 100000);
+      'Укажите на карте местоположение парка техники', null, 100000);
     this.mapService.clickedPoint.pipe(first(), finalize(() => {
       this.snackBarService.close();
       this.mapService.map.getCanvas().style.cursor = '';
+      this.sidenavService.openLeft();
     }), untilDestroyed(this))
       .subscribe(point => {
-        this.clickedPoint = point;
-        console.log('clickedPoint mainnavcomponent: '
-          + this.clickedPoint.toString());
         this.currentUser.location = point;
-        this.uService.dataWatch(this.currentUser)
+        this.uService.updateUser(this.currentUser)
           .pipe(first(), untilDestroyed(this)).subscribe(u => {
-          console.log(u);
-        });
+        }, error1 => {});
       });
   }
 
+  // todo not forget to clear this
   openParkDialog() {
     this.sidenavService.close();
   }
