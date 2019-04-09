@@ -1793,6 +1793,9 @@ th.mat-header-cell, td.mat-cell, td.mat-footer-cell {
   background-size: 2em 2em;
   background-color: #212121; }
 
+.panel-for-unitslist {
+  width: auto !important; }
+
 .mat-badge-content {
   font-weight: 600;
   font-size: 12px;
@@ -2336,7 +2339,7 @@ textarea.cdk-textarea-autosize-measuring {
 
 .start-sidenav {
   min-width: 300px;
-  max-width: 500px;
+  max-width: 400px;
   background-color: #fafafa; }
 
 .start-sidenav-phone {

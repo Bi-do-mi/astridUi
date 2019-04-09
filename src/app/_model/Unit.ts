@@ -1,5 +1,4 @@
-import {Point} from 'mapbox-gl';
-
+import {GeoJson} from './MarkerSourceModel';
 
 export class Unit {
   id: number;
@@ -7,6 +6,6 @@ export class Unit {
   brand: string;
   model: string;
   subModel: string;
-  location: Point;
+  location: GeoJson;
   enabled: boolean;
 }

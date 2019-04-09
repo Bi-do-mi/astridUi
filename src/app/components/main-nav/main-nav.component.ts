@@ -13,6 +13,7 @@ import {SnackBarService} from '../../_services/snack-bar.service';
 import {MapService} from '../../_services/map.service';
 import {untilDestroyed} from 'ngx-take-until-destroy';
 import {GeoJson} from '../../_model/MarkerSourceModel';
+import {ParkService} from '../../_services/park.service';
 
 @Component({
   selector: 'app-main-nav',
@@ -38,7 +39,8 @@ export class MainNavComponent implements OnInit, OnDestroy {
               private sidenavService: SidenavService,
               private uService: UserService,
               private logger: NGXLogger,
-              private mapService: MapService,
+              public mapService: MapService,
+              private parkService: ParkService,
               private snackBarService: SnackBarService,
               private dialog: MatDialog) {
   }
@@ -68,14 +70,20 @@ export class MainNavComponent implements OnInit, OnDestroy {
 
   logout() {
     this.uService.logout();
-    this.sidenavService.close();
+    this.sidenavService.closeAll();
     if (this.router.routerState.snapshot.url === '/preload/user_options') {
       this.router.navigate(['']);
     }
   }
 
+  routingToAdminConsole() {
+    this.sidenavService.closeAll();
+    this.router.navigate(['/app-admin-units-collection',
+      {returnUrl: this.router.routerState.snapshot.url}]);
+  }
+
   openUserOptionsDialog(): void {
-    this.sidenavService.close();
+    this.sidenavService.closeAll();
     const dialogRef = this.dialog.open(UserOptionsDialogComponent, {
       minHeight: '250px'
     });
@@ -87,7 +95,7 @@ export class MainNavComponent implements OnInit, OnDestroy {
 
   setParkLocation() {
     if (this.isHandset$) {
-      this.sidenavService.close();
+      this.sidenavService.closeAll();
     }
     this.mapService.map.getCanvas().style.cursor = 'auto';
     this.snackBarService.success(
@@ -98,16 +106,18 @@ export class MainNavComponent implements OnInit, OnDestroy {
       this.sidenavService.openLeft();
     }), untilDestroyed(this))
       .subscribe(point => {
+        this.mapService.flyTo(point);
         this.currentUser.location = point;
         this.uService.updateUser(this.currentUser)
           .pipe(first(), untilDestroyed(this)).subscribe(u => {
-        }, error1 => {});
+        }, error1 => {
+        });
       });
   }
 
   // todo not forget to clear this
   openParkDialog() {
-    this.sidenavService.close();
+    this.sidenavService.closeAll();
   }
 
   toggleMenu(hasBackdrop?: boolean) {

@@ -43,7 +43,7 @@ export class SidenavService {
     this._left_sidenav.close();
   }
 
-  public close() {
+  public closeAll() {
     this._right_sidenav.close();
     this._left_sidenav.close();
   }

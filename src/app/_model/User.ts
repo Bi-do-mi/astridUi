@@ -1,6 +1,7 @@
 import {Role} from './Role';
 import {GeoJson} from './MarkerSourceModel';
 import {ZonedDateTime} from 'js-joda';
+import {Unit} from './Unit';
 
 export class User {
   id: number;
@@ -16,4 +17,5 @@ export class User {
   lastVisit: ZonedDateTime;
   phoneNumber: string;
   location: GeoJson;
+  units: Unit;
 }

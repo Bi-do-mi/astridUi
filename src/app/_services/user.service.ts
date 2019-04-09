@@ -16,6 +16,7 @@ export class UserService implements OnDestroy {
   currentUser = this.currentUser$.asObservable();
   private url: string;
   private authHeader = new HttpHeaders();
+  public admin: boolean;
 
   constructor(private http: HttpClient,
               private spinner: NgxSpinnerService,
@@ -28,6 +29,7 @@ export class UserService implements OnDestroy {
             this.updateCurrentUser(u, true);
             // console.log('incoming string User: ' + u);
             this.authenticated = true;
+            this.checkAdmin();
           }), untilDestroyed(this)).subscribe();
       } catch (e) {
         console.log(e.toString());
@@ -63,6 +65,7 @@ export class UserService implements OnDestroy {
           //   + (user.lastVisit as Date) + JSON.stringify(user));
           this.updateCurrentUser(user, true);
           this.authenticated = true;
+          this.checkAdmin();
         }
         return;
       }));
@@ -212,6 +215,13 @@ export class UserService implements OnDestroy {
           //   error.getMessage());
           throw error;
         }));
+  }
+
+  checkAdmin() {
+    this.http.get('/rest/users/check_admin').subscribe((b: boolean) => {
+      // console.log('checkAdmin: ' + b);
+      this.admin = b;
+    });
   }
 
   ngOnDestroy() {

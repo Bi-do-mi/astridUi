@@ -15,17 +15,18 @@
     <div fxLayout="column" *ngIf="parkContent && uService.authenticated">
       <div fxLayout="column" fxLayoutAlign="start center">
         <img width="150px" height="150px"
-             src="../../assets/pics/park_init.jpg" alt="Photo of a machins"/>
-        <div fxLayout="row">
-          <h6>Местоположение:   </h6>
-          <p *ngIf="currentUser.location">{{currentUser.location}}</p>
-          <p *ngIf="!currentUser.location">не указано</p>
-          <button #editParkLocation
-            type="button" matTooltip="редактировать"
+             src="assets/pics/park_init.jpg" alt="Photo of a machins"/>
+        <div fxLayout="row" fxLayoutAlign="start">
+         <button #editParkLocation
+            type="button" matTooltip="редактировать" tabindex="-1"
             matTooltipPosition="above" aria-label="Toggle edit park location"
             mat-icon-button (click)="setParkLocation()">
-            <mat-icon aria-label="Edit toggle icon">edit</mat-icon>
+            <mat-icon aria-label="Edit toggle icon">my_location</mat-icon>
           </button>
+          <span fxLayout="column" fxLayoutAlign="center stretch" *ngIf="currentUser.location">
+            {{mapService.userGeoCode?.results[0]?.name}}</span>
+          <span fxLayout="column" fxLayoutAlign="center stretch" *ngIf="!currentUser.location">
+            не указано</span>
         </div>
       </div>
       <div fxLayout="row" fxLayoutAlign="center start">
@@ -58,7 +59,7 @@
       <a routerLink="/preload/login" *ngIf="! currentUser.username">Войти</a>
     </mat-toolbar>
     <mat-nav-list>
-      <a mat-list-item href="#">Link 1</a>
+      <a mat-list-item (click)="routingToAdminConsole()">Консоль Администратора</a>
       <a mat-list-item (click)="openUserOptionsDialog()">Настройки аккаунта</a>
       <a mat-list-item (click)="logout()">Выйти</a>
     </mat-nav-list>

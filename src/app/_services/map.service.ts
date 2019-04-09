@@ -7,8 +7,10 @@ import {HttpClient} from '@angular/common/http';
 import {User} from '../_model/User';
 import {SnackBarService} from './snack-bar.service';
 import {untilDestroyed} from 'ngx-take-until-destroy';
-import {FeatureCollection, GeoJson} from '../_model/MarkerSourceModel';
+import {GeoJson} from '../_model/MarkerSourceModel';
 import {UserService} from './user.service';
+import {first} from 'rxjs/operators';
+import {GeoCode} from '../_model/GeoCode';
 
 
 @Injectable({
@@ -32,6 +34,7 @@ export class MapService implements OnInit, OnDestroy {
   private _clickedPoint = this.clickedPoint$.asObservable();
   currentUser: User;
   private userMarker: Marker;
+  userGeoCode: GeoCode;
 
 
   constructor(private logger: NGXLogger,
@@ -89,47 +92,33 @@ export class MapService implements OnInit, OnDestroy {
           // load listener
           this.map.on('load', (event) => {
 
-            this.map.addSource('firebase', {
-              type: 'geojson',
-              data: {
-                type: 'FeatureCollection',
-                features: []
-              }
-            });
-
             this.userService.currentUser.pipe(untilDestroyed(this))
               .subscribe(user => {
                 this.currentUser = user;
                 try {
                   if (user.location) {
-                    // console.log('User Marker: ' + user.location.geometry.coordinates);
                     if (this.userMarker) {
                       this.userMarker.remove();
                     }
+                    const popup = new mapboxgl.Popup({offset: 50});
                     const el = document.createElement('div');
                     el.className = 'marker';
-                    this.userMarker = new Marker(el, {offset: [0, -23]});
+                    this.userMarker = new Marker(el, {offset: [0, -20]});
                     this.userMarker.setLngLat([
                       this.currentUser.location.geometry.coordinates[0],
-                      this.currentUser.location.geometry.coordinates[1]]).addTo(this.map);
+                      this.currentUser.location.geometry.coordinates[1]])
+                      .setPopup(popup.setText(String(this.userMarker.getLngLat().lng)
+                        + ', ' + this.userMarker.getLngLat().lat))
+                      .addTo(this.map);
+                    this.getGeocodeByPoint(this.currentUser.location).pipe(first(),
+                      untilDestroyed(this)).subscribe((geoCode: GeoCode) => {
+                      this.userGeoCode = geoCode;
+                    });
                   }
                 } catch (e) {
                   console.log(e);
                 }
               });
-
-            // // subscribe to realtime database and set data source
-            // this.features.subscribe((markers: FeatureCollection) => {
-            // markers.features.forEach(marker => {
-            //   const el = document.createElement('div');
-            //   el.className = 'marker';
-            //   const m = new mapboxgl.Marker(el, {offset: [0, -23]});
-            //   m.setLngLat([marker.geometry.coordinates[0],
-            //     marker.geometry.coordinates[1]]).addTo(this.map);
-            //   this.markers.push(m);
-            // });
-            // });
-
           });
           this.navigatorCheck();
         }, 10);
@@ -158,24 +147,6 @@ export class MapService implements OnInit, OnDestroy {
     this._mapOps.lat = this._map.getCenter().lat;
     this._mapOps.zoom = this._map.getZoom();
   }
-
-  // getPoint() {
-  //   let point: Point;
-  //   this.map.once('click', (event) => {
-  //     point = new Point(event.lngLat.lng.toPrecision(8),
-  //       event.lngLat.lat.toPrecision(8));
-  //   });
-  //   this.clickedPoint$.next(point);
-  // }
-
-  // //// Add Marker on Click
-  // this.map.on('click', (event) => {
-  //   const coordinates = [event.lngLat.lng, event.lngLat.lat];
-  //   const newMarker = new GeoJson(coordinates);
-  //   const point = new mapboxgl.Point(event.lngLat.lng, event.lngLat.lat);
-  //   this.mapService.createMarker(point);
-  // });
-
 
   get map(): mapboxgl.Map {
     return this._map;
@@ -217,40 +188,41 @@ export class MapService implements OnInit, OnDestroy {
     return this._clickedPoint;
   }
 
-  // getGeocodeByPoint(point: GeoJson) {
-  //   this.http.get('https://geocoder.tilehosting.com/r/'
-  //     + point.geometry.coordinates[0] + '/' + point.geometry.coordinates[1]
-  //     + '.js?key=hg1h55E0Z3ft5je5zeKI')
-  //     .pipe(untilDestroyed(this)).subscribe(stname => {
-  //     const sList = JSON.stringify(stname);
-  //     console.log(sList);
-  //   });
-  // }
+  getGeocodeByPoint(point: GeoJson): Observable<any> {
+    return this.http.get('https://geocoder.tilehosting.com/r/'
+      + point.geometry.coordinates[0] + '/' + point.geometry.coordinates[1]
+      + '.js?key=hg1h55E0Z3ft5je5zeKI');
+  }
 
   getMarkers(): Observable<any> {
     return this.http.get<any>('rest/users/all');
   }
 
-  //
-  // createMarker(point: Point) {
-  //   const wkt = 'POINT(' + point.x + ' ' + point.y + ')';
-  //   console.log(wkt);
-  //   this.http.get('https://geocoder.tilehosting.com/r/' + point.x + '/' + point.y + '.js?key=hg1h55E0Z3ft5je5zeKI')
-  //     .pipe(untilDestroyed(this)).subscribe(stname => {
-  //       console.log(stname);
-  //     });
-  //   return this.http.put<any>('rest/geo/create-features', wkt)
-  // .pipe(untilDestroyed(this)).subscribe(data => {
-  //     console.log(data);
-  //   }, error => {
-  //     console.log(error);
-  //     // throw error;
-  //   });
-  // }
+  flyTo(data: GeoJson) {
+    this.map.flyTo({
+      center: [data.geometry.coordinates[0], data.geometry.coordinates[1]],
+      zoom: 9
+    });
+  }
 
-  // removeMarker(marker: GeoJson) {
-  //   return this.http.delete('rest/features/delete-marker?id=' + marker.properties.id);
-  // }
+//   addPopup(marker: Marker) {
+//     const coordinates = marker.getLngLat().toArray().slice();
+//
+// // Ensure that if the map is zoomed out such that multiple
+// // copies of the feature are visible, the popup appears
+// // over the copy being pointed to.
+//     while (Math.abs(marker.getLngLat().lng - coordinates[0]) > 180) {
+//       coordinates[0] += marker.getLngLat().lng > coordinates[0] ? 360 : -360;
+//     }
+//
+//     new mapboxgl.Popup()
+//       .setLngLat(coordinates)
+//       .setHTML('<strong>Truckeroo</strong><p> brings dozens of food trucks, live music,' +
+//         ' and games to half and M Street SE (across from Navy Yard Metro Station)' +
+//         ' today from 11:00 a.m. to 11:00 p.m.</p>')
+//       .addTo(this.map);
+//   }
+
 
   ngOnDestroy() {
   }

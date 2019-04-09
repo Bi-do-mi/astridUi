@@ -23,7 +23,7 @@ import {
   MatCardModule, MatInputModule,
   MatSnackBarModule, MatDialogModule,
   MatCheckboxModule, MatTooltipModule,
-  MatDividerModule
+  MatDividerModule, MatSelectModule
 } from '@angular/material';
 import {NgxMapboxGLModule} from 'ngx-mapbox-gl';
 import {MapBoxComponent} from './components/map-box/map-box.component';
@@ -37,6 +37,7 @@ import {ServiceWorkerModule} from '@angular/service-worker';
 import {environment} from '../environments/environment.prod';
 import {DeleteUserDialogComponent} from './components/delete-user-dialog/delete-user-dialog.component';
 import {UnitOptionsDialogComponent} from './components/unit-options-dialog/unit-options-dialog.component';
+import { AdminUnitsCollectionComponent } from './components/admin-units-collection/admin-units-collection.component';
 // import {registerLocaleData} from '@angular/common';
 // import localeRu from '@angular/common/locales/ru';
 // registerLocaleData(localeRu, 'ru-RU');
@@ -56,7 +57,8 @@ export const httpInterceptorProviders = [
     PageNotFoundComponent,
     UserOptionsDialogComponent,
     DeleteUserDialogComponent,
-    UnitOptionsDialogComponent
+    UnitOptionsDialogComponent,
+    AdminUnitsCollectionComponent
   ],
   imports: [
     BrowserModule,
@@ -75,6 +77,7 @@ export const httpInterceptorProviders = [
     MatCheckboxModule,
     MatFormFieldModule,
     MatButtonModule,
+    MatSelectModule,
     MatCardModule,
     MatTabsModule,
     MatSidenavModule,
