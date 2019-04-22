@@ -30,7 +30,7 @@
         </div>
       </div>
       <div fxLayout="row" fxLayoutAlign="center start">
-        <button mat-raised-button="" tabindex="-1" (click)="setParkLocation()"
+        <button mat-raised-button="" tabindex="-1" (click)="openUnitCreateDialog()"
                color="accent">Добавить
         </button>
       </div>
@@ -39,7 +39,7 @@
     <div *ngIf="parkContent && !uService.authenticated">
       <p>Пожалуйста, авторизуйтесь или зарегистрируйтесь как новый пользователь.</p>
       <div fxLayout="row" fxLayoutAlign="center start">
-        <button mat-raised-button="" tabindex="-1" (click)="sidenavService.close()"
+        <button mat-raised-button="" tabindex="-1" (click)="sidenavService.closeAll()"
                 routerLink="/preload/login" color="accent">Войти
         </button>
       </div>

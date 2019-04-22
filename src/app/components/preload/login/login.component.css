@@ -1794,7 +1794,7 @@ th.mat-header-cell, td.mat-cell, td.mat-footer-cell {
   background-color: #212121; }
 
 .panel-for-unitslist {
-  width: auto !important; }
+  width: 100 !important; }
 
 .mat-badge-content {
   font-weight: 600;

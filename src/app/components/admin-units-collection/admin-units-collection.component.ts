@@ -1,16 +1,19 @@
-import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
+import {ChangeDetectorRef, Component, OnDestroy, OnInit} from '@angular/core';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {UnitAssignment, UnitBrend, UnitType} from '../../_model/UnitsList';
 import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {stringify} from 'querystring';
+import {ParkService} from '../../_services/park.service';
+import {first} from 'rxjs/operators';
+import {untilDestroyed} from 'ngx-take-until-destroy';
 
 @Component({
   selector: 'app-admin-units-collection',
   templateUrl: './admin-units-collection.component.html',
   styleUrls: ['./admin-units-collection.component.scss']
 })
-export class AdminUnitsCollectionComponent implements OnInit {
+export class AdminUnitsCollectionComponent implements OnInit, OnDestroy {
 
   fileForm: FormGroup;
   public unitsList = new Array<UnitAssignment>();
@@ -25,22 +28,18 @@ export class AdminUnitsCollectionComponent implements OnInit {
 
   constructor(
     private formBuilder: FormBuilder,
-    private http: HttpClient) {
+    private http: HttpClient,
+    private parkService: ParkService) {
   }
 
   ngOnInit() {
-    this.getJSONfromFile();
+    this.parkService.getJSONfromFile().pipe(first(), untilDestroyed(this))
+      .subscribe(data => {
+        this.unitsList = data;
+      });
     this.fileForm = this.formBuilder.group({
       file: [null, Validators.required]
     });
-  }
-
-  public getJSONfromFile() {
-    return this.http.get('./assets/ParkList/list.json')
-      .subscribe(data => {
-        const allText: string = JSON.stringify(data);
-        this.unitsList = JSON.parse(allText);
-      });
   }
 
   onFileChange(event) {
@@ -167,6 +166,8 @@ export class AdminUnitsCollectionComponent implements OnInit {
     this.unitsList.filter((v, i, array) => {
       if (v.assignmentname === this.selectedAssignment.value) {
         this.unitsType = v;
+        this.unitsBrend = new UnitType();
+        this.unitsModel = new UnitBrend();
         return true;
       }
       return false;
@@ -176,10 +177,12 @@ export class AdminUnitsCollectionComponent implements OnInit {
   getUnitsBrendList() {
     this.unitsType.types.forEach(t => {
       if (t.typename === this.selectedType.value) {
-       this.unitsBrend = t;
+        this.unitsBrend = t;
+        this.unitsModel = new UnitBrend();
       }
     });
   }
+
   getUnitsModeldList() {
     this.unitsBrend.brends.forEach(b => {
       if (b.brendname === this.selectedBrend.value) {
@@ -190,5 +193,8 @@ export class AdminUnitsCollectionComponent implements OnInit {
 
   capitalizeFirstLetter(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
+  }
+
+  ngOnDestroy() {
   }
 }

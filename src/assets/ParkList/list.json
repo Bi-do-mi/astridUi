@@ -1242,6 +1242,62 @@
     ]
   },
   {
+    "assignmentname": "Грузовые автомобили",
+    "types": [
+      {
+        "typename": "Бензовозы",
+        "brends": []
+      },
+      {
+        "typename": "Бортовые грузовики",
+        "brends": []
+      },
+      {
+        "typename": "Ломовозы (металловозы)",
+        "brends": []
+      },
+      {
+        "typename": "Полуприцепы-тяжеловозы",
+        "brends": []
+      },
+      {
+        "typename": "Прицепы-тяжеловозы",
+        "brends": [
+          {
+            "brendname": "ТВЕРЬСТРОЙМАШ",
+            "models": [
+              "ТВЕРЬСТРОЙМАШ 83405T-HN70",
+              "ТВЕРЬСТРОЙМАШ 83405T-HN70"
+            ]
+          },
+          {
+            "brendname": "NOVUS TRAILER",
+            "models": [
+              "NOVUS TRAILER 8883",
+              "NOVUS TRAILER 8883"
+            ]
+          }
+        ]
+      },
+      {
+        "typename": "Топливозаправщики",
+        "brends": []
+      },
+      {
+        "typename": "Транспортно-бытовые машины (ТБМ)",
+        "brends": []
+      },
+      {
+        "typename": "Трубовозы (балковозы)",
+        "brends": []
+      },
+      {
+        "typename": "Цементовозы",
+        "brends": []
+      }
+    ]
+  },
+  {
     "assignmentname": "Дорожная и уплотнительная техника",
     "types": [
       {

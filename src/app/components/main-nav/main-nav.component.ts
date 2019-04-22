@@ -14,6 +14,7 @@ import {MapService} from '../../_services/map.service';
 import {untilDestroyed} from 'ngx-take-until-destroy';
 import {GeoJson} from '../../_model/MarkerSourceModel';
 import {ParkService} from '../../_services/park.service';
+import {UnitCreateDialogComponent} from '../unit-create-dialog/unit-create-dialog.component';
 
 @Component({
   selector: 'app-main-nav',
@@ -86,7 +87,7 @@ export class MainNavComponent implements OnInit, OnDestroy {
     this.sidenavService.closeAll();
     const dialogRef = this.dialog.open(UserOptionsDialogComponent, {
       minHeight: '250px'
-    });
+  });
 
     // dialogRef.afterClosed().pipe(untilDestroyed(this)).subscribe(result => {
     //   // console.log('The dialog was closed');
@@ -113,6 +114,18 @@ export class MainNavComponent implements OnInit, OnDestroy {
         }, error1 => {
         });
       });
+  }
+
+  openUnitCreateDialog(): void {
+    this.sidenavService.closeAll();
+    const dialogRef = this.dialog.open(UnitCreateDialogComponent, {
+      maxHeight: '100vh'
+      // minHeight: '250px'
+    });
+
+    // dialogRef.afterClosed().pipe(untilDestroyed(this)).subscribe(result => {
+    //   // console.log('The dialog was closed');
+    // });
   }
 
   // todo not forget to clear this

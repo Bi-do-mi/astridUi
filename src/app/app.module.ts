@@ -23,7 +23,7 @@ import {
   MatCardModule, MatInputModule,
   MatSnackBarModule, MatDialogModule,
   MatCheckboxModule, MatTooltipModule,
-  MatDividerModule, MatSelectModule
+  MatDividerModule, MatSelectModule, MatStepperModule, MatAutocompleteModule
 } from '@angular/material';
 import {NgxMapboxGLModule} from 'ngx-mapbox-gl';
 import {MapBoxComponent} from './components/map-box/map-box.component';
@@ -38,6 +38,9 @@ import {environment} from '../environments/environment.prod';
 import {DeleteUserDialogComponent} from './components/delete-user-dialog/delete-user-dialog.component';
 import {UnitOptionsDialogComponent} from './components/unit-options-dialog/unit-options-dialog.component';
 import { AdminUnitsCollectionComponent } from './components/admin-units-collection/admin-units-collection.component';
+import { UnitCreateDialogComponent } from './components/unit-create-dialog/unit-create-dialog.component';
+import {STEPPER_GLOBAL_OPTIONS} from '@angular/cdk/stepper';
+
 // import {registerLocaleData} from '@angular/common';
 // import localeRu from '@angular/common/locales/ru';
 // registerLocaleData(localeRu, 'ru-RU');
@@ -58,7 +61,8 @@ export const httpInterceptorProviders = [
     UserOptionsDialogComponent,
     DeleteUserDialogComponent,
     UnitOptionsDialogComponent,
-    AdminUnitsCollectionComponent
+    AdminUnitsCollectionComponent,
+    UnitCreateDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -80,8 +84,10 @@ export const httpInterceptorProviders = [
     MatSelectModule,
     MatCardModule,
     MatTabsModule,
+    MatStepperModule,
     MatSidenavModule,
     MatDividerModule,
+    MatAutocompleteModule,
     MatTooltipModule,
     MatDialogModule,
     NgxMapboxGLModule.withConfig({
@@ -102,9 +108,14 @@ export const httpInterceptorProviders = [
   entryComponents: [
     UserOptionsDialogComponent,
     UnitOptionsDialogComponent,
-    DeleteUserDialogComponent
+    DeleteUserDialogComponent,
+    UnitCreateDialogComponent
   ],
-  providers: [AuthGuard, httpInterceptorProviders],
+  providers: [AuthGuard, httpInterceptorProviders,
+    {
+      provide: STEPPER_GLOBAL_OPTIONS,
+      useValue: { displayDefaultIndicatorType: false }
+    }],
   bootstrap: [AppComponent]
 })
 export class AppModule {
