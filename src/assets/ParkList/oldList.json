@@ -8,12 +8,14 @@
           {
             "brendname": "BENNINGHOVEN",
             "models": [
+              "BENNINGHOVEN CONTINENTAL МВА",
               "BENNINGHOVEN CONTINENTAL МВА"
             ]
           },
           {
             "brendname": "КРЕДМАШ",
             "models": [
+              "КРЕДМАШ ДС-168",
               "КРЕДМАШ ДС-168"
             ]
           }
@@ -25,6 +27,7 @@
           {
             "brendname": "ELKON",
             "models": [
+              "ELKON ELKOMIX-60",
               "ELKON ELKOMIX-60"
             ]
           },
@@ -32,7 +35,9 @@
             "brendname": "MEKA",
             "models": [
               "MEKA MB-60WS",
-              "MEKA MB-30WS"
+              "MEKA MB-30WS",
+              "MEKA MB-30WS",
+              "MEKA MB-60WS"
             ]
           },
           {
@@ -42,12 +47,14 @@
           {
             "brendname": "ЕКАТЕРИНОДАРСТРОЙ",
             "models": [
+              "ЕКАТЕРИНОДАРСТРОЙ ЕС-50",
               "ЕКАТЕРИНОДАРСТРОЙ ЕС-50"
             ]
           },
           {
             "brendname": "FIBO INTERCON",
             "models": [
+              "FIBO INTERCON M2200",
               "FIBO INTERCON M2200"
             ]
           },
@@ -58,6 +65,7 @@
           {
             "brendname": "ELBA",
             "models": [
+              "ELBA EBC B DW 105",
               "ELBA EBC B DW 105"
             ]
           },
@@ -77,9 +85,13 @@
               "PUTZMEISTER BSA 1407 D",
               "PUTZMEISTER BSA 2110 HP D",
               "PUTZMEISTER BSA 1005 D",
+              "PUTZMEISTER BSA 1005 D",
               "PUTZMEISTER BSA 14000 HP D",
+              "PUTZMEISTER BSA 1407 D",
               "PUTZMEISTER BSA 1408 E",
-              "PUTZMEISTER BSA 2109 H D"
+              "PUTZMEISTER BSA 1409 D",
+              "PUTZMEISTER BSA 2109 H D",
+              "PUTZMEISTER BSA 2110 HP D"
             ]
           },
           {
@@ -87,6 +99,7 @@
             "models": [
               "CIFA PC 506",
               "CIFA PC 307",
+              "CIFA PC 506",
               "CIFA PC 607",
               "CIFA PC 709",
               "CIFA PC 907"
@@ -95,6 +108,7 @@
           {
             "brendname": "SANY",
             "models": [
+              "SANY HBT60C-1816 III",
               "SANY HBT60C-1816 III",
               "SANY HBT80C-1818 III"
             ]
@@ -165,6 +179,7 @@
               "PUTZMEISTER M 38-4 (BSF 38.14 H)",
               "PUTZMEISTER M 38-4 (BSF 38.16 H)",
               "PUTZMEISTER M 42-5 (BSF 42-5.14 H)",
+              "PUTZMEISTER M 42-5 (BSF 42-5.16 H)",
               "PUTZMEISTER M 46-5 (BSF 46.14 H)",
               "PUTZMEISTER M 47-5 (BSF 47-5.16 H)",
               "PUTZMEISTER M 52-5 (BSF 52.16 H)",
@@ -176,13 +191,16 @@
             "models": [
               "КАМАЗ 58152А (АБН-21)",
               "КАМАЗ 58153С (АБН-37)",
+              "КАМАЗ 58152А (АБН-21)",
               "КАМАЗ 58153А (АБН-32)",
+              "КАМАЗ 58153С (АБН-37)",
               "КАМАЗ 58154А (АБН-42)"
             ]
           },
           {
             "brendname": "KYOKUTO",
             "models": [
+              "KYOKUTO PY120-37",
               "KYOKUTO PY120-37"
             ]
           },
@@ -190,12 +208,14 @@
             "brendname": "HYUNDAI",
             "models": [
               "HYUNDAI HD 270 (ШАССИ)",
+              "HYUNDAI HD 270 (ШАССИ)",
               "HYUNDAI HD 370 (ШАССИ)"
             ]
           },
           {
             "brendname": "KYUNGWON",
             "models": [
+              "KYUNGWON KW 5Z32X (KOB 100A)",
               "KYUNGWON KW 5Z32X (KOB 100A)"
             ]
           },
@@ -450,12 +470,17 @@
               "PUTZMEISTER MXR 32-4 T",
               "PUTZMEISTER RV 12 LIFT",
               "PUTZMEISTER MX 32 Т",
-              "PUTZMEISTER RV 10"
+              "PUTZMEISTER MX 32 Т",
+              "PUTZMEISTER MXR 32-4 T",
+              "PUTZMEISTER RV 10",
+              "PUTZMEISTER RV 12 LIFT"
             ]
           },
           {
             "brendname": "BOOM MAKINA",
             "models": [
+              "BOOM MAKINA BHD 12 + 3Z",
+              "BOOM MAKINA BHD 17 + 3",
               "BOOM MAKINA BHD 12 + 3Z",
               "BOOM MAKINA BHD 17 + 3"
             ]
@@ -463,6 +488,7 @@
           {
             "brendname": "CIFA",
             "models": [
+              "CIFA DRV12C-55M",
               "CIFA DRV12C-55M"
             ]
           }
@@ -487,10 +513,13 @@
               "КАМАЗ 69364U (АБС-9DA)",
               "КАМАЗ 58146Z (ABS-6A)",
               "КАМАЗ 58140W (ABS-10K)",
+              "КАМАЗ 58146Z (ABS-6A)",
               "КАМАЗ 58147W (ABS-7K)",
               "КАМАЗ 58147Z (ABS-7A)",
               "КАМАЗ 58149Z  (ABS-9A)",
               "КАМАЗ 69360D (АБС-6DO)",
+              "КАМАЗ 69361H (АБС-7DA)",
+              "КАМАЗ 69364U (АБС-9DA)",
               "КАМАЗ АБС-6-01 (69343)"
             ]
           },
@@ -498,12 +527,15 @@
             "brendname": "CARMIX",
             "models": [
               "CARMIX 3.5 TT",
+              "CARMIX 5.5 XL",
+              "CARMIX 3.5 TT",
               "CARMIX 5.5 XL"
             ]
           },
           {
             "brendname": "SCANIA",
             "models": [
+              "SCANIA P 340 6X4",
               "SCANIA P 340 6X4"
             ]
           },
@@ -585,12 +617,17 @@
               "GOMACO GHP-2800",
               "GOMACO GT-2600",
               "GOMACO GT-3400",
-              "GOMACO COMMANDER III"
+              "GOMACO COMMANDER III",
+              "GOMACO GHP-2800",
+              "GOMACO GT-2600",
+              "GOMACO GT-3200",
+              "GOMACO GT-3400"
             ]
           },
           {
             "brendname": "POWER PAVERS",
             "models": [
+              "POWER PAVERS PS-3000",
               "POWER PAVERS PS-3000"
             ]
           },
@@ -603,6 +640,7 @@
           {
             "brendname": "WIRTGEN",
             "models": [
+              "WIRTGEN SP 1500 L",
               "WIRTGEN SP 1500 L",
               "WIRTGEN SP 850 VARIO"
             ]
@@ -619,12 +657,14 @@
           {
             "brendname": "ЯРСТРОЙ",
             "models": [
+              "ЯРСТРОЙ ВР 2-3,5/220В",
               "ЯРСТРОЙ ВР 2-3,5/220В"
             ]
           },
           {
             "brendname": "MASALTA",
             "models": [
+              "MASALTA MCD-4",
               "MASALTA MCD-4"
             ]
           }
@@ -637,12 +677,15 @@
             "brendname": "ЯЗКМ",
             "models": [
               "ЯЗКМ ИВ-117А",
+              "ЯЗКМ ЭПК-1300",
+              "ЯЗКМ ИВ-117А",
               "ЯЗКМ ЭПК-1300"
             ]
           },
           {
             "brendname": "ENAR",
             "models": [
+              "ENAR AVMU",
               "ENAR AVMU"
             ]
           }
@@ -654,12 +697,14 @@
           {
             "brendname": "MASALTA",
             "models": [
+              "MASALTA MТ36-4",
               "MASALTA MТ36-4"
             ]
           },
           {
             "brendname": "BARTELL",
             "models": [
+              "BARTELL B475/H",
               "BARTELL B475/H"
             ]
           },
@@ -679,6 +724,7 @@
           {
             "brendname": "ТЕПЛОВЕЙ",
             "models": [
+              "ТЕПЛОВЕЙ Т-450РЕВ",
               "ТЕПЛОВЕЙ Т-450РЕВ"
             ]
           }
@@ -692,12 +738,16 @@
             "models": [
               "PUTZMEISTER MIXOKRET M740DB",
               "PUTZMEISTER MIXOKRET M740D",
-              "PUTZMEISTER MIXOKRET M501E"
+              "PUTZMEISTER MIXOKRET M501E",
+              "PUTZMEISTER MIXOKRET M740D",
+              "PUTZMEISTER MIXOKRET M740DB"
             ]
           },
           {
             "brendname": "BRINKMANN",
             "models": [
+              "BRINKMANN ESTRICH BOY 450",
+              "BRINKMANN ESTRICH BOY 450 B",
               "BRINKMANN ESTRICH BOY 450",
               "BRINKMANN ESTRICH BOY 450 B"
             ]
@@ -705,6 +755,7 @@
           {
             "brendname": "BMS",
             "models": [
+              "BMS WORKER N 1 СТАНДАРТ",
               "BMS WORKER N 1 СТАНДАРТ"
             ]
           },
@@ -721,6 +772,7 @@
           {
             "brendname": "UTIFORM",
             "models": [
+              "UTIFORM CONVEY HD 50",
               "UTIFORM CONVEY HD 50"
             ]
           },
@@ -733,10 +785,6 @@
         ]
       },
       {
-        "typename": "Силосы для цемента",
-        "brends": []
-      },
-      {
         "typename": "Растворосмесители",
         "brends": [
           {
@@ -744,6 +792,10 @@
             "models": []
           }
         ]
+      },
+      {
+        "typename": "Силосы для цемента",
+        "brends": []
       },
       {
         "typename": "Торкрет-установки",
@@ -762,18 +814,23 @@
             "models": [
               "PFT RITMO XL",
               "PFT G 4",
-              "PFT G 5 SUPER"
+              "PFT G 5 SUPER",
+              "PFT G 4",
+              "PFT G 5 SUPER",
+              "PFT RITMO XL"
             ]
           },
           {
             "brendname": "PUTZMEISTER",
             "models": [
+              "PUTZMEISTER МР 25",
               "PUTZMEISTER МР 25"
             ]
           },
           {
             "brendname": "M-TEC",
             "models": [
+              "M-TEC M3E",
               "M-TEC M3E"
             ]
           },
@@ -786,6 +843,7 @@
           {
             "brendname": "GB MACHINES",
             "models": [
+              "GB MACHINES PLASTERMAN",
               "GB MACHINES PLASTERMAN"
             ]
           }
@@ -806,8 +864,12 @@
               "AICHI D-706E",
               "AICHI D-100E",
               "AICHI D-150E",
+              "AICHI D-100E",
+              "AICHI D-150E",
+              "AICHI D-502",
               "AICHI D-50A",
               "AICHI D-704",
+              "AICHI D-706E",
               "AICHI D-70A"
             ]
           },
@@ -818,6 +880,7 @@
           {
             "brendname": "TADANO",
             "models": [
+              "TADANO DT-620",
               "TADANO DT-620",
               "TADANO DT-650",
               "TADANO DT-700P",
@@ -939,12 +1002,16 @@
               "BAUER MBG 12",
               "BAUER BG 28 BS 80",
               "BAUER BG 20 H BT 60",
-              "BAUER BG 9"
+              "BAUER BG 22 H",
+              "BAUER BG 28 BS 80",
+              "BAUER BG 9",
+              "BAUER MBG 12"
             ]
           },
           {
             "brendname": "LIEBHERR",
             "models": [
+              "LIEBHERR LB 28",
               "LIEBHERR LB 28",
               "LIEBHERR LB 36"
             ]
@@ -952,6 +1019,7 @@
           {
             "brendname": "СБТ",
             "models": [
+              "СБТ УБГ-С-30 БЕРКУТ",
               "СБТ УБГ-С-30 БЕРКУТ"
             ]
           },
@@ -962,6 +1030,7 @@
           {
             "brendname": "KATO",
             "models": [
+              "KATO KE-1500 III",
               "KATO KE-1500 III"
             ]
           },
@@ -999,6 +1068,7 @@
           {
             "brendname": "SANY",
             "models": [
+              "SANY SR150C",
               "SANY SR150C"
             ]
           },
@@ -1010,6 +1080,7 @@
             "brendname": "МОЗБТ",
             "models": [
               "МОЗБТ УРБ-2А-2",
+              "МОЗБТ УРБ-2А-2",
               "МОЗБТ УРБ-2А-2М"
             ]
           },
@@ -1020,6 +1091,7 @@
           {
             "brendname": "РОСПРОМБУР",
             "models": [
+              "РОСПРОМБУР УРБ 2А2",
               "РОСПРОМБУР УРБ 2А2"
             ]
           },
@@ -1042,18 +1114,21 @@
           {
             "brendname": "CATERPILLAR",
             "models": [
+              "CATERPILLAR MD5050",
               "CATERPILLAR MD5050"
             ]
           },
           {
             "brendname": "ZANAM",
             "models": [
+              "ZANAM-LEGMET SWW-1-1H",
               "ZANAM-LEGMET SWW-1-1H"
             ]
           },
           {
             "brendname": "СПЕЦБУРМАШ",
             "models": [
+              "СПЕЦБУРМАШ УРБ-2А2",
               "СПЕЦБУРМАШ УРБ-2А2"
             ]
           }
@@ -1067,7 +1142,9 @@
             "models": [
               "VERMEER D 36X50 SERIES II",
               "VERMEER D 100X140",
+              "VERMEER D 100X140",
               "VERMEER D 24X40 SERIES II",
+              "VERMEER D 36X50 SERIES II",
               "VERMEER D 80X100 SERIES II",
               "VERMEER D 9X13 SERIES2"
             ]
@@ -1087,12 +1164,14 @@
               "XCMG XZ320B",
               "XCMG XZ180",
               "XCMG XZ260",
-              "XCMG XZ320"
+              "XCMG XZ320",
+              "XCMG XZ320B"
             ]
           },
           {
             "brendname": "PRIME DRILLING",
             "models": [
+              "PRIME DRILLING PD 100/50 RP",
               "PRIME DRILLING PD 100/50 RP",
               "PRIME DRILLING PD 45/18 RP"
             ]
@@ -1107,12 +1186,14 @@
           {
             "brendname": "SANY",
             "models": [
+              "SANY SD180",
               "SANY SD180"
             ]
           },
           {
             "brendname": "DILONG",
             "models": [
+              "DILONG DDL280",
               "DILONG DDL280"
             ]
           },
@@ -1164,11 +1245,11 @@
     "assignmentname": "Грузовые автомобили",
     "types": [
       {
-        "typename": "Бортовые грузовики",
+        "typename": "Бензовозы",
         "brends": []
       },
       {
-        "typename": "Бензовозы",
+        "typename": "Бортовые грузовики",
         "brends": []
       },
       {
@@ -1185,12 +1266,14 @@
           {
             "brendname": "ТВЕРЬСТРОЙМАШ",
             "models": [
+              "ТВЕРЬСТРОЙМАШ 83405T-HN70",
               "ТВЕРЬСТРОЙМАШ 83405T-HN70"
             ]
           },
           {
             "brendname": "NOVUS TRAILER",
             "models": [
+              "NOVUS TRAILER 8883",
               "NOVUS TRAILER 8883"
             ]
           }
@@ -1201,11 +1284,11 @@
         "brends": []
       },
       {
-        "typename": "Трубовозы (балковозы)",
+        "typename": "Транспортно-бытовые машины (ТБМ)",
         "brends": []
       },
       {
-        "typename": "Транспортно-бытовые машины (ТБМ)",
+        "typename": "Трубовозы (балковозы)",
         "brends": []
       },
       {
@@ -1229,13 +1312,19 @@
               "VOGELE SUPER 1300-2",
               "VOGELE SUPER 1600-1",
               "VOGELE SUPER 1900-2",
+              "VOGELE SUPER 1300-2",
+              "VOGELE SUPER 1600-1",
+              "VOGELE SUPER 1600-2",
+              "VOGELE SUPER 1800-2",
               "VOGELE SUPER 1800-3 SPRAYJET",
               "VOGELE SUPER 1800-3I",
               "VOGELE SUPER 1803-2",
+              "VOGELE SUPER 1900-2",
               "VOGELE SUPER 1900-3I",
               "VOGELE SUPER 2100-2",
               "VOGELE SUPER 600",
-              "VOGELE SUPER 700"
+              "VOGELE SUPER 700",
+              "VOGELE SUPER 800"
             ]
           },
           {
@@ -1337,12 +1426,14 @@
           {
             "brendname": "SECMAIR",
             "models": [
+              "SECMAIR CHIPSEALER-41",
               "SECMAIR CHIPSEALER-41"
             ]
           },
           {
             "brendname": "SCHAFER",
             "models": [
+              "SCHAFER RZA 7000",
               "SCHAFER RZA 7000"
             ]
           }
@@ -1354,12 +1445,14 @@
           {
             "brendname": "HYDROG",
             "models": [
+              "HYDROG DG 1500",
               "HYDROG DG 1500"
             ]
           },
           {
             "brendname": "STRASSMAYR",
             "models": [
+              "STRASSMAYR BF 290",
               "STRASSMAYR BF 290"
             ]
           }
@@ -1376,17 +1469,22 @@
               "WACKER NEUSON DPU 6555HE",
               "WACKER NEUSON DPU 5545H",
               "WACKER NEUSON BPU 5045A",
+              "WACKER NEUSON BPU 5045A",
               "WACKER NEUSON BPU 5545A",
               "WACKER NEUSON DPU 100-70",
               "WACKER NEUSON DPU 110R",
+              "WACKER NEUSON DPU 130",
               "WACKER NEUSON DPU 130R",
               "WACKER NEUSON DPU 4545H",
               "WACKER NEUSON DPU 4545HE",
+              "WACKER NEUSON DPU 5545H",
               "WACKER NEUSON DPU 5545HE",
               "WACKER NEUSON DPU 5545HEAP",
               "WACKER NEUSON DPU 5545HEC",
               "WACKER NEUSON DPU 6055",
               "WACKER NEUSON DPU 6555H",
+              "WACKER NEUSON DPU 6555HE",
+              "WACKER NEUSON DPU 6555HEAP",
               "WACKER NEUSON WPP 1550AW"
             ]
           },
@@ -1407,6 +1505,7 @@
           {
             "brendname": "СПЛИТСТОУН",
             "models": [
+              "СПЛИТСТОУН VS-244",
               "СПЛИТСТОУН VS-244",
               "СПЛИТСТОУН VS-246 E20",
               "СПЛИТСТОУН VS-309"
@@ -1483,7 +1582,9 @@
             "models": [
               "ATLAS COPCO LT5004",
               "ATLAS COPCO LT800",
-              "ATLAS COPCO LT6004"
+              "ATLAS COPCO LT5004",
+              "ATLAS COPCO LT6004",
+              "ATLAS COPCO LT800"
             ]
           },
           {
@@ -1491,18 +1592,22 @@
             "models": [
               "WACKER NEUSON BS 60-2I",
               "WACKER NEUSON BS 50-4",
+              "WACKER NEUSON BS 50-4",
+              "WACKER NEUSON BS 60-2I",
               "WACKER NEUSON DS 70"
             ]
           },
           {
             "brendname": "HITACHI",
             "models": [
+              "HITACHI ZV65RL",
               "HITACHI ZV65RL"
             ]
           },
           {
             "brendname": "AMMANN",
             "models": [
+              "AMMANN ACR 68",
               "AMMANN ACR 68"
             ]
           },
@@ -1527,18 +1632,23 @@
               "КАМАЗ ДС-142Б (ШАССИ КАМАЗ-65115 6Х4)",
               "КАМАЗ СДК-100",
               "КАМАЗ СД-205",
-              "КАМАЗ БЦМ-65-03"
+              "КАМАЗ БЦМ-65-03",
+              "КАМАЗ ДС-142Б (ШАССИ КАМАЗ-65115 6Х4)",
+              "КАМАЗ СД-205",
+              "КАМАЗ СДК-100"
             ]
           },
           {
             "brendname": "HYDROG",
             "models": [
+              "HYDROG PREMIUM",
               "HYDROG PREMIUM"
             ]
           },
           {
             "brendname": "КУРГАНДОРМАШ",
             "models": [
+              "КУРГАНДОРМАШ ДС-39Б",
               "КУРГАНДОРМАШ ДС-39Б",
               "КУРГАНДОРМАШ ДС-39Г",
               "КУРГАНДОРМАШ ИС-2,5"
@@ -1547,6 +1657,7 @@
           {
             "brendname": "MASSENZA",
             "models": [
+              "MASSENZA U",
               "MASSENZA U"
             ]
           },
@@ -1579,11 +1690,13 @@
               "HAMM HD 75",
               "HAMM 3205",
               "HAMM 3205 P",
+              "HAMM 3307",
               "HAMM 3307 HT",
               "HAMM 3410",
               "HAMM 3410 P",
               "HAMM 3410X",
               "HAMM 3411",
+              "HAMM 3412",
               "HAMM 3412 HT VIO",
               "HAMM 3412 VIO",
               "HAMM 3414",
@@ -1613,6 +1726,7 @@
               "HAMM HD 150 TT",
               "HAMM HD 70",
               "HAMM HD 70K",
+              "HAMM HD 75",
               "HAMM HD 75K",
               "HAMM HD 90",
               "HAMM HD+ 110 VO",
@@ -1656,6 +1770,7 @@
               "BOMAG BW 211 DH-5",
               "BOMAG BW 211 DP-40",
               "BOMAG BW 213 D-3",
+              "BOMAG BW 213 D-4",
               "BOMAG BW 213 D-40",
               "BOMAG BW 213 DH-4",
               "BOMAG BW 213 DH-4 BVC",
@@ -1686,6 +1801,7 @@
               "AMMANN ASC 110 D",
               "AMMANN ASC 130 D",
               "AMMANN ASC 130 HTPD С КУЛАЧКОВЫМ БАНДАЖОМ",
+              "AMMANN ASC 150 D",
               "AMMANN ASC 150 HD",
               "AMMANN ASC 150 HDPD С КУЛАЧКОВЫМ БАНДАЖОМ",
               "AMMANN ASC 150 HT",
@@ -1781,6 +1897,7 @@
           {
             "brendname": "XCMG",
             "models": [
+              "XCMG XS142J",
               "XCMG XS142J",
               "XCMG XS162",
               "XCMG XS162J",
@@ -1995,10 +2112,16 @@
               "WIRTGEN W 120 F",
               "WIRTGEN W 2100",
               "WIRTGEN W 100",
+              "WIRTGEN W 100 F",
+              "WIRTGEN W 1000",
+              "WIRTGEN W 120 F",
               "WIRTGEN W 130 F",
               "WIRTGEN W 150 F",
+              "WIRTGEN W 200",
+              "WIRTGEN W 2000",
               "WIRTGEN W 200I",
               "WIRTGEN W 210",
+              "WIRTGEN W 2100",
               "WIRTGEN W 50",
               "WIRTGEN W 50 DC"
             ]
@@ -2052,6 +2175,7 @@
           {
             "brendname": "CRAFCO",
             "models": [
+              "CRAFCO SS 125 DC",
               "CRAFCO SS 125 DC"
             ]
           }
@@ -2063,6 +2187,7 @@
           {
             "brendname": "MADROG",
             "models": [
+              "MADROG MK 4500",
               "MADROG MK 4500"
             ]
           }
@@ -2078,28 +2203,12 @@
         ]
       },
       {
-        "typename": "Машины дорожной разметки",
-        "brends": [
-          {
-            "brendname": "GRACO",
-            "models": [
-              "GRACO ЛАЙН ЛАЗЕР IV 3900"
-            ]
-          },
-          {
-            "brendname": "WINTER",
-            "models": [
-              "WINTER WTE 251 GTLR"
-            ]
-          }
-        ]
-      },
-      {
         "typename": "Машины для ямочного ремонта",
         "brends": [
           {
             "brendname": "ДОРПРОМ",
             "models": [
+              "ДОРПРОМ РД 924",
               "ДОРПРОМ РД 924"
             ]
           },
@@ -2110,13 +2219,34 @@
           {
             "brendname": "КРЕДМАШ",
             "models": [
+              "КРЕДМАШ КДМ150",
               "КРЕДМАШ КДМ150"
             ]
           },
           {
             "brendname": "ДОРЭЛЕКТРОМАШ",
             "models": [
+              "ДОРЭЛЕКТРОМАШ ДЭМ-121",
               "ДОРЭЛЕКТРОМАШ ДЭМ-121"
+            ]
+          }
+        ]
+      },
+      {
+        "typename": "Машины дорожной разметки",
+        "brends": [
+          {
+            "brendname": "GRACO",
+            "models": [
+              "GRACO ЛАЙН ЛАЗЕР IV 3900",
+              "GRACO ЛАЙН ЛАЗЕР IV 3900"
+            ]
+          },
+          {
+            "brendname": "WINTER",
+            "models": [
+              "WINTER WTE 251 GTLR",
+              "WINTER WTE 251 GTLR"
             ]
           }
         ]
@@ -2134,18 +2264,24 @@
               "STREUMASTER SW 10 TA",
               "STREUMASTER SW 19 SC",
               "STREUMASTER SW 12 MA",
-              "STREUMASTER SW 16 MA"
+              "STREUMASTER SW 16 MA",
+              "STREUMASTER SW 10 TA",
+              "STREUMASTER SW 12 MA",
+              "STREUMASTER SW 16 MA",
+              "STREUMASTER SW 19 SC"
             ]
           },
           {
             "brendname": "WIRTGEN",
             "models": [
+              "WIRTGEN WM 1000",
               "WIRTGEN WM 1000"
             ]
           },
           {
             "brendname": "ТЕХЛАЙН",
             "models": [
+              "ТЕХЛАЙН РВМ-12",
               "ТЕХЛАЙН РВМ-12"
             ]
           }
@@ -2167,10 +2303,16 @@
               "WIRTGEN 2200 CR СО ШНЕКОМ",
               "WIRTGEN RACO 350",
               "WIRTGEN RX 4500",
+              "WIRTGEN WR 2000",
+              "WIRTGEN WR 240",
+              "WIRTGEN WR 2400",
+              "WIRTGEN WR 2500",
               "WIRTGEN WR 2500 K",
+              "WIRTGEN WR 2500 S",
               "WIRTGEN WR 2500 SK",
               "WIRTGEN WR 4200",
-              "WIRTGEN WS 220"
+              "WIRTGEN WS 220",
+              "WIRTGEN WS 250"
             ]
           },
           {
@@ -2208,6 +2350,7 @@
           {
             "brendname": "LINNHOFF & HENNE",
             "models": [
+              "LINNHOFF & HENNE EB 50-75 S",
               "LINNHOFF & HENNE EB 50-75 S"
             ]
           }
@@ -2219,6 +2362,7 @@
           {
             "brendname": "СПЛИТСТОУН",
             "models": [
+              "СПЛИТСТОУН CS-146",
               "СПЛИТСТОУН CS-146"
             ]
           },
@@ -2226,12 +2370,15 @@
             "brendname": "STONE",
             "models": [
               "STONE CS1",
+              "STONE CS2",
+              "STONE CS1",
               "STONE CS2"
             ]
           },
           {
             "brendname": "MASALTA",
             "models": [
+              "MASALTA MFG 10-4",
               "MASALTA MFG 10-4"
             ]
           },
@@ -2242,12 +2389,14 @@
           {
             "brendname": "WACKER NEUSON",
             "models": [
+              "WACKER NEUSON BFS 1350 L",
               "WACKER NEUSON BFS 1350 L"
             ]
           },
           {
             "brendname": "LISSMAC",
             "models": [
+              "LISSMAC FS 13 B",
               "LISSMAC FS 13 B"
             ]
           }
@@ -2259,6 +2408,7 @@
           {
             "brendname": "HYDROG",
             "models": [
+              "HYDROG RPU 3000",
               "HYDROG RPU 3000"
             ]
           }
@@ -2270,88 +2420,6 @@
     "assignmentname": "Землеройная техника",
     "types": [
       {
-        "typename": "Земснаряды",
-        "brends": [
-          {
-            "brendname": "ЗЕМСНАРЯД",
-            "models": [
-              "ЗЕМСНАРЯД Д-110/47-И-II",
-              "ЗЕМСНАРЯД Д-110/47-И-I"
-            ]
-          },
-          {
-            "brendname": "ГИДРОМЕХ",
-            "models": [
-              "ГИДРОМЕХ 800",
-              "ГИДРОМЕХ 1600DML",
-              "ГИДРОМЕХ 1600EHR",
-              "ГИДРОМЕХ 250"
-            ]
-          },
-          {
-            "brendname": "WATERMASTER",
-            "models": [
-              "WATERMASTER СLASSIC IV"
-            ]
-          },
-          {
-            "brendname": "AMPHIBEX",
-            "models": [
-              "AMPHIBEX 1000"
-            ]
-          },
-          {
-            "brendname": "IMS",
-            "models": [
-              "IMS 5012 LP VERSI-DREDGE"
-            ]
-          },
-          {
-            "brendname": "АХТАРЕЦ",
-            "models": [
-              "АХТАРЕЦ 1400/40",
-              "АХТАРЕЦ 800/40"
-            ]
-          },
-          {
-            "brendname": "DOEPKE",
-            "models": [
-              "DOEPKE 1500"
-            ]
-          },
-          {
-            "brendname": "BOATSWAIN",
-            "models": [
-              "BOATSWAIN МG"
-            ]
-          },
-          {
-            "brendname": "УГМЗ",
-            "models": [
-              "УГМЗ 2000/63"
-            ]
-          },
-          {
-            "brendname": "JULONG",
-            "models": [
-              "JULONG JLCSD-350"
-            ]
-          },
-          {
-            "brendname": "ЛАГУНА",
-            "models": [
-              "ЛАГУНА ЛС-27М6 1400/40"
-            ]
-          },
-          {
-            "brendname": "ПЗБ",
-            "models": [
-              "ПЗБ БОЦМАН"
-            ]
-          }
-        ]
-      },
-      {
         "typename": "Грейдеры",
         "brends": [
           {
@@ -2361,10 +2429,13 @@
               "БРЯНСКИЙ АРСЕНАЛ ДЗ-143",
               "БРЯНСКИЙ АРСЕНАЛ ДЗ-180",
               "БРЯНСКИЙ АРСЕНАЛ ГС-10.01",
+              "БРЯНСКИЙ АРСЕНАЛ ГС-14.02",
               "БРЯНСКИЙ АРСЕНАЛ ГС-14.03",
               "БРЯНСКИЙ АРСЕНАЛ ГС-18.05",
               "БРЯНСКИЙ АРСЕНАЛ ГС-18.07",
               "БРЯНСКИЙ АРСЕНАЛ ГС-25.09",
+              "БРЯНСКИЙ АРСЕНАЛ ДЗ-143",
+              "БРЯНСКИЙ АРСЕНАЛ ДЗ-180",
               "БРЯНСКИЙ АРСЕНАЛ ДЗ-99"
             ]
           },
@@ -2379,6 +2450,7 @@
             "models": [
               "XCMG GR180",
               "XCMG GR165",
+              "XCMG GR180",
               "XCMG GR215",
               "XCMG GR215A"
             ]
@@ -2386,6 +2458,7 @@
           {
             "brendname": "ЧСДМ",
             "models": [
+              "ЧСДМ ДЗ-98",
               "ЧСДМ ДЗ-98",
               "ЧСДМ ДЗ-98В"
             ]
@@ -2588,11 +2661,100 @@
         ]
       },
       {
+        "typename": "Земснаряды",
+        "brends": [
+          {
+            "brendname": "ЗЕМСНАРЯД",
+            "models": [
+              "ЗЕМСНАРЯД Д-110/47-И-II",
+              "ЗЕМСНАРЯД Д-110/47-И-I",
+              "ЗЕМСНАРЯД Д-110/47-И-I",
+              "ЗЕМСНАРЯД Д-110/47-И-II"
+            ]
+          },
+          {
+            "brendname": "ГИДРОМЕХ",
+            "models": [
+              "ГИДРОМЕХ 800",
+              "ГИДРОМЕХ 1600DML",
+              "ГИДРОМЕХ 1600EHR",
+              "ГИДРОМЕХ 250",
+              "ГИДРОМЕХ 800"
+            ]
+          },
+          {
+            "brendname": "WATERMASTER",
+            "models": [
+              "WATERMASTER СLASSIC IV",
+              "WATERMASTER СLASSIC IV"
+            ]
+          },
+          {
+            "brendname": "AMPHIBEX",
+            "models": [
+              "AMPHIBEX 1000"
+            ]
+          },
+          {
+            "brendname": "IMS",
+            "models": [
+              "IMS 5012 LP VERSI-DREDGE",
+              "IMS 5012 LP VERSI-DREDGE"
+            ]
+          },
+          {
+            "brendname": "АХТАРЕЦ",
+            "models": [
+              "АХТАРЕЦ 1400/40",
+              "АХТАРЕЦ 1400/40",
+              "АХТАРЕЦ 800/40"
+            ]
+          },
+          {
+            "brendname": "DOEPKE",
+            "models": [
+              "DOEPKE 1500"
+            ]
+          },
+          {
+            "brendname": "BOATSWAIN",
+            "models": [
+              "BOATSWAIN МG"
+            ]
+          },
+          {
+            "brendname": "УГМЗ",
+            "models": [
+              "УГМЗ 2000/63"
+            ]
+          },
+          {
+            "brendname": "JULONG",
+            "models": [
+              "JULONG JLCSD-350"
+            ]
+          },
+          {
+            "brendname": "ЛАГУНА",
+            "models": [
+              "ЛАГУНА ЛС-27М6 1400/40"
+            ]
+          },
+          {
+            "brendname": "ПЗБ",
+            "models": [
+              "ПЗБ БОЦМАН"
+            ]
+          }
+        ]
+      },
+      {
         "typename": "Погрузчики фронтальные",
         "brends": [
           {
             "brendname": "SDLG / LINGONG",
             "models": [
+              "SDLG / LINGONG LG936",
               "SDLG / LINGONG LG936"
             ]
           },
@@ -2610,6 +2772,7 @@
               "АМКОДОР 332С4",
               "АМКОДОР 333А",
               "АМКОДОР 333А-01",
+              "АМКОДОР 333В (ТО-18 Б3)",
               "АМКОДОР 333В-01",
               "АМКОДОР 333С",
               "АМКОДОР 342В (ТО-28А)",
@@ -2626,6 +2789,7 @@
             "models": [
               "XCMG LW300F",
               "XCMG LW1000",
+              "XCMG LW300F",
               "XCMG LW300FN",
               "XCMG LW300K",
               "XCMG LW321F",
@@ -2666,6 +2830,7 @@
             "models": [
               "HYUNDAI HL 740-7",
               "HYUNDAI HL 720-3",
+              "HYUNDAI HL 740-7",
               "HYUNDAI HL 740-7A",
               "HYUNDAI HL 740XDT-7",
               "HYUNDAI HL 750",
@@ -2700,6 +2865,7 @@
             "models": [
               "CASE 521D",
               "CASE 421B",
+              "CASE 521D",
               "CASE 521E XT",
               "CASE 621D",
               "CASE 621E",
@@ -3006,18 +3172,22 @@
             "brendname": "JUNTTAN",
             "models": [
               "JUNTTAN PM20",
+              "JUNTTAN PM25",
+              "JUNTTAN PM20",
               "JUNTTAN PM25"
             ]
           },
           {
             "brendname": "ТАЙЗЕР",
             "models": [
+              "ТАЙЗЕР СВУ-В-6",
               "ТАЙЗЕР СВУ-В-6"
             ]
           },
           {
             "brendname": "ABI",
             "models": [
+              "ABI TM 22",
               "ABI TM 22"
             ]
           },
@@ -3026,12 +3196,15 @@
             "models": [
               "LIEBHERR LHR 100",
               "LIEBHERR LRB 155",
+              "LIEBHERR LRB 155",
+              "LIEBHERR LRB 255",
               "LIEBHERR LRB 255"
             ]
           },
           {
             "brendname": "ORTECO",
             "models": [
+              "ORTECO ВТР1000HD",
               "ORTECO ВТР1000HD"
             ]
           },
@@ -3112,6 +3285,7 @@
           {
             "brendname": "МОАЗ",
             "models": [
+              "МОАЗ 6014",
               "МОАЗ 6014"
             ]
           }
@@ -3127,8 +3301,12 @@
               "МТЗ 82",
               "МТЗ 1021",
               "МТЗ 320.4",
+              "МТЗ 1021",
               "МТЗ 1021.4",
-              "МТЗ 321"
+              "МТЗ 320.4",
+              "МТЗ 321",
+              "МТЗ 82",
+              "МТЗ 82.1"
             ]
           },
           {
@@ -3141,12 +3319,14 @@
           {
             "brendname": "JCB",
             "models": [
+              "JCB FASTRAC 3200 XTRA",
               "JCB FASTRAC 3200 XTRA"
             ]
           },
           {
             "brendname": "АГРОМАШ",
             "models": [
+              "АГРОМАШ 30ТК 121Д",
               "АГРОМАШ 30ТК 121Д",
               "АГРОМАШ 30ТК 122Д"
             ]
@@ -3181,6 +3361,7 @@
           {
             "brendname": "БУРАГРЕГАТ",
             "models": [
+              "БУРАГРЕГАТ СТРОНГ МФ (СВАЕКРУТ)",
               "БУРАГРЕГАТ СТРОНГ МФ (СВАЕКРУТ)"
             ]
           }
@@ -3192,6 +3373,7 @@
           {
             "brendname": "МТЗ",
             "models": [
+              "МТЗ ЭЦУ-150 ГР",
               "МТЗ ЭЦУ-150 ГР"
             ]
           },
@@ -3204,18 +3386,23 @@
               "VERMEER RT 350",
               "VERMEER RT 950",
               "VERMEER RTX 1250 (КОЛЁСНЫЙ)",
-              "VERMEER T 655"
+              "VERMEER T 1155",
+              "VERMEER T 655",
+              "VERMEER T 855"
             ]
           },
           {
             "brendname": "ДМИТРОВСКИЙ ЭЗ",
             "models": [
+              "ДМИТРОВСКИЙ ЭЗ ЭТЦ-1609",
               "ДМИТРОВСКИЙ ЭЗ ЭТЦ-1609"
             ]
           },
           {
             "brendname": "DITCH WITCH",
             "models": [
+              "DITCH WITCH HT300",
+              "DITCH WITCH RT95",
               "DITCH WITCH HT300",
               "DITCH WITCH RT95"
             ]
@@ -3301,7 +3488,10 @@
             "models": [
               "WATERKING WK 250",
               "WATERKING WK 150",
-              "WATERKING WK 220"
+              "WATERKING WK 220",
+              "WATERKING WK 150",
+              "WATERKING WK 220",
+              "WATERKING WK 250"
             ]
           },
           {
@@ -3312,18 +3502,21 @@
             "brendname": "TRUXOR",
             "models": [
               "TRUXOR DM 5000",
-              "TRUXOR DM 4700B"
+              "TRUXOR DM 4700B",
+              "TRUXOR DM 5000"
             ]
           },
           {
             "brendname": "AMPHIMASTER",
             "models": [
+              "AMPHIMASTER AM200",
               "AMPHIMASTER AM200"
             ]
           },
           {
             "brendname": "VOLVO",
             "models": [
+              "VOLVO EC140BLC EIK",
               "VOLVO EC140BLC EIK"
             ]
           }
@@ -3337,12 +3530,16 @@
             "models": [
               "TISOVEC UDS-114 НА ШАССИ TATRA T815",
               "TISOVEC UDS-114R",
-              "TISOVEC DH 214"
+              "TISOVEC DH 214",
+              "TISOVEC DH 214",
+              "TISOVEC UDS-114 НА ШАССИ TATRA T815",
+              "TISOVEC UDS-114R"
             ]
           },
           {
             "brendname": "TATRA",
             "models": [
+              "TATRA UDS 114",
               "TATRA UDS 114",
               "TATRA UDS 214"
             ]
@@ -3351,7 +3548,8 @@
             "brendname": "ТВЭКС",
             "models": [
               "ТВЭКС ЕА-17У",
-              "ТВЭКС ЕА-17K"
+              "ТВЭКС ЕА-17K",
+              "ТВЭКС ЕА-17У"
             ]
           },
           {
@@ -3363,6 +3561,7 @@
           {
             "brendname": "GRADALL",
             "models": [
+              "GRADALL XL3100",
               "GRADALL XL3100"
             ]
           },
@@ -3398,8 +3597,10 @@
               "POWERSCREEN CHIEFTAIN 1400(TRACK)",
               "POWERSCREEN CHIEFTAIN 2100X BIVITEC",
               "POWERSCREEN CHIEFTAIN 2100X TRACK (2 DECK)",
+              "POWERSCREEN CHIEFTAIN 2100X TRACK (3 DECK)",
               "POWERSCREEN CHIEFTAIN 2400",
-              "POWERSCREEN WARRIOR 1400"
+              "POWERSCREEN WARRIOR 1400",
+              "POWERSCREEN WARRIOR 1800"
             ]
           },
           {
@@ -3409,6 +3610,8 @@
               "MCCLOSKEY S130 TRIPLECK TRACK",
               "MCCLOSKEY R105",
               "MCCLOSKEY R155",
+              "MCCLOSKEY S130 TRIPLECK TRACK",
+              "MCCLOSKEY S190 TRACK",
               "MCCLOSKEY S190 TRIPLEDECK TRACK"
             ]
           },
@@ -3418,7 +3621,8 @@
               "EXTEC S 5",
               "EXTEC E 7",
               "EXTEC ROBOTRAC",
-              "EXTEC S 4"
+              "EXTEC S 4",
+              "EXTEC S 5"
             ]
           },
           {
@@ -3440,6 +3644,7 @@
             "models": [
               "MAXIMUS 516",
               "MAXIMUS 512",
+              "MAXIMUS 516",
               "MAXIMUS 522"
             ]
           },
@@ -3516,142 +3721,6 @@
           {
             "brendname": "РУДГОРМАШ",
             "models": []
-          }
-        ]
-      },
-      {
-        "typename": "Дробилки",
-        "brends": [
-          {
-            "brendname": "SANDVIK",
-            "models": [
-              "SANDVIK QJ330 (FINTEC F1107)",
-              "SANDVIK QJ340 (EXTEC C-12+)",
-              "SANDVIK QJ341",
-              "SANDVIK QH330 (FINTEC F1080)",
-              "SANDVIK CH550",
-              "SANDVIK QH331",
-              "SANDVIK QI340 (EXTEC I-C13)",
-              "SANDVIK QI430 (FINTEC F1440)",
-              "SANDVIK QJ240 (EXTEC C-10+)",
-              "SANDVIK UH320 (RC3800)",
-              "SANDVIK UJ440E (CM1208F)"
-            ]
-          },
-          {
-            "brendname": "TEREX - FINLAY",
-            "models": []
-          },
-          {
-            "brendname": "MCCLOSKEY",
-            "models": [
-              "MCCLOSKEY C44"
-            ]
-          },
-          {
-            "brendname": "EXTEC",
-            "models": [
-              "EXTEC C-12",
-              "EXTEC C-12+",
-              "EXTEC X44 SBS"
-            ]
-          },
-          {
-            "brendname": "TEREX - PEGSON",
-            "models": []
-          },
-          {
-            "brendname": "KLEEMANN",
-            "models": [
-              "KLEEMANN MOBICAT MC 110 R",
-              "KLEEMANN MOBICAT MC 120 Z",
-              "KLEEMANN MOBICONE MCO 9"
-            ]
-          },
-          {
-            "brendname": "METSO",
-            "models": [
-              "METSO LT105",
-              "METSO NP1213"
-            ]
-          },
-          {
-            "brendname": "RUBBLE MASTER",
-            "models": [
-              "RUBBLE MASTER RM100"
-            ]
-          },
-          {
-            "brendname": "TESAB",
-            "models": [
-              "TESAB MK10570"
-            ]
-          },
-          {
-            "brendname": "POWERSCREEN",
-            "models": [
-              "POWERSCREEN XA400S"
-            ]
-          },
-          {
-            "brendname": "ATLAS COPCO",
-            "models": [
-              "ATLAS COPCO POWERCRUSHER PC 3"
-            ]
-          },
-          {
-            "brendname": "СТРОММАШИНА, САМАРА",
-            "models": []
-          },
-          {
-            "brendname": "BROWN LENOX",
-            "models": [
-              "BROWN LENOX KK 114"
-            ]
-          },
-          {
-            "brendname": "HARTL",
-            "models": [
-              "HARTL POWERCRUSHER PC 1265 J (ЛИНЕЙКА ПРОДАНА ATLAS COPCO)"
-            ]
-          },
-          {
-            "brendname": "HITACHI",
-            "models": [
-              "HITACHI ZR950JC"
-            ]
-          },
-          {
-            "brendname": "KPI-JCI",
-            "models": []
-          },
-          {
-            "brendname": "PARKER",
-            "models": [
-              "PARKER RE1165"
-            ]
-          },
-          {
-            "brendname": "REV",
-            "models": [
-              "REV GCV 100"
-            ]
-          },
-          {
-            "brendname": "SBM",
-            "models": []
-          },
-          {
-            "brendname": "ДРОБМАШ",
-            "models": [
-              "ДРОБМАШ СМД-110А"
-            ]
-          },
-          {
-            "brendname": "ПРОМЭК",
-            "models": [
-              "ПРОМЭК РСS-280 GC"
-            ]
           }
         ]
       },
@@ -3777,6 +3846,147 @@
         ]
       },
       {
+        "typename": "Дробилки",
+        "brends": [
+          {
+            "brendname": "SANDVIK",
+            "models": [
+              "SANDVIK QJ330 (FINTEC F1107)",
+              "SANDVIK QJ340 (EXTEC C-12+)",
+              "SANDVIK QJ341",
+              "SANDVIK QH330 (FINTEC F1080)",
+              "SANDVIK CH550",
+              "SANDVIK QH330 (FINTEC F1080)",
+              "SANDVIK QH331",
+              "SANDVIK QI340 (EXTEC I-C13)",
+              "SANDVIK QI430 (FINTEC F1440)",
+              "SANDVIK QJ240 (EXTEC C-10+)",
+              "SANDVIK QJ330 (FINTEC F1107)",
+              "SANDVIK QJ340 (EXTEC C-12+)",
+              "SANDVIK QJ341",
+              "SANDVIK UH320 (RC3800)",
+              "SANDVIK UJ440E (CM1208F)"
+            ]
+          },
+          {
+            "brendname": "TEREX - FINLAY",
+            "models": []
+          },
+          {
+            "brendname": "MCCLOSKEY",
+            "models": [
+              "MCCLOSKEY C44"
+            ]
+          },
+          {
+            "brendname": "EXTEC",
+            "models": [
+              "EXTEC C-12",
+              "EXTEC C-12+",
+              "EXTEC X44 SBS"
+            ]
+          },
+          {
+            "brendname": "TEREX - PEGSON",
+            "models": []
+          },
+          {
+            "brendname": "KLEEMANN",
+            "models": [
+              "KLEEMANN MOBICAT MC 110 R",
+              "KLEEMANN MOBICAT MC 120 Z",
+              "KLEEMANN MOBICONE MCO 9"
+            ]
+          },
+          {
+            "brendname": "METSO",
+            "models": [
+              "METSO LT105",
+              "METSO NP1213"
+            ]
+          },
+          {
+            "brendname": "RUBBLE MASTER",
+            "models": [
+              "RUBBLE MASTER RM100",
+              "RUBBLE MASTER RM100"
+            ]
+          },
+          {
+            "brendname": "TESAB",
+            "models": [
+              "TESAB MK10570"
+            ]
+          },
+          {
+            "brendname": "POWERSCREEN",
+            "models": [
+              "POWERSCREEN XA400S"
+            ]
+          },
+          {
+            "brendname": "ATLAS COPCO",
+            "models": [
+              "ATLAS COPCO POWERCRUSHER PC 3"
+            ]
+          },
+          {
+            "brendname": "СТРОММАШИНА, САМАРА",
+            "models": []
+          },
+          {
+            "brendname": "BROWN LENOX",
+            "models": [
+              "BROWN LENOX KK 114"
+            ]
+          },
+          {
+            "brendname": "HARTL",
+            "models": [
+              "HARTL POWERCRUSHER PC 1265 J (ЛИНЕЙКА ПРОДАНА ATLAS COPCO)"
+            ]
+          },
+          {
+            "brendname": "HITACHI",
+            "models": [
+              "HITACHI ZR950JC"
+            ]
+          },
+          {
+            "brendname": "KPI-JCI",
+            "models": []
+          },
+          {
+            "brendname": "PARKER",
+            "models": [
+              "PARKER RE1165"
+            ]
+          },
+          {
+            "brendname": "REV",
+            "models": [
+              "REV GCV 100"
+            ]
+          },
+          {
+            "brendname": "SBM",
+            "models": []
+          },
+          {
+            "brendname": "ДРОБМАШ",
+            "models": [
+              "ДРОБМАШ СМД-110А"
+            ]
+          },
+          {
+            "brendname": "ПРОМЭК",
+            "models": [
+              "ПРОМЭК РСS-280 GC"
+            ]
+          }
+        ]
+      },
+      {
         "typename": "Ленточные конвейеры",
         "brends": []
       },
@@ -3802,6 +4012,7 @@
           {
             "brendname": "SANDVIK",
             "models": [
+              "SANDVIK TORO 400",
               "SANDVIK TORO 400"
             ]
           }
@@ -3812,15 +4023,12 @@
         "brends": []
       },
       {
-        "typename": "Самосвалы подземные шахтные",
-        "brends": []
-      },
-      {
         "typename": "Самосвалы карьерные",
         "brends": [
           {
             "brendname": "КАМАЗ",
             "models": [
+              "КАМАЗ-6520-60",
               "КАМАЗ-6520-60",
               "КАМАЗ-6522-53",
               "КАМАЗ-65222-43",
@@ -3832,12 +4040,15 @@
             "models": [
               "SHAANXI / SHACMAN SX3256DR384",
               "SHAANXI / SHACMAN SX5634ZPR364",
-              "SHAANXI / SHACMAN SX3254JM384"
+              "SHAANXI / SHACMAN SX3254JM384",
+              "SHAANXI / SHACMAN SX3256DR384",
+              "SHAANXI / SHACMAN SX5634ZPR364"
             ]
           },
           {
             "brendname": "VOLVO",
             "models": [
+              "VOLVO BM 425B",
               "VOLVO BM 425B",
               "VOLVO BM 425C",
               "VOLVO BM 442B",
@@ -3851,12 +4062,14 @@
             "brendname": "TATRA",
             "models": [
               "TATRA T815-250S01",
-              "TATRA T163-33ESKT/374"
+              "TATRA T163-33ESKT/374",
+              "TATRA T815-250S01"
             ]
           },
           {
             "brendname": "SCANIA",
             "models": [
+              "SCANIA P 380 CB8X4EHZ",
               "SCANIA P 380 CB8X4EHZ"
             ]
           },
@@ -3922,6 +4135,10 @@
         ]
       },
       {
+        "typename": "Самосвалы подземные шахтные",
+        "brends": []
+      },
+      {
         "typename": "Самосвалы сочлененные",
         "brends": [
           {
@@ -3933,9 +4150,14 @@
               "VOLVO A30D",
               "VOLVO A40",
               "VOLVO A20C 6X6",
+              "VOLVO A30D",
               "VOLVO A30F",
               "VOLVO A35C",
               "VOLVO A35D",
+              "VOLVO A35E",
+              "VOLVO A35F",
+              "VOLVO A40",
+              "VOLVO A40D",
               "VOLVO BM 861 6X4"
             ]
           },
@@ -3949,6 +4171,7 @@
           {
             "brendname": "BELL",
             "models": [
+              "BELL B30D",
               "BELL B30D",
               "BELL B40D"
             ]
@@ -4106,12 +4329,14 @@
           {
             "brendname": "HAMMEL",
             "models": [
+              "HAMMEL VB 750 D",
               "HAMMEL VB 750 D"
             ]
           },
           {
             "brendname": "MOROOKA",
             "models": [
+              "MOROOKA MC-1500",
               "MOROOKA MC-1500"
             ]
           },
@@ -4127,6 +4352,7 @@
           {
             "brendname": "КАМАЗ",
             "models": [
+              "КАМАЗ КО-507А-2",
               "КАМАЗ КО-507А-2"
             ]
           },
@@ -4137,6 +4363,7 @@
           {
             "brendname": "KOBIT",
             "models": [
+              "KOBIT FEKO KOMBI 3",
               "KOBIT FEKO KOMBI 3"
             ]
           },
@@ -4149,12 +4376,14 @@
           {
             "brendname": "JUROP",
             "models": [
+              "JUROP VAC-JET",
               "JUROP VAC-JET"
             ]
           },
           {
             "brendname": "ТВЕРЬКОММАШ",
             "models": [
+              "ТВЕРЬКОММАШ ТКМ-620 НА ШАССИ КАМАЗ-65115",
               "ТВЕРЬКОММАШ ТКМ-620 НА ШАССИ КАМАЗ-65115"
             ]
           },
@@ -4193,6 +4422,7 @@
           {
             "brendname": "ЗИЛ",
             "models": [
+              "ЗИЛ КО-520",
               "ЗИЛ КО-520"
             ]
           },
@@ -4200,12 +4430,14 @@
             "brendname": "ГАЗ",
             "models": [
               "ГАЗ МВ-4,7-43206",
-              "ГАЗ МВ-10-4320"
+              "ГАЗ МВ-10-4320",
+              "ГАЗ МВ-4,7-43206"
             ]
           },
           {
             "brendname": "МАЗ",
             "models": [
+              "МАЗ 492143-390",
               "МАЗ 492143-390"
             ]
           },
@@ -4216,12 +4448,14 @@
           {
             "brendname": "АТЕКО",
             "models": [
+              "АТЕКО КО-503 НА ШАССИ ГАЗ-3307",
               "АТЕКО КО-503 НА ШАССИ ГАЗ-3307"
             ]
           },
           {
             "brendname": "ТЕХМАШ",
             "models": [
+              "ТЕХМАШ ТМ-7,0ВМ",
               "ТЕХМАШ ТМ-7,0ВМ"
             ]
           }
@@ -4241,12 +4475,14 @@
           {
             "brendname": "ДОРКОМТЕХНИКА",
             "models": [
+              "ДОРКОМТЕХНИКА ДКТ 250 НА ШАССИ КАМАЗ-6540",
               "ДОРКОМТЕХНИКА ДКТ 250 НА ШАССИ КАМАЗ-6540"
             ]
           },
           {
             "brendname": "FFG",
             "models": [
+              "FFG ELEPHANT MULTI 9",
               "FFG ELEPHANT MULTI 9"
             ]
           },
@@ -4270,6 +4506,7 @@
           {
             "brendname": "МАЗ",
             "models": [
+              "МАЗ 490843-390",
               "МАЗ 490843-390"
             ]
           },
@@ -4280,12 +4517,14 @@
           {
             "brendname": "SCHMIDT",
             "models": [
+              "SCHMIDT ACE",
               "SCHMIDT ACE"
             ]
           },
           {
             "brendname": "ЗАВОД КДМ ИМ. М.И. КАЛИНИНА",
             "models": [
+              "ЗАВОД КДМ ИМ. М.И. КАЛИНИНА ЭД-405 (КДМ)",
               "ЗАВОД КДМ ИМ. М.И. КАЛИНИНА ЭД-405 (КДМ)"
             ]
           },
@@ -4315,12 +4554,14 @@
           {
             "brendname": "ЗИЛ",
             "models": [
+              "ЗИЛ 440КО-4Д",
               "ЗИЛ 440КО-4Д"
             ]
           },
           {
             "brendname": "МАЗ",
             "models": [
+              "МАЗ 6902В5",
               "МАЗ 6902В5"
             ]
           },
@@ -4335,6 +4576,7 @@
           {
             "brendname": "HYUNDAI",
             "models": [
+              "HYUNDAI HD 65",
               "HYUNDAI HD 65"
             ]
           },
@@ -4357,7 +4599,11 @@
               "МТЗ 82МК",
               "МТЗ МУП-351",
               "МТЗ 320МК",
-              "МТЗ 320МУП"
+              "МТЗ 320МУП",
+              "МТЗ 320МК",
+              "МТЗ 320МУП",
+              "МТЗ 82МК",
+              "МТЗ МУП-351"
             ]
           },
           {
@@ -4365,6 +4611,7 @@
             "models": [
               "BUCHER CITYCAT 2020XL",
               "BUCHER CITYCAT 2020SL",
+              "BUCHER CITYCAT 2020XL",
               "BUCHER CITYCAT 5000",
               "BUCHER CITYFANT 60"
             ]
@@ -4372,6 +4619,7 @@
           {
             "brendname": "MERCEDES",
             "models": [
+              "MERCEDES-BENZ UNIMOG U400 FKM 2400",
               "MERCEDES-BENZ UNIMOG U400 FKM 2400"
             ]
           },
@@ -4415,12 +4663,14 @@
           {
             "brendname": "ЗИЛ",
             "models": [
+              "ЗИЛ МДК-433362-03",
               "ЗИЛ МДК-433362-03"
             ]
           },
           {
             "brendname": "ЗАВОД ДОРОЖНОГО ОБОРУДОВАНИЯ",
             "models": [
+              "ЗАВОД ДОРОЖНОГО ОБОРУДОВАНИЯ ПО 45143",
               "ЗАВОД ДОРОЖНОГО ОБОРУДОВАНИЯ ПО 45143"
             ]
           },
@@ -4448,6 +4698,7 @@
           {
             "brendname": "АМКОДОР",
             "models": [
+              "АМКОДОР 37",
               "АМКОДОР 37"
             ]
           }
@@ -4484,18 +4735,21 @@
           {
             "brendname": "МТЗ",
             "models": [
+              "МТЗ БЕЛАРУС ФРС-200",
               "МТЗ БЕЛАРУС ФРС-200"
             ]
           },
           {
             "brendname": "АМКОДОР",
             "models": [
+              "АМКОДОР 9211",
               "АМКОДОР 9211"
             ]
           },
           {
             "brendname": "УРАЛ",
             "models": [
+              "УРАЛ ДЭ-226",
               "УРАЛ ДЭ-226"
             ]
           }
@@ -4507,6 +4761,7 @@
           {
             "brendname": "BOMAG",
             "models": [
+              "BOMAG BC 972 RB-2",
               "BOMAG BC 972 RB-2"
             ]
           }
@@ -4518,11 +4773,19 @@
     "assignmentname": "Лесная техника",
     "types": [
       {
+        "typename": "Лесовозы",
+        "brends": []
+      },
+      {
         "typename": "Валочно-пакетирующие машины",
         "brends": []
       },
       {
-        "typename": "Лесовозы",
+        "typename": "Лесопогрузчики",
+        "brends": []
+      },
+      {
+        "typename": "Сучкорезные машины",
         "brends": []
       },
       {
@@ -4531,64 +4794,39 @@
           {
             "brendname": "AHWI",
             "models": [
+              "AHWI RT400",
               "AHWI RT400"
             ]
           },
           {
             "brendname": "PRIMETECH",
             "models": [
+              "PRIMETECH PT-400",
               "PRIMETECH PT-400"
             ]
           },
           {
             "brendname": "RAYCO",
             "models": [
+              "RAYCO T360",
               "RAYCO T360"
             ]
           },
           {
             "brendname": "LASKI",
             "models": [
+              "LASKI F 460E/27",
               "LASKI F 460E/27"
             ]
           },
           {
             "brendname": "FECON",
             "models": [
+              "FECON FTX600",
               "FECON FTX600"
             ]
           }
         ]
-      },
-      {
-        "typename": "Лесопогрузчики",
-        "brends": []
-      },
-      {
-        "typename": "Рубительные машины",
-        "brends": [
-          {
-            "brendname": "VERMEER",
-            "models": [
-              "VERMEER HG4000TX"
-            ]
-          },
-          {
-            "brendname": "TEKNAMOTOR",
-            "models": [
-              "TEKNAMOTOR SKORPION 250 SDTG",
-              "TEKNAMOTOR SKORPION 350 SDB"
-            ]
-          },
-          {
-            "brendname": "HEIZOMAT",
-            "models": []
-          }
-        ]
-      },
-      {
-        "typename": "Сучкорезные машины",
-        "brends": []
       },
       {
         "typename": "Тракторы трелевочные",
@@ -4596,8 +4834,34 @@
           {
             "brendname": "АЛТТРАК",
             "models": [
+              "АЛТТРАК ТТ-4",
               "АЛТТРАК ТТ-4"
             ]
+          }
+        ]
+      },
+      {
+        "typename": "Рубительные машины",
+        "brends": [
+          {
+            "brendname": "VERMEER",
+            "models": [
+              "VERMEER HG4000TX",
+              "VERMEER HG4000TX"
+            ]
+          },
+          {
+            "brendname": "TEKNAMOTOR",
+            "models": [
+              "TEKNAMOTOR SKORPION 250 SDTG",
+              "TEKNAMOTOR SKORPION 350 SDB",
+              "TEKNAMOTOR SKORPION 250 SDTG",
+              "TEKNAMOTOR SKORPION 350 SDB"
+            ]
+          },
+          {
+            "brendname": "HEIZOMAT",
+            "models": []
           }
         ]
       },
@@ -4618,58 +4882,6 @@
   {
     "assignmentname": "Мини-техника",
     "types": [
-      {
-        "typename": "Думперы",
-        "brends": [
-          {
-            "brendname": "WACKER NEUSON",
-            "models": [
-              "WACKER NEUSON 6001",
-              "WACKER NEUSON 4001",
-              "WACKER NEUSON DT08",
-              "WACKER NEUSON 3001",
-              "WACKER NEUSON 5001",
-              "WACKER NEUSON DW60"
-            ]
-          },
-          {
-            "brendname": "МОТОМУЛ",
-            "models": [
-              "МОТОМУЛ МТ-300"
-            ]
-          },
-          {
-            "brendname": "YANMAR",
-            "models": [
-              "YANMAR C120R"
-            ]
-          },
-          {
-            "brendname": "TAKEUCHI",
-            "models": [
-              "TAKEUCHI TCR50"
-            ]
-          },
-          {
-            "brendname": "MOROOKA",
-            "models": [
-              "MOROOKA MST-2200VD"
-            ]
-          },
-          {
-            "brendname": "ALITRAK",
-            "models": [
-              "ALITRAK D-TRAK 300"
-            ]
-          },
-          {
-            "brendname": "LIEBHERR",
-            "models": [
-              "LIEBHERR PR731"
-            ]
-          }
-        ]
-      },
       {
         "typename": "Мини-погрузчики",
         "brends": [
@@ -4694,6 +4906,7 @@
               "BOBCAT 463",
               "BOBCAT 463F",
               "BOBCAT 520",
+              "BOBCAT 530",
               "BOBCAT 533",
               "BOBCAT 542B",
               "BOBCAT 553",
@@ -4711,23 +4924,28 @@
               "BOBCAT S130",
               "BOBCAT S150",
               "BOBCAT S160",
+              "BOBCAT S175",
               "BOBCAT S175H",
               "BOBCAT S185",
               "BOBCAT S185 TURBO",
               "BOBCAT S185H",
               "BOBCAT S205",
+              "BOBCAT S220",
               "BOBCAT S250",
               "BOBCAT S250H",
+              "BOBCAT S300",
               "BOBCAT S300H",
               "BOBCAT S330",
               "BOBCAT S530",
               "BOBCAT S570",
               "BOBCAT S630",
+              "BOBCAT S650",
               "BOBCAT S70",
               "BOBCAT S770",
               "BOBCAT S850",
               "BOBCAT T110",
               "BOBCAT T140",
+              "BOBCAT T190",
               "BOBCAT T190H",
               "BOBCAT T250",
               "BOBCAT T250 H",
@@ -5027,6 +5245,64 @@
         ]
       },
       {
+        "typename": "Думперы",
+        "brends": [
+          {
+            "brendname": "WACKER NEUSON",
+            "models": [
+              "WACKER NEUSON 6001",
+              "WACKER NEUSON 4001",
+              "WACKER NEUSON DT08",
+              "WACKER NEUSON 3001",
+              "WACKER NEUSON 5001",
+              "WACKER NEUSON 3001",
+              "WACKER NEUSON 4001",
+              "WACKER NEUSON 5001",
+              "WACKER NEUSON 6001",
+              "WACKER NEUSON DT08",
+              "WACKER NEUSON DW60"
+            ]
+          },
+          {
+            "brendname": "МОТОМУЛ",
+            "models": [
+              "МОТОМУЛ МТ-300",
+              "МОТОМУЛ МТ-300"
+            ]
+          },
+          {
+            "brendname": "YANMAR",
+            "models": [
+              "YANMAR C120R"
+            ]
+          },
+          {
+            "brendname": "TAKEUCHI",
+            "models": [
+              "TAKEUCHI TCR50"
+            ]
+          },
+          {
+            "brendname": "MOROOKA",
+            "models": [
+              "MOROOKA MST-2200VD"
+            ]
+          },
+          {
+            "brendname": "ALITRAK",
+            "models": [
+              "ALITRAK D-TRAK 300"
+            ]
+          },
+          {
+            "brendname": "LIEBHERR",
+            "models": [
+              "LIEBHERR PR731"
+            ]
+          }
+        ]
+      },
+      {
         "typename": "Мини-тракторы",
         "brends": [
           {
@@ -5062,16 +5338,19 @@
               "POTAIN IGO 32",
               "POTAIN IGO 36",
               "POTAIN IGO 42",
+              "POTAIN IGO 50",
               "POTAIN IGO T 70",
               "POTAIN IGO T 85",
               "POTAIN MC 235 B",
-              "POTAIN MC 85"
+              "POTAIN MC 85",
+              "POTAIN MDT 178"
             ]
           },
           {
             "brendname": "LIEBHERR",
             "models": [
               "LIEBHERR HIGH TOP 132 EC-H 8 LITRONIC",
+              "LIEBHERR 112 EC-H 8",
               "LIEBHERR 112 EC-H 8",
               "LIEBHERR 120 HC",
               "LIEBHERR 120 KR.1",
@@ -5084,6 +5363,7 @@
               "LIEBHERR FLAT TOP 71 EC-B 5",
               "LIEBHERR FLAT TOP 71 EC-B 5 FR.TRONIC",
               "LIEBHERR HIGH TOP 132 EC-H 8 FR.TRONIC",
+              "LIEBHERR HIGH TOP 132 EC-H 8 LITRONIC",
               "LIEBHERR HIGH TOP 200 EC-H 10 FR.TRONIC",
               "LIEBHERR HIGH TOP 245 EC-H 12 FR.TRONIC",
               "LIEBHERR HIGH TOP 280 EC-H 12 LITRONIC"
@@ -5129,6 +5409,7 @@
           {
             "brendname": "ЮНИКРАН",
             "models": [
+              "ЮНИКРАН КБ-403",
               "ЮНИКРАН КБ-403"
             ]
           },
@@ -5249,6 +5530,7 @@
           {
             "brendname": "ISUZU",
             "models": [
+              "ISUZU ELF 5.2 (АВТОГИДРОПОДЪЕМНИК)",
               "ISUZU ELF 5.2 (АВТОГИДРОПОДЪЕМНИК)"
             ]
           },
@@ -5271,6 +5553,7 @@
               "AICHI SK12",
               "AICHI SK2",
               "AICHI SK21",
+              "AICHI SK26",
               "AICHI SK3",
               "AICHI SK4",
               "AICHI SK9,9",
@@ -5285,6 +5568,8 @@
             "models": [
               "АГП-22.04 (ПСС-121.22)",
               "АГП-18.04 НА ШАССИ ГАЗ-3309",
+              "АГП-18.04 НА ШАССИ ГАЗ-3309",
+              "АГП-22.04 (ПСС-121.22)",
               "АГП-28 (ПСС-121.28)",
               "АГП-32Т НА ШАССИ КАМАЗ-65115"
             ]
@@ -5339,6 +5624,7 @@
           {
             "brendname": "ЗИЛ",
             "models": [
+              "ЗИЛ ПСС-131.22Э",
               "ЗИЛ ПСС-131.22Э"
             ]
           },
@@ -5381,6 +5667,7 @@
           {
             "brendname": "МАЗ",
             "models": [
+              "МАЗ АГП-20-5",
               "МАЗ АГП-20-5"
             ]
           },
@@ -5611,6 +5898,7 @@
             "brendname": "TAKRAF",
             "models": [
               "TAKRAF RDK 250",
+              "TAKRAF RDK 250",
               "TAKRAF RDK 400"
             ]
           },
@@ -5619,6 +5907,7 @@
             "models": [
               "РМЗ СКГ-401",
               "РМЗ СКГ-40/63",
+              "РМЗ СКГ-401",
               "РМЗ СКГ-63/100",
               "РМЗ СКГ-631"
             ]
@@ -5626,6 +5915,7 @@
           {
             "brendname": "ЧЕЛЯБИНЕЦ",
             "models": [
+              "ЧЕЛЯБИНЕЦ ДЭК-251",
               "ЧЕЛЯБИНЕЦ ДЭК-251",
               "ЧЕЛЯБИНЕЦ ДЭК-321",
               "ЧЕЛЯБИНЕЦ ДЭК-401",
@@ -5636,6 +5926,7 @@
             "brendname": "ЧКЗ",
             "models": [
               "ЧКЗ МКГ-25.01А",
+              "ЧКЗ МКГ-25.01А",
               "ЧКЗ МКГ-40"
             ]
           },
@@ -5645,6 +5936,7 @@
               "LIEBHERR LR 1100",
               "LIEBHERR HS 845 HD LITRONIC",
               "LIEBHERR HS 885 HD LITRONIC",
+              "LIEBHERR LR 1100",
               "LIEBHERR LR 1130",
               "LIEBHERR LR 1160",
               "LIEBHERR LR 1280",
@@ -5656,6 +5948,7 @@
           {
             "brendname": "УЛЬЯНОВЕЦ",
             "models": [
+              "УЛЬЯНОВЕЦ МКГС-100",
               "УЛЬЯНОВЕЦ МКГС-100"
             ]
           },
@@ -5747,6 +6040,7 @@
           {
             "brendname": "УРЮПИНСКИЙ КЗ",
             "models": [
+              "УРЮПИНСКИЙ КЗ ККТК 5",
               "УРЮПИНСКИЙ КЗ ККТК 5"
             ]
           },
@@ -5762,6 +6056,7 @@
           {
             "brendname": "ЗПТО",
             "models": [
+              "ЗПТО КРАН МОСТОВОЙ МЕТАЛЛУРГИЧЕСКИЙ ПРОЧИЙ",
               "ЗПТО КРАН МОСТОВОЙ МЕТАЛЛУРГИЧЕСКИЙ ПРОЧИЙ"
             ]
           }
@@ -5770,58 +6065,6 @@
       {
         "typename": "Краны судовые",
         "brends": []
-      },
-      {
-        "typename": "Мини-краны",
-        "brends": [
-          {
-            "brendname": "MAEDA",
-            "models": [
-              "MAEDA MC305CRM(E)-2",
-              "MAEDA MC104",
-              "MAEDA LC785M-8",
-              "MAEDA MC174CRM",
-              "MAEDA MC285CRM(E)",
-              "MAEDA MC405CRM(E)"
-            ]
-          },
-          {
-            "brendname": "JEKKO",
-            "models": [
-              "JEKKO SPX1040C",
-              "JEKKO SPD360C",
-              "JEKKO SPX1275CDH",
-              "JEKKO SPX424CDH",
-              "JEKKO SPX527C"
-            ]
-          },
-          {
-            "brendname": "VALLA",
-            "models": [
-              "VALLA 250 E",
-              "VALLA 400 E",
-              "VALLA 120 E",
-              "VALLA 120 D",
-              "VALLA 180 E"
-            ]
-          },
-          {
-            "brendname": "KEGIOM",
-            "models": [
-              "KEGIOM 5000 COBRA",
-              "KEGIOM 510 PANDA",
-              "KEGIOM 8700-E4"
-            ]
-          },
-          {
-            "brendname": "KOMATSU",
-            "models": []
-          },
-          {
-            "brendname": "MIGHTY CRANE",
-            "models": []
-          }
-        ]
       },
       {
         "typename": "Краны-манипуляторы",
@@ -5834,6 +6077,7 @@
               "KANGLIM KS1253N",
               "KANGLIM KS1254N",
               "KANGLIM KS1255N",
+              "KANGLIM KS1256G-II",
               "KANGLIM KS2055",
               "KANGLIM KS2056",
               "KANGLIM KS2056SM",
@@ -5848,6 +6092,7 @@
           {
             "brendname": "UNIC",
             "models": [
+              "UNIC 330",
               "UNIC 330",
               "UNIC UR-A103",
               "UNIC UR-A104",
@@ -5879,6 +6124,7 @@
               "TADANO TM-ZR233W",
               "TADANO TM-ZR293",
               "TADANO TM-ZR302",
+              "TADANO TM-ZR303",
               "TADANO TM-ZR304",
               "TADANO TM-ZR305",
               "TADANO TM-ZR306",
@@ -5896,6 +6142,7 @@
           {
             "brendname": "HINO",
             "models": [
+              "HINO 300",
               "HINO 300"
             ]
           },
@@ -5910,6 +6157,7 @@
               "SOOSAN SCS513",
               "SOOSAN SCS736",
               "SOOSAN SCS736LII",
+              "SOOSAN SCS746L",
               "SOOSAN SCS866LS",
               "SOOSAN SCS867LS"
             ]
@@ -6259,86 +6507,60 @@
         ]
       },
       {
-        "typename": "Подъемники коленчатые",
+        "typename": "Мини-краны",
         "brends": [
           {
-            "brendname": "HAULOTTE",
+            "brendname": "MAEDA",
             "models": [
-              "HAULOTTE HA 18 PX",
-              "HAULOTTE HA 15 IP",
-              "HAULOTTE HA 20 PX",
-              "HAULOTTE HA 32 PX",
-              "HAULOTTE HA 16 PX",
-              "HAULOTTE HA 12 IP",
-              "HAULOTTE HA 16 SPX",
-              "HAULOTTE HA 16 РЕ",
-              "HAULOTTE HA 18 SPX",
-              "HAULOTTE HA 260 PX",
-              "HAULOTTE НA 41 PX-NT"
+              "MAEDA MC305CRM(E)-2",
+              "MAEDA MC104",
+              "MAEDA LC785M-8",
+              "MAEDA MC104",
+              "MAEDA MC174CRM",
+              "MAEDA MC285CRM(E)",
+              "MAEDA MC305CRM(E)-2",
+              "MAEDA MC405CRM(E)"
             ]
           },
           {
-            "brendname": "GENIE",
+            "brendname": "JEKKO",
             "models": [
-              "GENIE Z33-18",
-              "GENIE Z34-22N",
-              "GENIE Z45-25",
-              "GENIE Z51-30JRT",
-              "GENIE Z60-34"
+              "JEKKO SPX1040C",
+              "JEKKO SPD360C",
+              "JEKKO SPX1040C",
+              "JEKKO SPX1275CDH",
+              "JEKKO SPX424CDH",
+              "JEKKO SPX527C"
             ]
           },
           {
-            "brendname": "JLG",
+            "brendname": "VALLA",
             "models": [
-              "JLG 1250AJP",
-              "JLG 150HAX ARTICULATING BOOM LIFT",
-              "JLG 340AJ ARTICULATING BOOM LIFT",
-              "JLG 450AJ SERIES II ARTICULATING BOOM LIFT",
-              "JLG 510AJ",
-              "JLG 600AJ ARTICULATING BOOM LIFT",
-              "JLG E300AJ ELECTRIC BOOM LIFT",
-              "JLG E450A ELECTRIC BOOM LIFT",
-              "JLG E450AJ",
-              "JLG E600J ELECTRIC BOOM LIFT"
+              "VALLA 250 E",
+              "VALLA 400 E",
+              "VALLA 120 E",
+              "VALLA 120 D",
+              "VALLA 120 E",
+              "VALLA 180 E",
+              "VALLA 250 E",
+              "VALLA 400 E"
             ]
           },
           {
-            "brendname": "DINO",
+            "brendname": "KEGIOM",
             "models": [
-              "DINO 180XT",
-              "DINO 210XT",
-              "DINO 260XTD"
+              "KEGIOM 5000 COBRA",
+              "KEGIOM 510 PANDA",
+              "KEGIOM 8700-E4"
             ]
           },
           {
-            "brendname": "MANITOU",
-            "models": [
-              "MANITOU 120 AETJ-C",
-              "MANITOU 200 ATJ"
-            ]
-          },
-          {
-            "brendname": "SKYJACK",
-            "models": [
-              "SKYJACK SJ 46AJ",
-              "SKYJACK SJ 51AJ"
-            ]
-          },
-          {
-            "brendname": "SNORKEL / UPRIGHT",
+            "brendname": "KOMATSU",
             "models": []
           },
           {
-            "brendname": "TEREX",
-            "models": [
-              "TEREX TA50RT"
-            ]
-          },
-          {
-            "brendname": "NIFTY",
-            "models": [
-              "NIFTYLIFT NIFTY 140"
-            ]
+            "brendname": "MIGHTY CRANE",
+            "models": []
           }
         ]
       },
@@ -6354,7 +6576,12 @@
               "FUCHS MHL 340D",
               "FUCHS MHL 380",
               "FUCHS MHL 320",
-              "FUCHS MHL 331"
+              "FUCHS MHL 331",
+              "FUCHS MHL 340D",
+              "FUCHS MHL 350",
+              "FUCHS MHL 360",
+              "FUCHS MHL 360 FQC",
+              "FUCHS MHL 380"
             ]
           },
           {
@@ -6378,6 +6605,7 @@
           {
             "brendname": "SOLMEC",
             "models": [
+              "SOLMEC 210 ESC",
               "SOLMEC 210 ESC"
             ]
           }
@@ -6397,10 +6625,13 @@
               "MANITOU MRT-X 2150 PRIVILEGE PLUS",
               "MANITOU MT 1235 ST",
               "MANITOU MT 1435 HSL",
+              "MANITOU MT 1440",
+              "MANITOU MT 1840",
               "MANITOU MT 1840 A",
               "MANITOU MT 1840 H",
               "MANITOU MT 1840 HA",
               "MANITOU MT 625",
+              "MANITOU MT-X 1740 SLT",
               "MANITOU MT-X 1840"
             ]
           },
@@ -6416,6 +6647,8 @@
               "JCB LOADALL 535-140",
               "JCB LOADALL 535-95",
               "JCB LOADALL 537-135",
+              "JCB LOADALL 540-140",
+              "JCB LOADALL 540-170",
               "JCB LOADALL 541-70",
               "JCB TM310"
             ]
@@ -6441,7 +6674,8 @@
               "CATERPILLAR TH514",
               "CATERPILLAR TH337",
               "CATERPILLAR TH407",
-              "CATERPILLAR TH414"
+              "CATERPILLAR TH414",
+              "CATERPILLAR TH514"
             ]
           },
           {
@@ -6534,6 +6768,96 @@
         ]
       },
       {
+        "typename": "Подъемники коленчатые",
+        "brends": [
+          {
+            "brendname": "HAULOTTE",
+            "models": [
+              "HAULOTTE HA 18 PX",
+              "HAULOTTE HA 15 IP",
+              "HAULOTTE HA 20 PX",
+              "HAULOTTE HA 32 PX",
+              "HAULOTTE HA 16 PX",
+              "HAULOTTE HA 12 IP",
+              "HAULOTTE HA 12 IP",
+              "HAULOTTE HA 15 IP",
+              "HAULOTTE HA 16 PX",
+              "HAULOTTE HA 16 SPX",
+              "HAULOTTE HA 16 РЕ",
+              "HAULOTTE HA 18 PX",
+              "HAULOTTE HA 18 SPX",
+              "HAULOTTE HA 20 PX",
+              "HAULOTTE HA 260 PX",
+              "HAULOTTE HA 32 PX",
+              "HAULOTTE НA 41 PX-NT"
+            ]
+          },
+          {
+            "brendname": "GENIE",
+            "models": [
+              "GENIE Z33-18",
+              "GENIE Z34-22N",
+              "GENIE Z45-25",
+              "GENIE Z51-30JRT",
+              "GENIE Z60-34"
+            ]
+          },
+          {
+            "brendname": "JLG",
+            "models": [
+              "JLG 1250AJP",
+              "JLG 150HAX ARTICULATING BOOM LIFT",
+              "JLG 340AJ ARTICULATING BOOM LIFT",
+              "JLG 450AJ SERIES II ARTICULATING BOOM LIFT",
+              "JLG 510AJ",
+              "JLG 600AJ ARTICULATING BOOM LIFT",
+              "JLG E300AJ ELECTRIC BOOM LIFT",
+              "JLG E450A ELECTRIC BOOM LIFT",
+              "JLG E450AJ",
+              "JLG E600J ELECTRIC BOOM LIFT"
+            ]
+          },
+          {
+            "brendname": "DINO",
+            "models": [
+              "DINO 180XT",
+              "DINO 210XT",
+              "DINO 260XTD"
+            ]
+          },
+          {
+            "brendname": "MANITOU",
+            "models": [
+              "MANITOU 120 AETJ-C",
+              "MANITOU 200 ATJ"
+            ]
+          },
+          {
+            "brendname": "SKYJACK",
+            "models": [
+              "SKYJACK SJ 46AJ",
+              "SKYJACK SJ 51AJ"
+            ]
+          },
+          {
+            "brendname": "SNORKEL / UPRIGHT",
+            "models": []
+          },
+          {
+            "brendname": "TEREX",
+            "models": [
+              "TEREX TA50RT"
+            ]
+          },
+          {
+            "brendname": "NIFTY",
+            "models": [
+              "NIFTYLIFT NIFTY 140"
+            ]
+          }
+        ]
+      },
+      {
         "typename": "Подъемники мачтовые",
         "brends": [
           {
@@ -6548,7 +6872,9 @@
             "brendname": "SCANCLIMBER",
             "models": [
               "SCANCLIMBER SC4000 (ОДНОМАЧТОВЫЙ)",
-              "SCANCLIMBER SC1300 (ОДНОМАЧТОВЫЙ)"
+              "SCANCLIMBER SC1300 (ОДНОМАЧТОВЫЙ)",
+              "SCANCLIMBER SC1300 (ОДНОМАЧТОВЫЙ)",
+              "SCANCLIMBER SC4000 (ОДНОМАЧТОВЫЙ)"
             ]
           },
           {
@@ -6558,18 +6884,21 @@
           {
             "brendname": "ТЭМЗ",
             "models": [
+              "ТЭМЗ ПМГ-1000",
               "ТЭМЗ ПМГ-1000"
             ]
           },
           {
             "brendname": "HAULOTTE",
             "models": [
+              "HAULOTTE STAR 10",
               "HAULOTTE STAR 10"
             ]
           },
           {
             "brendname": "JLG",
             "models": [
+              "JLG 41AM",
               "JLG 41AM"
             ]
           },
@@ -6580,6 +6909,7 @@
           {
             "brendname": "SAFI",
             "models": [
+              "SAFI VISION AS 2000",
               "SAFI VISION AS 2000"
             ]
           }
@@ -6597,13 +6927,18 @@
               "HAULOTTE H 15 SX",
               "HAULOTTE COMPACT 10 N",
               "HAULOTTE COMPACT 10",
+              "HAULOTTE COMPACT 10 N",
+              "HAULOTTE COMPACT 12",
               "HAULOTTE COMPACT 12 DX",
               "HAULOTTE COMPACT 12 RTE",
+              "HAULOTTE COMPACT 14",
               "HAULOTTE COMPACT 8",
               "HAULOTTE COMPACT 8 W",
               "HAULOTTE H 12 SX",
               "HAULOTTE H 12 SXL",
+              "HAULOTTE H 15 SX",
               "HAULOTTE H 15 SXL",
+              "HAULOTTE H 18 SX",
               "HAULOTTE H 18 SXL",
               "HAULOTTE OPTIMUM 8"
             ]
@@ -6616,6 +6951,7 @@
               "JLG 2030ES",
               "JLG 2630ES",
               "JLG 2646ES",
+              "JLG 3246ES",
               "JLG 40RTS",
               "JLG 4394RT SCISSOR LIFT",
               "JLG 500RTS"
@@ -6688,23 +7024,27 @@
             "models": [
               "GENIE S-125",
               "GENIE S-65",
+              "GENIE S-125",
               "GENIE S-45",
               "GENIE S-60TRAX",
-              "GENIE S-60XC"
+              "GENIE S-60XC",
+              "GENIE S-65"
             ]
           },
           {
             "brendname": "HAULOTTE",
             "models": [
               "HAULOTTE H 43 TPX",
-              "HAULOTTE H 21 TX"
+              "HAULOTTE H 21 TX",
+              "HAULOTTE H 43 TPX"
             ]
           },
           {
             "brendname": "JLG",
             "models": [
               "JLG 1500SJ TELESCOPIC BOOM LIFT",
-              "JLG 1200SJP TELESCOPIC BOOM LIFT"
+              "JLG 1200SJP TELESCOPIC BOOM LIFT",
+              "JLG 1500SJ TELESCOPIC BOOM LIFT"
             ]
           },
           {
@@ -6716,6 +7056,7 @@
           {
             "brendname": "AICHI",
             "models": [
+              "AICHI CRAWLER FLY BOOM SERIES1",
               "AICHI CRAWLER FLY BOOM SERIES1"
             ]
           },
@@ -6751,36 +7092,42 @@
           {
             "brendname": "KETONG",
             "models": [
+              "KETONG ZLP630",
               "KETONG ZLP630"
             ]
           },
           {
             "brendname": "CAMAC",
             "models": [
+              "CAMAC 2000",
               "CAMAC 2000"
             ]
           },
           {
             "brendname": "ТЭМЗ",
             "models": [
+              "ТЭМЗ 3851Б",
               "ТЭМЗ 3851Б"
             ]
           },
           {
             "brendname": "SOBR",
             "models": [
+              "SOBR ZLP-630",
               "SOBR ZLP-630"
             ]
           },
           {
             "brendname": "GEDA",
             "models": [
+              "GEDA AB 650",
               "GEDA AB 650"
             ]
           },
           {
             "brendname": "SAFI",
             "models": [
+              "SAFI SCAF 2000 S",
               "SAFI SCAF 2000 S"
             ]
           }
@@ -6793,7 +7140,9 @@
             "brendname": "KOMATSU",
             "models": [
               "KOMATSU D355C-3",
-              "KOMATSU D155C-1"
+              "KOMATSU D155C-1",
+              "KOMATSU D155C-1",
+              "KOMATSU D355C-3"
             ]
           },
           {
@@ -6803,6 +7152,7 @@
           {
             "brendname": "CATERPILLAR",
             "models": [
+              "CATERPILLAR 572R SERIES 2",
               "CATERPILLAR 572R SERIES 2",
               "CATERPILLAR 583T",
               "CATERPILLAR 587R",
@@ -6816,6 +7166,7 @@
           {
             "brendname": "SHANTUI",
             "models": [
+              "SHANTUI SP45Y",
               "SHANTUI SP45Y"
             ]
           },
@@ -6890,6 +7241,7 @@
           {
             "brendname": "CATERPILLAR",
             "models": [
+              "CATERPILLAR DT190C",
               "CATERPILLAR DT190C"
             ]
           },
@@ -6897,18 +7249,21 @@
             "brendname": "ЧЗТС",
             "models": [
               "ЧЗТС КВГ-1",
+              "ЧЗТС КВГ-1",
               "ЧЗТС КВГ-2"
             ]
           },
           {
             "brendname": "VERMEER",
             "models": [
+              "VERMEER R185",
               "VERMEER R185"
             ]
           },
           {
             "brendname": "BRON",
             "models": [
+              "BRON 250",
               "BRON 250"
             ]
           },
@@ -6919,18 +7274,8 @@
           {
             "brendname": "DITCH WITCH",
             "models": [
+              "DITCH WITCH 410SX",
               "DITCH WITCH 410SX"
-            ]
-          }
-        ]
-      },
-      {
-        "typename": "Экскаваторы нестандартные",
-        "brends": [
-          {
-            "brendname": "KAISER",
-            "models": [
-              "KAISER S2 CROSS 4X4"
             ]
           }
         ]
@@ -6944,6 +7289,9 @@
               "HITACHI ZX350LC-3 DEMOLITION",
               "HITACHI ZX350LCK-3 HRD",
               "HITACHI ZX460LCD",
+              "HITACHI ZX350LC-3 DEMOLITION",
+              "HITACHI ZX350LCK-3 HRD",
+              "HITACHI ZX460LCD",
               "HITACHI ZX480LCK-3 HRD"
             ]
           },
@@ -6952,6 +7300,8 @@
             "models": [
               "BROKK 400",
               "BROKK 260",
+              "BROKK 260",
+              "BROKK 400",
               "BROKK 90"
             ]
           },
@@ -6978,6 +7328,7 @@
           {
             "brendname": "LIEBHERR",
             "models": [
+              "LIEBHERR R 944 C",
               "LIEBHERR R 944 C"
             ]
           },
@@ -6992,12 +7343,67 @@
             "models": []
           }
         ]
+      },
+      {
+        "typename": "Экскаваторы нестандартные",
+        "brends": [
+          {
+            "brendname": "KAISER",
+            "models": [
+              "KAISER S2 CROSS 4X4",
+              "KAISER S2 CROSS 4X4"
+            ]
+          }
+        ]
       }
     ]
   },
   {
     "assignmentname": "Складская техника",
     "types": [
+      {
+        "typename": "Вилочные электропогрузчики",
+        "brends": [
+          {
+            "brendname": "KOMATSU",
+            "models": [
+              "KOMATSU FB15-12",
+              "KOMATSU FB15-12"
+            ]
+          },
+          {
+            "brendname": "JUNGHEINRICH",
+            "models": [
+              "JUNGHEINRICH EFG 215",
+              "JUNGHEINRICH EFG 220",
+              "JUNGHEINRICH EFG 215",
+              "JUNGHEINRICH EFG 220"
+            ]
+          },
+          {
+            "brendname": "YALE",
+            "models": [
+              "YALE ERP 15VT",
+              "YALE ERP 15VT",
+              "YALE ERP 16VF"
+            ]
+          },
+          {
+            "brendname": "MAXIMAL",
+            "models": [
+              "MAXIMAL FB18-MQJZ2",
+              "MAXIMAL FB18-MQJZ2"
+            ]
+          },
+          {
+            "brendname": "TOYOTA",
+            "models": [
+              "TOYOTA 7FB15 (7FBH15)",
+              "TOYOTA 7FB15 (7FBH15)"
+            ]
+          }
+        ]
+      },
       {
         "typename": "Вилочные автопогрузчики",
         "brends": [
@@ -7010,12 +7416,14 @@
               "TOYOTA 4FDK150",
               "TOYOTA 6FG18",
               "TOYOTA 7FD15",
+              "TOYOTA 7FG15",
               "TOYOTA 7FGL18",
               "TOYOTA 8FD15",
               "TOYOTA 8FD15-8FDF15",
               "TOYOTA 8FD18",
               "TOYOTA 8FD30",
               "TOYOTA 8FD30-8FDF30",
+              "TOYOTA 8FG15",
               "TOYOTA 8FG15-8FGF15",
               "TOYOTA 8FG25",
               "TOYOTA 8FG25-8FGF25",
@@ -7031,11 +7439,14 @@
               "KOMATSU FD150-6",
               "KOMATSU FD15D-15",
               "KOMATSU FD15T-18",
+              "KOMATSU FD15T-20",
               "KOMATSU FD15T-21",
               "KOMATSU FD18T-20",
+              "KOMATSU FD18T-21",
               "KOMATSU FD25C-17",
               "KOMATSU FD25T-17",
               "KOMATSU FD30T-16",
+              "KOMATSU FD30T-17",
               "KOMATSU FD35YT-10",
               "KOMATSU FD50-8",
               "KOMATSU FD50AYT-10",
@@ -7053,6 +7464,7 @@
               "YALE GDP 18AK",
               "YALE GDP 20AK",
               "YALE GDP 25RK",
+              "YALE GDP 30TK",
               "YALE GDP 35TK",
               "YALE GP 15AK",
               "YALE GP 30TK"
@@ -7224,48 +7636,12 @@
         ]
       },
       {
-        "typename": "Вилочные электропогрузчики",
-        "brends": [
-          {
-            "brendname": "KOMATSU",
-            "models": [
-              "KOMATSU FB15-12"
-            ]
-          },
-          {
-            "brendname": "JUNGHEINRICH",
-            "models": [
-              "JUNGHEINRICH EFG 215",
-              "JUNGHEINRICH EFG 220"
-            ]
-          },
-          {
-            "brendname": "YALE",
-            "models": [
-              "YALE ERP 15VT",
-              "YALE ERP 16VF"
-            ]
-          },
-          {
-            "brendname": "MAXIMAL",
-            "models": [
-              "MAXIMAL FB18-MQJZ2"
-            ]
-          },
-          {
-            "brendname": "TOYOTA",
-            "models": [
-              "TOYOTA 7FB15 (7FBH15)"
-            ]
-          }
-        ]
-      },
-      {
         "typename": "Погрузчики боковые",
         "brends": [
           {
             "brendname": "BP",
             "models": [
+              "BP HT2.5EL",
               "BP HT2.5EL"
             ]
           }
@@ -7277,6 +7653,9 @@
           {
             "brendname": "YALE",
             "models": [
+              "YALE MO10 AC",
+              "YALE MO20",
+              "YALE MO20P",
               "YALE MO10 AC",
               "YALE MO20",
               "YALE MO20P"
@@ -7299,19 +7678,24 @@
             "brendname": "YALE",
             "models": [
               "YALE MR20H",
-              "YALE MR14"
+              "YALE MR14",
+              "YALE MR14",
+              "YALE MR20H"
             ]
           },
           {
             "brendname": "JUNGHEINRICH",
             "models": [
               "JUNGHEINRICH ETV 320 DZ",
-              "JUNGHEINRICH ETV 216"
+              "JUNGHEINRICH ETV 216",
+              "JUNGHEINRICH ETV 216",
+              "JUNGHEINRICH ETV 320 DZ"
             ]
           },
           {
             "brendname": "STILL",
             "models": [
+              "STILL FM-X 14",
               "STILL FM-X 14"
             ]
           }
@@ -7453,18 +7837,22 @@
             "brendname": "OXLIFT",
             "models": [
               "OXLIFT OX30",
-              "OXLIFT OX20"
+              "OXLIFT OX20",
+              "OXLIFT OX20",
+              "OXLIFT OX30"
             ]
           },
           {
             "brendname": "СКЛАДМАШ",
             "models": [
+              "СКЛАДМАШ ТВ-25",
               "СКЛАДМАШ ТВ-25"
             ]
           },
           {
             "brendname": "BT",
             "models": [
+              "BT LHM230",
               "BT LHM230"
             ]
           }
@@ -7476,12 +7864,14 @@
           {
             "brendname": "BT",
             "models": [
+              "BT LEVIO LPE200",
               "BT LEVIO LPE200"
             ]
           },
           {
             "brendname": "YALE",
             "models": [
+              "YALE MP20T",
               "YALE MP20T"
             ]
           }
@@ -7497,6 +7887,7 @@
           {
             "brendname": "JUNGHEINRICH",
             "models": [
+              "JUNGHEINRICH ERC 216",
               "JUNGHEINRICH ERC 216"
             ]
           },
@@ -7504,18 +7895,22 @@
             "brendname": "ATLET",
             "models": [
               "ATLET AJN 160",
+              "ATLET AJN 200",
+              "ATLET AJN 160",
               "ATLET AJN 200"
             ]
           },
           {
             "brendname": "YALE",
             "models": [
+              "YALE MS14",
               "YALE MS14"
             ]
           },
           {
             "brendname": "KOMATSU",
             "models": [
+              "KOMATSU MWS14F-1R",
               "KOMATSU MWS14F-1R"
             ]
           },
@@ -7577,14 +7972,104 @@
           {
             "brendname": "WACKER NEUSON",
             "models": [
+              "WACKER NEUSON LTN6L",
               "WACKER NEUSON LTN6L"
             ]
           },
           {
             "brendname": "ATLAS COPCO",
             "models": [
+              "ATLAS COPCO HILIGHT V4",
               "ATLAS COPCO HILIGHT V4"
             ]
+          }
+        ]
+      },
+      {
+        "typename": "Электростанции, электрогенераторы",
+        "brends": [
+          {
+            "brendname": "SDMO",
+            "models": [
+              "SDMO DIESEL 4000 C",
+              "SDMO PHOENIX 2800",
+              "SDMO DIESEL 4000 C",
+              "SDMO PHOENIX 2800"
+            ]
+          },
+          {
+            "brendname": "DENYO",
+            "models": []
+          },
+          {
+            "brendname": "FG WILSON",
+            "models": [
+              "FG WILSON P500P1",
+              "FG WILSON P500P1",
+              "FG WILSON P65-1"
+            ]
+          },
+          {
+            "brendname": "AIRMAN",
+            "models": [
+              "AIRMAN SDG13S",
+              "AIRMAN SDG13S",
+              "AIRMAN SDG150S"
+            ]
+          },
+          {
+            "brendname": "AKSA",
+            "models": [
+              "AKSA APD145C",
+              "AKSA APD145C"
+            ]
+          },
+          {
+            "brendname": "OLYMPIAN",
+            "models": [
+              "OLYMPIAN G175LG6",
+              "OLYMPIAN G175LG6"
+            ]
+          },
+          {
+            "brendname": "CUMMINS",
+            "models": [
+              "CUMMINS C350 D5"
+            ]
+          },
+          {
+            "brendname": "ATLAS COPCO",
+            "models": []
+          },
+          {
+            "brendname": "CATERPILLAR",
+            "models": [
+              "CATERPILLAR C18"
+            ]
+          },
+          {
+            "brendname": "DOOSAN",
+            "models": [
+              "DOOSAN G125WCU-3Q-T4I"
+            ]
+          },
+          {
+            "brendname": "BAIFA",
+            "models": []
+          },
+          {
+            "brendname": "JCB",
+            "models": [
+              "JCB G550S"
+            ]
+          },
+          {
+            "brendname": "TEKSAN",
+            "models": []
+          },
+          {
+            "brendname": "НЕОЭНЕРГО",
+            "models": []
           }
         ]
       },
@@ -7594,6 +8079,7 @@
           {
             "brendname": "ATLAS COPCO",
             "models": [
+              "ATLAS COPCO XAS 97",
               "ATLAS COPCO XAS 97"
             ]
           },
@@ -7603,7 +8089,10 @@
               "AIRMAN PDS185S-W",
               "AIRMAN PDS130S-W",
               "AIRMAN PDS390S-W",
+              "AIRMAN PDS130S-W",
+              "AIRMAN PDS185S-W",
               "AIRMAN PDS265S-W",
+              "AIRMAN PDS390S-W",
               "AIRMAN PDS750S-W"
             ]
           },
@@ -7612,6 +8101,7 @@
             "models": [
               "KAESER M 27 PE",
               "KAESER M 15",
+              "KAESER M 27 PE",
               "KAESER M 36",
               "KAESER M 43 PE",
               "KAESER M 45"
@@ -7633,7 +8123,8 @@
             "brendname": "SULLAIR",
             "models": [
               "SULLAIR 185",
-              "SULLAIR 125"
+              "SULLAIR 125",
+              "SULLAIR 185"
             ]
           },
           {
@@ -7684,88 +8175,6 @@
             "models": [
               "ЧКЗ КВ-10/8"
             ]
-          }
-        ]
-      },
-      {
-        "typename": "Электростанции, электрогенераторы",
-        "brends": [
-          {
-            "brendname": "SDMO",
-            "models": [
-              "SDMO DIESEL 4000 C",
-              "SDMO PHOENIX 2800"
-            ]
-          },
-          {
-            "brendname": "DENYO",
-            "models": []
-          },
-          {
-            "brendname": "FG WILSON",
-            "models": [
-              "FG WILSON P500P1",
-              "FG WILSON P65-1"
-            ]
-          },
-          {
-            "brendname": "AIRMAN",
-            "models": [
-              "AIRMAN SDG13S",
-              "AIRMAN SDG150S"
-            ]
-          },
-          {
-            "brendname": "AKSA",
-            "models": [
-              "AKSA APD145C"
-            ]
-          },
-          {
-            "brendname": "OLYMPIAN",
-            "models": [
-              "OLYMPIAN G175LG6"
-            ]
-          },
-          {
-            "brendname": "CUMMINS",
-            "models": [
-              "CUMMINS C350 D5"
-            ]
-          },
-          {
-            "brendname": "ATLAS COPCO",
-            "models": []
-          },
-          {
-            "brendname": "CATERPILLAR",
-            "models": [
-              "CATERPILLAR C18"
-            ]
-          },
-          {
-            "brendname": "DOOSAN",
-            "models": [
-              "DOOSAN G125WCU-3Q-T4I"
-            ]
-          },
-          {
-            "brendname": "BAIFA",
-            "models": []
-          },
-          {
-            "brendname": "JCB",
-            "models": [
-              "JCB G550S"
-            ]
-          },
-          {
-            "brendname": "TEKSAN",
-            "models": []
-          },
-          {
-            "brendname": "НЕОЭНЕРГО",
-            "models": []
           }
         ]
       }

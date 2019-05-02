@@ -1,46 +1,52 @@
 
-
-<div fxLayout="column">
-  <form [formGroup]="fileForm" novalidate (ngSubmit)="onSubmit()">
-    <input type="file" multiple="multiple" (change)="onFileChange2($event)"
-           webkitdirectory mozdirectory msdirectory odirectory directory/>
-    <button type="submit">
-      Save
-    </button>
-  </form>
-  <form fxLayout="column">
-    <mat-form-field fxFlex="">
-      <mat-select panelClass="panel-for-unitslist" [formControl]="selectedAssignment"
-                  name="assignment" (selectionChange)="getUnitsTypeList()"
-                  placeholder="Группа по виду работ">
-        <mat-option *ngFor="let assignment of unitsList" [value]="assignment.assignmentname">
-          {{assignment.assignmentname}}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
-    <mat-form-field>
-      <mat-select [formControl]="selectedType" placeholder="Тип техники"
-                  panelClass="panel-for-unitslist" (selectionChange)="getUnitsBrendList()">
-        <mat-option *ngFor="let type of unitsType.types" [value]="type.typename">
-          {{type.typename}}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
-    <mat-form-field>
-      <mat-select [formControl]="selectedBrend" name="brend" placeholder="Бренд"
-                  panelClass="panel-for-unitslist" (selectionChange)="getUnitsModeldList()">
-        <mat-option *ngFor="let brend of unitsBrend.brends" [value]="brend.brendname">
-          {{brend.brendname}}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
-    <mat-form-field>
-      <mat-select [formControl]="selectedModel" name="model" placeholder="Модель"
-                  panelClass="panel-for-unitslist">
-        <mat-option *ngFor="let model of unitsModel.models" [value]="model">
-          {{model}}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
-  </form>
-</div>
+<mat-card>
+  <mat-card-content>
+    <section fxLayout="column">
+      <form [formGroup]="fileForm" novalidate (ngSubmit)="onSubmit()">
+        <input type="file" multiple="multiple" (change)="onFileChange2($event)"
+               webkitdirectory mozdirectory msdirectory odirectory directory/>
+        <button type="submit">
+          Save to File
+        </button>
+        <button (click)="saveToServer()">
+          Save To Server
+        </button>
+      </form>
+      <form fxLayout="column">
+        <mat-form-field fxFlex="">
+          <mat-select panelClass="panel-for-unitslist" [formControl]="selectedAssignment"
+                      name="assignment" (selectionChange)="getUnitsTypeList()"
+                      placeholder="Группа по виду работ">
+            <mat-option *ngFor="let assignment of unitsList" [value]="assignment.assignmentname">
+              {{assignment.assignmentname}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field>
+          <mat-select [formControl]="selectedType" placeholder="Тип техники"
+                      panelClass="panel-for-unitslist" (selectionChange)="getUnitsBrendList()">
+            <mat-option *ngFor="let type of unitsType.types" [value]="type.typename">
+              {{type.typename}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field>
+          <mat-select [formControl]="selectedBrend" name="brend" placeholder="Бренд"
+                      panelClass="panel-for-unitslist" (selectionChange)="getUnitsModeldList()">
+            <mat-option *ngFor="let brend of unitsBrend.brends" [value]="brend.brendname">
+              {{brend.brendname}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field>
+          <mat-select [formControl]="selectedModel" name="model" placeholder="Модель"
+                      panelClass="panel-for-unitslist">
+            <mat-option *ngFor="let model of unitsModel.models" [value]="model">
+              {{model}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </form>
+    </section>
+  </mat-card-content>
+</mat-card>

@@ -124,10 +124,11 @@ export class LoginComponent implements OnInit, OnDestroy {
           this.loading = false;
           if (error instanceof HttpErrorResponse && error.status === 401) {
             this.snackBarService.error('Неправильный логин или пароль.', 'OK');
-          } else {
-            this.snackBarService.error(error.toString().replace('Error:', 'Ошибка: '),
-              'OK');
           }
+          // else {
+          //   this.snackBarService.error(error.toString().replace('Error:', 'Ошибка: '),
+          //     'OK');
+          // }
         }
       );
   }

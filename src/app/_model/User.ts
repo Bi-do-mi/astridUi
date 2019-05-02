@@ -17,5 +17,5 @@ export class User {
   lastVisit: ZonedDateTime;
   phoneNumber: string;
   location: GeoJson;
-  units: Unit;
+  units: Set<Unit>;
 }

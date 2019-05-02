@@ -1,8 +1,9 @@
 import {GeoJson} from './MarkerSourceModel';
+import {User} from './User';
 
 export class Unit {
   id: number;
-  ounerId: number;
+  ouner: number;
   assignment: string;
   type: string;
   brand: string;

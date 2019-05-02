@@ -1,9 +1,7 @@
-import {ChangeDetectorRef, Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
-import {UnitAssignment, UnitBrend, UnitType} from '../../_model/UnitsList';
+import {UnitAssignment, UnitBrend, UnitType} from '../../_model/UnitTypesModel';
 import {HttpClient} from '@angular/common/http';
-import {Observable} from 'rxjs';
-import {stringify} from 'querystring';
 import {ParkService} from '../../_services/park.service';
 import {first} from 'rxjs/operators';
 import {untilDestroyed} from 'ngx-take-until-destroy';
@@ -33,7 +31,7 @@ export class AdminUnitsCollectionComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.parkService.getJSONfromFile().pipe(first(), untilDestroyed(this))
+    this.parkService.getJSONfromFile(true).pipe(first(), untilDestroyed(this))
       .subscribe(data => {
         this.unitsList = data;
       });
@@ -132,7 +130,7 @@ export class AdminUnitsCollectionComponent implements OnInit, OnDestroy {
                 .replace(String.fromCharCode(9), '');
               fileType.brends.forEach(b => {
                 if (modelLine.startsWith(b.brendname)) {
-                  b.models.push(modelLine);
+                  b.models.add(modelLine);
                 }
               });
             }
@@ -148,6 +146,14 @@ export class AdminUnitsCollectionComponent implements OnInit, OnDestroy {
 
   onSubmit() {
     this.saveToFile(this.list, 'list');
+  }
+
+  saveToServer() {
+    this.parkService.createUnitTypesList(this.unitsList).pipe(first(), untilDestroyed(this))
+      .subscribe(() => {
+      },
+      error1 => {
+      });
   }
 
   printList(l) {

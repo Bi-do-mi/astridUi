@@ -1,4 +1,5 @@
 @import '../node_modules/@angular/material/_theming';
+
 @include mat-core();
 
 $astrid-primary: mat-palette($mat-gray, 900);
@@ -7,7 +8,7 @@ $astrid-accent: mat-palette($mat-yellow, 700);
 $astrid-theme: mat-light-theme($astrid-primary, $astrid-accent);
 @include angular-material-theme($astrid-theme);
 
-.snack-bar-info{
+.snack-bar-info {
   background-color: limegreen;
   color: mat-color($astrid-primary);
   position: relative;
@@ -16,12 +17,12 @@ $astrid-theme: mat-light-theme($astrid-primary, $astrid-accent);
   border-style: solid;
   border-width: thick;
   text-align: center;
-  .mat-simple-snackbar-action{
+  .mat-simple-snackbar-action {
     color: mat-color($astrid-primary);
   }
 }
 
-.snack-bar-error{
+.snack-bar-error {
   background-color: mat-color($astrid-accent);
   color: mat-color($astrid-primary);
   position: relative;
@@ -30,10 +31,11 @@ $astrid-theme: mat-light-theme($astrid-primary, $astrid-accent);
   border-style: solid;
   border-width: thick;
   text-align: center;
-  .mat-simple-snackbar-action{
+  .mat-simple-snackbar-action {
     color: mat-color($astrid-primary);
   }
 }
+
 $color: rgba(251, 192, 45, 0.5);
 $transparent: rgba(0, 0, 0, 0);
 .leanerBack {
@@ -49,6 +51,4 @@ $transparent: rgba(0, 0, 0, 0);
   background-size: 2em 2em;
   background-color: rgba(33, 33, 33, 1);
 }
-.panel-for-unitslist {
-  width: 100% !important;
-}
+

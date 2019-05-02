@@ -65,6 +65,7 @@ export class MainNavComponent implements OnInit, OnDestroy {
   }
 
   routingToLoginPage() {
+    this.sidenavService.closeAll();
     this.router.navigate(['/preload/login',
       {returnUrl: this.router.routerState.snapshot.url}]);
   }
@@ -87,14 +88,14 @@ export class MainNavComponent implements OnInit, OnDestroy {
     this.sidenavService.closeAll();
     const dialogRef = this.dialog.open(UserOptionsDialogComponent, {
       minHeight: '250px'
-  });
+    });
 
     // dialogRef.afterClosed().pipe(untilDestroyed(this)).subscribe(result => {
     //   // console.log('The dialog was closed');
     // });
   }
 
-  setParkLocation() {
+  setParkLocation(createUnit?: boolean) {
     if (this.isHandset$) {
       this.sidenavService.closeAll();
     }
@@ -105,6 +106,9 @@ export class MainNavComponent implements OnInit, OnDestroy {
       this.snackBarService.close();
       this.mapService.map.getCanvas().style.cursor = '';
       this.sidenavService.openLeft();
+      if (createUnit) {
+        this.openUnitCreateDialog();
+      }
     }), untilDestroyed(this))
       .subscribe(point => {
         this.mapService.flyTo(point);
@@ -117,12 +121,15 @@ export class MainNavComponent implements OnInit, OnDestroy {
   }
 
   openUnitCreateDialog(): void {
-    this.sidenavService.closeAll();
-    const dialogRef = this.dialog.open(UnitCreateDialogComponent, {
-      maxHeight: '100vh'
-      // minHeight: '250px'
-    });
-
+    if (!this.currentUser.location) {
+      this.setParkLocation(true);
+    } else {
+      this.sidenavService.closeAll();
+      const dialogRef = this.dialog.open(UnitCreateDialogComponent, {
+        maxHeight: '100vh'
+        // minHeight: '250px'
+      });
+    }
     // dialogRef.afterClosed().pipe(untilDestroyed(this)).subscribe(result => {
     //   // console.log('The dialog was closed');
     // });

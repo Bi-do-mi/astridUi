@@ -1,11 +1,27 @@
+import {ZonedDateTime} from 'js-joda';
+
+export class UnitModel {
+  modelmame = '';
+  createdOn: ZonedDateTime;
+
+  toJSON() {
+    return ({
+      modelname: this.modelmame,
+      createdOn: this.createdOn
+    });
+  }
+}
+
 export class UnitBrend {
   brendname = '';
-  models = new Array<string>();
+  models = new Set<string>();
+  createdOn: ZonedDateTime;
 
   toJSON() {
     return ({
       brendname: this.brendname,
-      models: this.models
+      createdOn: this.createdOn,
+      models: Array.from(this.models)
     });
   }
 }

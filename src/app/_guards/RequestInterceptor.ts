@@ -38,6 +38,9 @@ export class RequestInterceptor implements HttpInterceptor {
       if (err instanceof HttpErrorResponse && err.status === 504) {
         this.snackBarService.error('Сервер временно недоступен', 'OK');
       }
+      if (err instanceof HttpErrorResponse && err.status === 500) {
+        this.snackBarService.error('Ошибка сервера', 'OK');
+      }
     }));
   }
 }

@@ -1,7 +1,7 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {MatDialogRef} from '@angular/material';
 import {untilDestroyed} from 'ngx-take-until-destroy';
-import {UnitAssignment, UnitBrend, UnitType} from '../../_model/UnitsList';
+import {UnitAssignment, UnitBrend, UnitType} from '../../_model/UnitTypesModel';
 import {ParkService} from '../../_services/park.service';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {finalize, first, map, tap} from 'rxjs/operators';
@@ -12,6 +12,7 @@ import {fromArray} from 'rxjs/internal/observable/fromArray';
 import {Unit} from '../../_model/Unit';
 import {UserService} from '../../_services/user.service';
 import {User} from '../../_model/User';
+import {SnackBarService} from '../../_services/snack-bar.service';
 
 @Component({
   selector: 'app-unit-create',
@@ -22,6 +23,8 @@ export class UnitCreateDialogComponent implements OnInit, OnDestroy {
 
   currentUser: User;
   unit = new Unit();
+  loading = false;
+  submitted = false;
   selectForm: FormGroup;
   unitsList = new Array<UnitAssignment>();
   unitsTypeOptions = new UnitAssignment();
@@ -34,7 +37,8 @@ export class UnitCreateDialogComponent implements OnInit, OnDestroy {
     private formBuilder: FormBuilder,
     private dialogRef: MatDialogRef<UnitCreateDialogComponent>,
     private parkService: ParkService,
-    private userService: UserService
+    private userService: UserService,
+    private snackbarService: SnackBarService
   ) {
   }
 
@@ -56,8 +60,8 @@ export class UnitCreateDialogComponent implements OnInit, OnDestroy {
     this.selectForm = this.formBuilder.group({
       assignmentCtrl: ['', Validators.required],
       typeCtrl: ['', Validators.required],
-      brendCtrl: ['', Validators.pattern('^([а-яА-ЯA-Za-z0-9 -]*)$')],
-      modelCtrl: ['', Validators.pattern('^([а-яА-ЯA-Za-z0-9 -]*)$')]
+      brendCtrl: ['', Validators.pattern('^([а-яА-ЯA-Za-z0-9 ()-]*)$')],
+      modelCtrl: ['', Validators.pattern('^([а-яА-ЯA-Za-z0-9 ()-]*)$')]
     });
     this.selectForm.get('assignmentCtrl')
       .valueChanges.subscribe((value: string) => {
@@ -138,9 +142,12 @@ export class UnitCreateDialogComponent implements OnInit, OnDestroy {
   }
 
   onFirstStep() {
+    this.submitted = true;
     if (this.selectForm.invalid) {
       return;
     }
+    this.loading = true;
+    this.unit.ouner = this.currentUser.id;
     this.unit.assignment = this.selectForm.get('assignmentCtrl').value;
     this.unit.type = this.selectForm.get('typeCtrl').value;
     this.unit.brand = this.selectForm.get('brendCtrl').value;
@@ -150,7 +157,20 @@ export class UnitCreateDialogComponent implements OnInit, OnDestroy {
     this.unit.paid = false;
     this.parkService.createUnit(this.unit).pipe(first(),
       untilDestroyed(this)).subscribe(() => {
-      console.log('unit created!');
-    });
+        this.loading = false;
+      this.dialogRef.close();
+      this.snackbarService.success('Единица техники успешно создана',
+        'OK', 10000);
+    },
+      error => {
+        this.loading = false;
+        console.log(error);
+        this.dialogRef.close();
+        this.snackbarService.error('Что-то пошло не так', 'OK');
+      });
+    // this.parkService.createUnitTypesList(this.unitsList).pipe(first(),
+    //   untilDestroyed(this)).subscribe(() => {
+    //   console.log('unitsList created!');
+    // });
   }
 }
