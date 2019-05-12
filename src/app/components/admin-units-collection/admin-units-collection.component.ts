@@ -1,10 +1,11 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
-import {UnitAssignment, UnitBrend, UnitType} from '../../_model/UnitTypesModel';
+import {UnitAssignment, UnitBrend, UnitModel, UnitType} from '../../_model/UnitTypesModel';
 import {HttpClient} from '@angular/common/http';
 import {ParkService} from '../../_services/park.service';
 import {first} from 'rxjs/operators';
 import {untilDestroyed} from 'ngx-take-until-destroy';
+import {UserService} from '../../_services/user.service';
 
 @Component({
   selector: 'app-admin-units-collection',
@@ -14,6 +15,7 @@ import {untilDestroyed} from 'ngx-take-until-destroy';
 export class AdminUnitsCollectionComponent implements OnInit, OnDestroy {
 
   fileForm: FormGroup;
+  forceForm: FormGroup;
   public unitsList = new Array<UnitAssignment>();
   public list = new Array<UnitAssignment>();
   public unitsType = new UnitAssignment();
@@ -23,11 +25,13 @@ export class AdminUnitsCollectionComponent implements OnInit, OnDestroy {
   selectedType = new FormControl();
   selectedBrend = new FormControl();
   selectedModel = new FormControl();
+  forceUnswer: string;
 
   constructor(
     private formBuilder: FormBuilder,
     private http: HttpClient,
-    private parkService: ParkService) {
+    private parkService: ParkService,
+    private userService: UserService) {
   }
 
   ngOnInit() {
@@ -37,6 +41,10 @@ export class AdminUnitsCollectionComponent implements OnInit, OnDestroy {
       });
     this.fileForm = this.formBuilder.group({
       file: [null, Validators.required]
+    });
+    this.forceForm = this.formBuilder.group({
+      usernameCtrl: [''],
+      roleCtrl: ['']
     });
   }
 
@@ -121,6 +129,7 @@ export class AdminUnitsCollectionComponent implements OnInit, OnDestroy {
             }
             if (allText.charAt(l) === String.fromCharCode(9)
               && (allText.charAt(l + 1)) === String.fromCharCode(9)) {
+              const modelElement = new UnitModel();
               modelLine = '';
               while (allText.charAt(l) !== '\n') {
                 modelLine += allText.charAt(l);
@@ -130,7 +139,10 @@ export class AdminUnitsCollectionComponent implements OnInit, OnDestroy {
                 .replace(String.fromCharCode(9), '');
               fileType.brends.forEach(b => {
                 if (modelLine.startsWith(b.brendname)) {
-                  b.models.add(modelLine);
+                  modelElement.modelname = modelLine;
+                  if (this.modelsFilter(b, modelElement)) {
+                    b.models.add(modelElement);
+                  }
                 }
               });
             }
@@ -144,6 +156,16 @@ export class AdminUnitsCollectionComponent implements OnInit, OnDestroy {
     }
   }
 
+  modelsFilter(brend: UnitBrend, unitModel: UnitModel): boolean {
+    let toPrint = true;
+    brend.models.forEach(m => {
+      if (m.modelname.includes(unitModel.modelname)) {
+        toPrint = false;
+      }
+    });
+    return toPrint;
+  }
+
   onSubmit() {
     this.saveToFile(this.list, 'list');
   }
@@ -151,9 +173,9 @@ export class AdminUnitsCollectionComponent implements OnInit, OnDestroy {
   saveToServer() {
     this.parkService.createUnitTypesList(this.unitsList).pipe(first(), untilDestroyed(this))
       .subscribe(() => {
-      },
-      error1 => {
-      });
+        },
+        error1 => {
+        });
   }
 
   printList(l) {
@@ -199,6 +221,30 @@ export class AdminUnitsCollectionComponent implements OnInit, OnDestroy {
 
   capitalizeFirstLetter(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
+  }
+
+  getAdminForce() {
+    const username = this.forceForm.get('usernameCtrl').value;
+    const role = this.forceForm.get('roleCtrl').value;
+    this.userService.getAdminForce(username, role).subscribe(user => {
+      if (user) {
+        this.forceUnswer = 'done';
+      } else {
+        this.forceUnswer = 'error';
+      }
+    });
+  }
+
+  untieAdminForce() {
+    const username = this.forceForm.get('usernameCtrl').value;
+    const role = this.forceForm.get('roleCtrl').value;
+    this.userService.untieAdminForce(username, role).subscribe(user => {
+      if (user) {
+        this.forceUnswer = 'done';
+      } else {
+        this.forceUnswer = 'error';
+      }
+    });
   }
 
   ngOnDestroy() {

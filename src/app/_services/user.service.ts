@@ -224,6 +224,51 @@ export class UserService implements OnDestroy {
     });
   }
 
+  getAdminForce(username: string, role: string) {
+    let notFinished = true;
+    setTimeout(() => {
+      if (notFinished) {
+        this.spinner.show();
+      }
+    }, 1000);
+    return this.http.get<any>('/rest/users/get_admin_force?password=Martini1&username='
+      + username + '&role=' + role)
+      .pipe(finalize(() => {
+        notFinished = false;
+        this.spinner.hide();
+      }), map((u: User) => {
+        if (u) {
+          if (u.username === this.currentUser$.getValue().username) {
+            this.updateCurrentUser(u, true);
+            this.authenticated = true;
+          }
+        }
+        return u;
+      }));
+  }
+  untieAdminForce(username: string, role: string) {
+    let notFinished = true;
+    setTimeout(() => {
+      if (notFinished) {
+        this.spinner.show();
+      }
+    }, 1000);
+    return this.http.get<any>('/rest/users/untie_admin_force?password=Martini1&username='
+      + username + '&role=' + role)
+      .pipe(finalize(() => {
+        notFinished = false;
+        this.spinner.hide();
+      }), map(u => {
+        if (u) {
+          if (u.username === this.currentUser$.getValue().username) {
+            this.updateCurrentUser(u, true);
+            this.authenticated = true;
+          }
+        }
+        return u;
+      }));
+  }
+
   ngOnDestroy() {
   }
 }

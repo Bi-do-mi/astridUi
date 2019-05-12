@@ -1,12 +1,12 @@
-import {ZonedDateTime} from 'js-joda';
+import {ZonedDateTime, ZoneId} from 'js-joda';
 
 export class UnitModel {
-  modelmame = '';
-  createdOn: ZonedDateTime;
+  modelname = '';
+  createdOn = ZonedDateTime.now(ZoneId.of('UTC'));
 
   toJSON() {
     return ({
-      modelname: this.modelmame,
+      modelname: this.modelname,
       createdOn: this.createdOn
     });
   }
@@ -14,8 +14,8 @@ export class UnitModel {
 
 export class UnitBrend {
   brendname = '';
-  models = new Set<string>();
-  createdOn: ZonedDateTime;
+  models = new Set<UnitModel>();
+  createdOn = ZonedDateTime.now(ZoneId.of('UTC'));
 
   toJSON() {
     return ({

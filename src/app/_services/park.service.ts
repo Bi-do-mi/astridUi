@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {finalize, first, map} from 'rxjs/operators';
-import {UnitAssignment} from '../_model/UnitTypesModel';
+import {UnitAssignment, UnitBrend, UnitType} from '../_model/UnitTypesModel';
 import {Unit} from '../_model/Unit';
 import {NgxSpinnerService} from 'ngx-spinner';
 import {UserService} from './user.service';
@@ -27,6 +27,17 @@ export class ParkService {
         const allText: string = JSON.stringify(data);
         return data = JSON.parse(allText);
       }));
+  }
+  sortAssignment (a: UnitAssignment, b: UnitAssignment) {
+    return (a.assignmentname > b.assignmentname) ? 1 :
+      (a.assignmentname < b.assignmentname ? -1 : 0);
+  }
+  sortType (a: UnitType, b: UnitType) {
+    return (a.typename > b.typename) ? 1 :
+      (a.typename < b.typename ? -1 : 0);
+  }sortBrend (a: UnitBrend, b: UnitBrend) {
+    return (a.brendname > b.brendname) ? 1 :
+      (a.brendname < b.brendname ? -1 : 0);
   }
 
   createUnit(unit: Unit) {

@@ -1,7 +1,7 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {MatDialogRef} from '@angular/material';
 import {untilDestroyed} from 'ngx-take-until-destroy';
-import {UnitAssignment, UnitBrend, UnitType} from '../../_model/UnitTypesModel';
+import {UnitAssignment, UnitBrend, UnitModel, UnitType} from '../../_model/UnitTypesModel';
 import {ParkService} from '../../_services/park.service';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {finalize, first, map, tap} from 'rxjs/operators';
@@ -56,6 +56,34 @@ export class UnitCreateDialogComponent implements OnInit, OnDestroy {
     this.parkService.getJSONfromFile().pipe(first(), untilDestroyed(this))
       .subscribe(data => {
         this.unitsList = data;
+        this.unitsList.sort(function (a: UnitAssignment,
+                                      b: UnitAssignment) {
+          return (a.assignmentname > b.assignmentname) ? 1 :
+            (a.assignmentname < b.assignmentname ? -1 : 0);
+        }).forEach((ass: UnitAssignment) => {
+          const t = Array.from(ass.types);
+          t.sort(function (c: UnitType, d: UnitType) {
+            return (c.typename > d.typename) ? 1 :
+              (c.typename < d.typename ? -1 : 0);
+          });
+          ass.types = new Set<UnitType>(t);
+          ass.types.forEach((tps: UnitType) => {
+            const b = Array.from(tps.brends);
+            b.sort(function (e: UnitBrend, f: UnitBrend) {
+              return (e.brendname > f.brendname) ? 1 :
+                (e.brendname < f.brendname ? -1 : 0);
+            });
+            tps.brends = new Set<UnitBrend>(b);
+            tps.brends.forEach((brd: UnitBrend) => {
+              const m = Array.from(brd.models);
+              m.sort(function (g: UnitModel, h: UnitModel) {
+                return (g.modelname > h.modelname) ? 1 :
+                  (g.modelname < h.modelname ? -1 : 0);
+              });
+              brd.models = new Set<UnitModel>(m);
+            });
+          });
+        });
       });
     this.selectForm = this.formBuilder.group({
       assignmentCtrl: ['', Validators.required],
@@ -119,7 +147,7 @@ export class UnitCreateDialogComponent implements OnInit, OnDestroy {
         this.filteredBrends.push(b.brendname);
       }
     });
-    this.unitsBrendOptions.brends.forEach(b => {
+    this.unitsBrendOptions.brends.forEach((b: UnitBrend) => {
       if (b.brendname === value) {
         this.unitsModelOptions = b;
       }
@@ -129,9 +157,9 @@ export class UnitCreateDialogComponent implements OnInit, OnDestroy {
 
   filterModelOptions(value: string) {
     this.filteredModels = [];
-    this.unitsModelOptions.models.forEach(m => {
-      if (m.includes(value) || value === '') {
-        this.filteredModels.push(m);
+    this.unitsModelOptions.models.forEach((m: UnitModel) => {
+      if (m.modelname.includes(value) || value === '') {
+        this.filteredModels.push(m.modelname);
       }
     });
   }
@@ -158,10 +186,10 @@ export class UnitCreateDialogComponent implements OnInit, OnDestroy {
     this.parkService.createUnit(this.unit).pipe(first(),
       untilDestroyed(this)).subscribe(() => {
         this.loading = false;
-      this.dialogRef.close();
-      this.snackbarService.success('Единица техники успешно создана',
-        'OK', 10000);
-    },
+        this.dialogRef.close();
+        this.snackbarService.success('Единица техники успешно создана',
+          'OK', 10000);
+      },
       error => {
         this.loading = false;
         console.log(error);
