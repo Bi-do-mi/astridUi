@@ -3,16 +3,15 @@ import {MatDialogRef} from '@angular/material';
 import {untilDestroyed} from 'ngx-take-until-destroy';
 import {UnitAssignment, UnitBrend, UnitModel, UnitType} from '../../_model/UnitTypesModel';
 import {ParkService} from '../../_services/park.service';
-import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
-import {finalize, first, map, tap} from 'rxjs/operators';
-import {BehaviorSubject, Observable} from 'rxjs';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {first} from 'rxjs/operators';
 import {color} from 'openlayers';
-import asArray = color.asArray;
-import {fromArray} from 'rxjs/internal/observable/fromArray';
 import {Unit} from '../../_model/Unit';
 import {UserService} from '../../_services/user.service';
 import {User} from '../../_model/User';
 import {SnackBarService} from '../../_services/snack-bar.service';
+import {NgxPicaErrorInterface, NgxPicaService} from '@digitalascetic/ngx-pica';
+import {NgxGalleryAction, NgxGalleryAnimation, NgxGalleryImage, NgxGalleryOptions} from 'ngx-gallery';
 
 @Component({
   selector: 'app-unit-create',
@@ -32,13 +31,16 @@ export class UnitCreateDialogComponent implements OnInit, OnDestroy {
   filteredBrends: string[];
   unitsModelOptions = new UnitBrend();
   filteredModels: string[];
+  galleryOptions: NgxGalleryOptions[];
+  galleryImages: NgxGalleryImage[];
 
   constructor(
     private formBuilder: FormBuilder,
     private dialogRef: MatDialogRef<UnitCreateDialogComponent>,
     private parkService: ParkService,
     private userService: UserService,
-    private snackbarService: SnackBarService
+    private snackbarService: SnackBarService,
+    private ngxPicaService: NgxPicaService
   ) {
   }
 
@@ -88,8 +90,10 @@ export class UnitCreateDialogComponent implements OnInit, OnDestroy {
     this.selectForm = this.formBuilder.group({
       assignmentCtrl: ['', Validators.required],
       typeCtrl: ['', Validators.required],
-      brendCtrl: ['', Validators.pattern('^([а-яА-ЯA-Za-z0-9 ()-]*)$')],
-      modelCtrl: ['', Validators.pattern('^([а-яА-ЯA-Za-z0-9 ()-]*)$')]
+      brendCtrl: ['', [Validators.pattern('^([а-яА-ЯA-Za-z0-9 ()-]*)$'),
+        Validators.required]],
+      modelCtrl: ['', [Validators.pattern('^([а-яА-ЯA-Za-z0-9 ()-]*)$'),
+        Validators.required]]
     });
     this.selectForm.get('assignmentCtrl')
       .valueChanges.subscribe((value: string) => {
@@ -109,6 +113,33 @@ export class UnitCreateDialogComponent implements OnInit, OnDestroy {
       .valueChanges.subscribe((value: string) => {
       this.filterModelOptions(value);
     });
+
+    this.galleryOptions = [
+      {
+        width: '600px',
+        height: '500px',
+        thumbnailsColumns: 4,
+        imageAnimation: NgxGalleryAnimation.Slide
+      },
+      // max-width 800
+      {
+        breakpoint: 800,
+        width: '400px',
+        height: '350px',
+        // imagePercent: 70,
+        thumbnailsPercent: 20,
+        thumbnailsMargin: 20,
+        thumbnailMargin: 20
+      },
+      // max-width 550
+      {
+        breakpoint: 550,
+        width: '180px',
+        height: '160px',
+        preview: false
+      }
+    ];
+    this.galleryImages = [];
   }
 
   ngOnDestroy() {
@@ -172,6 +203,7 @@ export class UnitCreateDialogComponent implements OnInit, OnDestroy {
   onFirstStep() {
     this.submitted = true;
     if (this.selectForm.invalid) {
+      console.log('invalid form. return');
       return;
     }
     this.loading = true;
@@ -183,22 +215,50 @@ export class UnitCreateDialogComponent implements OnInit, OnDestroy {
     this.unit.location = this.currentUser.location;
     this.unit.enabled = true;
     this.unit.paid = false;
-    this.parkService.createUnit(this.unit).pipe(first(),
-      untilDestroyed(this)).subscribe(() => {
-        this.loading = false;
-        this.dialogRef.close();
-        this.snackbarService.success('Единица техники успешно создана',
-          'OK', 10000);
-      },
-      error => {
-        this.loading = false;
-        console.log(error);
-        this.dialogRef.close();
-        this.snackbarService.error('Что-то пошло не так', 'OK');
-      });
+    // this.parkService.createUnit(this.unit).pipe(first(),
+    //   untilDestroyed(this)).subscribe(() => {
+    //     this.loading = false;
+    //     this.dialogRef.close();
+    //     this.snackbarService.success('Единица техники успешно создана',
+    //       'OK', 10000);
+    //   },
+    //   error => {
+    //     this.loading = false;
+    //     console.log(error);
+    //     this.dialogRef.close();
+    //     this.snackbarService.error('Что-то пошло не так', 'OK');
+    //   });
+
+
     // this.parkService.createUnitTypesList(this.unitsList).pipe(first(),
     //   untilDestroyed(this)).subscribe(() => {
     //   console.log('unitsList created!');
     // });
+  }
+
+  public handleImages(event: any) {
+    const files: File[] = event.target.files;
+    this.ngxPicaService.resizeImages(files, 1500, 1000,
+      {aspectRatio: {keepAspectRatio: true, forceMinDimensions: true}})
+      .subscribe((imageResized?: File) => {
+          const reader: FileReader = new FileReader();
+          reader.addEventListener('load', (evnt: any) => {
+            if (this.galleryImages.length < 4) {
+              this.galleryImages.push({
+                small: evnt.target.result,
+                medium: evnt.target.result,
+                big: evnt.target.result
+              });
+            }
+          }, false);
+          reader.readAsDataURL(imageResized);
+        },
+        (er?: NgxPicaErrorInterface) => {
+          throw er.err;
+        });
+  }
+
+  deleteImage(ind: number) {
+    this.galleryImages.splice(ind, 1);
   }
 }

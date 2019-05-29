@@ -126,8 +126,8 @@ export class MainNavComponent implements OnInit, OnDestroy {
     } else {
       this.sidenavService.closeAll();
       const dialogRef = this.dialog.open(UnitCreateDialogComponent, {
-        maxHeight: '100vh'
-        // minHeight: '250px'
+        maxHeight: '100vh',
+        maxWidth: '100vw'
       });
     }
     // dialogRef.afterClosed().pipe(untilDestroyed(this)).subscribe(result => {

@@ -1,106 +1,150 @@
-<h5 class="form-group-size">Новая еденица техники</h5>
-<mat-vertical-stepper linear>
-  <!--Step One-->
-  <mat-step label="Укажите тип" state="assignment" [stepControl]="selectForm">
-    <form [formGroup]="selectForm" fxLayout="column">
-      <mat-form-field>
-        <mat-select formControlName="assignmentCtrl" #ctrlAssignment
-                    placeholder="Группа по виду работ" required>
-          <mat-option *ngFor="let assignment of unitsList" [value]="assignment.assignmentname">
-            {{assignment.assignmentname}}
-          </mat-option>
-        </mat-select>
-        <mat-error *ngIf="sf.assignmentCtrl.hasError('required')">
-          выберите группу
-        </mat-error>
-      </mat-form-field>
-      <mat-form-field>
-        <mat-select formControlName="typeCtrl" placeholder="Тип техники" required>
-          <mat-option *ngFor="let type of unitsTypeOptions.types" [value]="type.typename">
-            {{type.typename}}
-          </mat-option>
-        </mat-select>
-        <mat-error *ngIf="sf.typeCtrl.hasError('required')">
-          выберите тип
-        </mat-error>
-      </mat-form-field>
-      <mat-form-field>
-        <input type="text" matInput formControlName="brendCtrl" required
-               [matAutocomplete]="brendAutocomplete" placeholder="Марка"
-               oninput="this.value = this.value.toUpperCase()"
-               (blur)="normalizeSpaces($event)">
-        <mat-error *ngIf="sf.brendCtrl.hasError('pattern')">
-          недопустимые символы
-        </mat-error>
-        <mat-error *ngIf="sf.brendCtrl.hasError('required')">
-          введите марку
-        </mat-error>
-        <mat-autocomplete #brendAutocomplete="matAutocomplete">
-          <mat-option *ngFor="let brend of filteredBrends" [value]="brend">
-            {{brend}}
-          </mat-option>
-        </mat-autocomplete>
-      </mat-form-field>
-      <mat-form-field>
-        <input type="text" matInput formControlName="modelCtrl" required
-               [matAutocomplete]="modelAutocomplete" placeholder="Модель"
-               oninput="this.value = this.value.toUpperCase()"
-               (blur)="normalizeSpaces($event)">
-        <mat-error *ngIf="sf.modelCtrl.hasError('pattern')">
-          недопустимые символы
-        </mat-error>
-        <mat-error *ngIf="sf.modelCtrl.hasError('required')">
-          введите модель
-        </mat-error>
-        <mat-autocomplete #modelAutocomplete="matAutocomplete">
-          <mat-option *ngFor="let model of filteredModels" [value]="model">
-            {{model}}
-          </mat-option>
-        </mat-autocomplete>
-      </mat-form-field>
-    </form>
-    <button mat-raised-button color="accent" matStepperNext
-            (click)="onFirstStep()">
-      Далее
-    </button>
-  </mat-step>
+<mat-spinner class="mat-accent" [diameter]="40" *ngIf="unitsList.length == 0"></mat-spinner>
+<div *ngIf="unitsList.length > 0">
+  <h5 class="form-group-size">Новая еденица техники</h5>
+  <mat-vertical-stepper linear>
+    <!--Step One-->
+    <!--<mat-step label="Укажите тип" state="assignment" [stepControl]="selectForm">-->
+    <!--<form [formGroup]="selectForm" fxLayout="column" (ngSubmit)="onFirstStep()">-->
+    <!--<mat-form-field>-->
+    <!--<mat-select formControlName="assignmentCtrl" #ctrlAssignment-->
+    <!--required placeholder="Группа по виду работ">-->
+    <!--<mat-option *ngFor="let assignment of unitsList" [value]="assignment.assignmentname">-->
+    <!--{{assignment.assignmentname}}-->
+    <!--</mat-option>-->
+    <!--</mat-select>-->
+    <!--<mat-error *ngIf="sf.assignmentCtrl.hasError('required')">-->
+    <!--выберите группу-->
+    <!--</mat-error>-->
+    <!--</mat-form-field>-->
+    <!--<mat-form-field>-->
+    <!--<mat-select formControlName="typeCtrl" placeholder="Тип техники" required>-->
+    <!--<mat-option *ngFor="let type of unitsTypeOptions.types" [value]="type.typename">-->
+    <!--{{type.typename}}-->
+    <!--</mat-option>-->
+    <!--</mat-select>-->
+    <!--<mat-error *ngIf="sf.typeCtrl.hasError('required')">-->
+    <!--выберите тип-->
+    <!--</mat-error>-->
+    <!--</mat-form-field>-->
+    <!--<mat-form-field>-->
+    <!--<input type="text" matInput formControlName="brendCtrl"-->
+    <!--[matAutocomplete]="brendAutocomplete" placeholder="Марка"-->
+    <!--oninput="this.value = this.value.toUpperCase()"-->
+    <!--(blur)="normalizeSpaces($event)">-->
+    <!--<mat-error *ngIf="sf.brendCtrl.hasError('pattern')">-->
+    <!--недопустимые символы-->
+    <!--</mat-error>-->
+    <!--<mat-error *ngIf="sf.brendCtrl.hasError('required')">-->
+    <!--введите марку-->
+    <!--</mat-error>-->
+    <!--<mat-autocomplete #brendAutocomplete="matAutocomplete">-->
+    <!--<mat-option *ngFor="let brend of filteredBrends" [value]="brend">-->
+    <!--{{brend}}-->
+    <!--</mat-option>-->
+    <!--</mat-autocomplete>-->
+    <!--</mat-form-field>-->
+    <!--<mat-form-field>-->
+    <!--<input type="text" matInput formControlName="modelCtrl"-->
+    <!--[matAutocomplete]="modelAutocomplete" placeholder="Модель"-->
+    <!--oninput="this.value = this.value.toUpperCase()"-->
+    <!--(blur)="normalizeSpaces($event)">-->
+    <!--<mat-error *ngIf="sf.modelCtrl.hasError('pattern')">-->
+    <!--недопустимые символы-->
+    <!--</mat-error>-->
+    <!--<mat-error *ngIf="sf.modelCtrl.hasError('required')">-->
+    <!--введите модель-->
+    <!--</mat-error>-->
+    <!--<mat-autocomplete #modelAutocomplete="matAutocomplete">-->
+    <!--<mat-option *ngFor="let model of filteredModels" [value]="model">-->
+    <!--{{model}}-->
+    <!--</mat-option>-->
+    <!--</mat-autocomplete>-->
+    <!--</mat-form-field>-->
 
-  <!--Step Two-->
-  <!--<mat-step label="Загрузите фото" state="photo">-->
+    <!--<div fxLayout="column" fxLayoutAlign="start end">-->
+    <!--<button mat-raised-button color="accent" matStepperNext-->
+    <!--[disabled]="loading">-->
+    <!--Далее-->
+    <!--</button>-->
+    <!--</div>-->
+    <!--</form>-->
+    <!--</mat-step>-->
+
+    <!--Step Two-->
+    <mat-step label="Загрузите фото" state="photo">
+      <div fxLayout="column" fxLayoutAlign="center center">
+        <div fxLayout="column" fxLayoutAlign="center stretch">
+          <ngx-gallery [options]="galleryOptions" *ngIf="galleryImages.length > 0"
+                       [images]="galleryImages"
+                       ></ngx-gallery>
+          <div>
+            <div fxLayout="row" fxLayoutAlign="start start">
+              <button fxFlex="25" tabindex="-1"
+                      type="button" class="search-button" matTooltip="удалить"
+                      matTooltipPosition="above" *ngIf="galleryImages[0]"
+                      mat-icon-button (click)="deleteImage(0)">
+                <mat-icon aria-label="Delete image icon">clear</mat-icon>
+              </button>
+              <button fxFlex="25" tabindex="-1"
+                      type="button" class="search-button" matTooltip="удалить"
+                      matTooltipPosition="above" *ngIf="galleryImages[1]"
+                      mat-icon-button (click)="deleteImage(1)">
+                <mat-icon aria-label="Delete image icon">clear</mat-icon>
+              </button>
+              <button fxFlex="25" tabindex="-1"
+                      type="button" class="search-button" matTooltip="удалить"
+                      matTooltipPosition="above" *ngIf="galleryImages[2]"
+                      mat-icon-button (click)="deleteImage(2)">
+                <mat-icon aria-label="Delete image icon">clear</mat-icon>
+              </button>
+              <button fxFlex="25" tabindex="-1"
+                      type="button" class="search-button" matTooltip="удалить"
+                      matTooltipPosition="above" *ngIf="galleryImages[3]"
+                      mat-icon-button (click)="deleteImage(3)">
+                <mat-icon aria-label="Delete image icon">clear</mat-icon>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="input-group mb-3 mt-3">
+        <div class="custom-file" *ngIf="galleryImages.length < 4">
+          <input type="file" class="custom-file-input" accept="image/*"
+                 (change)="handleImages($event)" multiple id="inputGroupFile01">
+          <label class="custom-file-label" for="inputGroupFile01">Открыть</label>
+        </div>
+      </div>
+      <div fxLayout="row" fxLayoutAlign="end">
+        <button mat-button matStepperPrevious>Назад</button>
+        <button mat-raised-button color="accent" matStepperNext>Далее</button>
+      </div>
+    </mat-step>
+
+    <!--Step Three-->
+    <!--<mat-step label="Обозначьте на карте местоположение" state="location">-->
     <!--<div>-->
-      <!--<p>Second stepperSecond stepperSecond stepperSecond stepperSecond stepper-->
-        <!--Second stepperSecond stepperSecond stepperSecond stepperSecond stepperS-->
-        <!--Second stepperSecond stepperSecond stepperSecond stepperSecond stepper-->
-      <!--</p>-->
+    <!--<ng-template></ng-template>-->
     <!--</div>-->
     <!--<button mat-button matStepperPrevious>Назад</button>-->
     <!--<button mat-raised-button color="accent" matStepperNext>Далее</button>-->
-  <!--</mat-step>-->
+    <!--</mat-step>-->
 
-  <!--Step Three-->
-  <!--<mat-step label="Обозначьте на карте местоположение" state="location">-->
-    <!--<div>-->
-      <!--<ng-template></ng-template>-->
-    <!--</div>-->
-    <!--<button mat-button matStepperPrevious>Назад</button>-->
-    <!--<button mat-raised-button color="accent" matStepperNext>Далее</button>-->
-  <!--</mat-step>-->
+    <!--step icons-->
+    <ng-template matStepperIcon="edit">
+      <mat-icon color="accent">edit</mat-icon>
+    </ng-template>
+    <ng-template matStepperIcon="done">
+      <mat-icon color="accent">done</mat-icon>
+    </ng-template>
+    <ng-template matStepperIcon="assignment">
+      <mat-icon color="accent">assignment</mat-icon>
+    </ng-template>
+    <ng-template matStepperIcon="photo">
+      <mat-icon color="accent">photo_camera</mat-icon>
+    </ng-template>
+    <ng-template matStepperIcon="location">
+      <mat-icon color="accent">location_on</mat-icon>
+    </ng-template>
 
-  <!--step icons-->
-  <ng-template matStepperIcon="edit">
-    <mat-icon color="accent">edit</mat-icon>
-  </ng-template>
-  <ng-template matStepperIcon="done">
-    <mat-icon color="accent">done</mat-icon>
-  </ng-template>
-  <ng-template matStepperIcon="assignment">
-    <mat-icon color="accent">assignment</mat-icon>
-  </ng-template>
-  <ng-template matStepperIcon="photo">
-    <mat-icon color="accent">photo_camera</mat-icon>
-  </ng-template>
-  <ng-template matStepperIcon="location">
-    <mat-icon color="accent">location_on</mat-icon>
-  </ng-template>
-
-</mat-vertical-stepper>
+  </mat-vertical-stepper>
+</div>

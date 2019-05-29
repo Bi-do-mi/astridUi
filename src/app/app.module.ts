@@ -23,7 +23,7 @@ import {
   MatCardModule, MatInputModule,
   MatSnackBarModule, MatDialogModule,
   MatCheckboxModule, MatTooltipModule,
-  MatDividerModule, MatSelectModule, MatStepperModule, MatAutocompleteModule
+  MatDividerModule, MatSelectModule, MatStepperModule, MatAutocompleteModule, MatSlideToggleModule, MatProgressSpinnerModule
 } from '@angular/material';
 import {NgxMapboxGLModule} from 'ngx-mapbox-gl';
 import {MapBoxComponent} from './components/map-box/map-box.component';
@@ -40,6 +40,8 @@ import {UnitOptionsDialogComponent} from './components/unit-options-dialog/unit-
 import { AdminUnitsCollectionComponent } from './components/admin-units-collection/admin-units-collection.component';
 import { UnitCreateDialogComponent } from './components/unit-create-dialog/unit-create-dialog.component';
 import {STEPPER_GLOBAL_OPTIONS} from '@angular/cdk/stepper';
+import {NgxPicaModule} from '@digitalascetic/ngx-pica';
+import {NgxGalleryModule} from 'ngx-gallery';
 
 // import {registerLocaleData} from '@angular/common';
 // import localeRu from '@angular/common/locales/ru';
@@ -71,6 +73,8 @@ export const httpInterceptorProviders = [
     HttpClientModule,
     ReactiveFormsModule,
     NgxSpinnerModule,
+    NgxPicaModule,
+    NgxGalleryModule,
     LoggerModule.forRoot({
       level: NgxLoggerLevel.INFO,
       serverLogLevel: NgxLoggerLevel.ERROR
@@ -88,6 +92,8 @@ export const httpInterceptorProviders = [
     MatSidenavModule,
     MatDividerModule,
     MatAutocompleteModule,
+    MatSlideToggleModule,
+    MatProgressSpinnerModule,
     MatTooltipModule,
     MatDialogModule,
     NgxMapboxGLModule.withConfig({

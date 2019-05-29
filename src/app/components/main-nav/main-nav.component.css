@@ -1784,6 +1784,9 @@ th.mat-header-cell, td.mat-cell, td.mat-footer-cell {
   background-size: 2em 2em;
   background-color: #212121; }
 
+.mat-sidenav-container, .mat-sidenav-content, .mat-tab-body-content {
+  transform: none !important; }
+
 .mat-badge-content {
   font-weight: 600;
   font-size: 12px;

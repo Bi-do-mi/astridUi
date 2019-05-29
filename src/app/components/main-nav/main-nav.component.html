@@ -14,8 +14,8 @@
     <!--раздел парка техники-->
     <div fxLayout="column" *ngIf="parkContent && uService.authenticated">
       <div fxLayout="column" fxLayoutAlign="start center">
-        <img width="150px" height="150px"
-             src="assets/pics/park_init.jpg" alt="Photo of a machins"/>
+        <img  height="150px"
+             src="assets/pics/buldozer.png" alt="Photo of a machins"/>
         <div fxLayout="row" fxLayoutAlign="start">
          <button #editParkLocation [disabled]="!mapService.userGeoCode"
             type="button" matTooltip="редактировать" tabindex="-1"
@@ -105,7 +105,9 @@
       <!--<app-map-box fxFlex="100"></app-map-box>-->
       <!--</div>-->
       <div id="content_div" class="map-row" fxLayout="row" fxFlex="100">
+        <!--todo разблокировать карту-->
         <ng-content></ng-content>
+
         <!--кнопка поиска-->
         <button
           type="button" class="search-button" matTooltip="искать технику"

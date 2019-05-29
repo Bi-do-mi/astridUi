@@ -26,6 +26,7 @@ export class AdminUnitsCollectionComponent implements OnInit, OnDestroy {
   selectedBrend = new FormControl();
   selectedModel = new FormControl();
   forceUnswer: string;
+  downloadFromServer = new FormControl();
 
   constructor(
     private formBuilder: FormBuilder,
@@ -35,10 +36,7 @@ export class AdminUnitsCollectionComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.parkService.getJSONfromFile(true).pipe(first(), untilDestroyed(this))
-      .subscribe(data => {
-        this.unitsList = data;
-      });
+    this.getJson();
     this.fileForm = this.formBuilder.group({
       file: [null, Validators.required]
     });
@@ -46,6 +44,18 @@ export class AdminUnitsCollectionComponent implements OnInit, OnDestroy {
       usernameCtrl: [''],
       roleCtrl: ['']
     });
+  }
+  getJson() {
+    this.parkService.getJSONfromFile(this.downloadFromServer.value)
+      .pipe(first(), untilDestroyed(this))
+      .subscribe(data => {
+        this.unitsList = data;
+        this.selectedAssignment.reset();
+        this.selectedType.reset();
+        this.unitsType = new UnitAssignment();
+        this.unitsBrend = new UnitType();
+        this.unitsModel = new UnitBrend();
+      });
   }
 
   onFileChange(event) {

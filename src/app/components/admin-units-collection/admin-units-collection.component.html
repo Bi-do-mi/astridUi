@@ -1,73 +1,78 @@
-
-<mat-card class="m-2">
-  <mat-card-content>
-    <section fxLayout="column">
-      <form [formGroup]="fileForm" novalidate (ngSubmit)="onSubmit()">
-        <input type="file" multiple="multiple" (change)="onFileChange2($event)"
-               webkitdirectory mozdirectory msdirectory odirectory directory/>
-        <button mat-raised-button="" class="m-1" color="accent"type="submit">
-          Save to File
+<div>
+  <mat-card class="m-2">
+    <mat-card-content>
+      <section>
+        <form [formGroup]="fileForm" novalidate (ngSubmit)="onSubmit()">
+          <input type="file" multiple="multiple" (change)="onFileChange2($event)"
+                 webkitdirectory mozdirectory msdirectory odirectory directory/>
+          <button mat-raised-button="" class="m-1" color="accent" type="submit">
+            Save to File
+          </button>
+          <button mat-raised-button="" class="m-1" color="accent" (click)="saveToServer()">
+            Save To Server
+          </button>
+          <div>
+            <mat-slide-toggle [formControl]="downloadFromServer" (change)="getJson()">
+              загрузить с сервера / из файла
+            </mat-slide-toggle>
+          </div>
+        </form>
+        <form fxLayout="column">
+          <mat-form-field fxFlex="">
+            <mat-select panelClass="panel-for-unitslist" [formControl]="selectedAssignment"
+                        name="assignment" (selectionChange)="getUnitsTypeList()"
+                        placeholder="Группа по виду работ">
+              <mat-option *ngFor="let assignment of unitsList" [value]="assignment.assignmentname">
+                {{assignment.assignmentname}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field>
+            <mat-select [formControl]="selectedType" placeholder="Тип техники"
+                        panelClass="panel-for-unitslist" (selectionChange)="getUnitsBrendList()">
+              <mat-option *ngFor="let type of unitsType.types" [value]="type.typename">
+                {{type.typename}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field>
+            <mat-select [formControl]="selectedBrend" name="brend" placeholder="Бренд"
+                        panelClass="panel-for-unitslist" (selectionChange)="getUnitsModeldList()">
+              <mat-option *ngFor="let brend of unitsBrend.brends" [value]="brend.brendname">
+                {{brend.brendname}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field>
+            <mat-select [formControl]="selectedModel" name="model" placeholder="Модель"
+                        panelClass="panel-for-unitslist">
+              <mat-option *ngFor="let model of unitsModel.models" [value]="model">
+                {{model.modelname}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </form>
+      </section>
+    </mat-card-content>
+  </mat-card>
+  <mat-card class="m-2">
+    <mat-card-title class="h5">Добавление роли</mat-card-title>
+    <mat-card-content>
+      <form [formGroup]="forceForm">
+        <mat-form-field>
+          <input type="text" matInput formControlName="usernameCtrl" placeholder="username">
+        </mat-form-field>
+        <mat-form-field class="m-2">
+          <input type="text" matInput formControlName="roleCtrl" placeholder="role">
+        </mat-form-field>
+        <button mat-raised-button="" class="m-2" color="accent" (click)="getAdminForce()">
+          +
         </button>
-        <button mat-raised-button="" class="m-1" color="accent" (click)="saveToServer()">
-          Save To Server
+        <button mat-raised-button="" color="accent" (click)="untieAdminForce()">
+          -
         </button>
       </form>
-      <form fxLayout="column">
-        <mat-form-field fxFlex="">
-          <mat-select panelClass="panel-for-unitslist" [formControl]="selectedAssignment"
-                      name="assignment" (selectionChange)="getUnitsTypeList()"
-                      placeholder="Группа по виду работ">
-            <mat-option *ngFor="let assignment of unitsList" [value]="assignment.assignmentname">
-              {{assignment.assignmentname}}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
-        <mat-form-field>
-          <mat-select [formControl]="selectedType" placeholder="Тип техники"
-                      panelClass="panel-for-unitslist" (selectionChange)="getUnitsBrendList()">
-            <mat-option *ngFor="let type of unitsType.types" [value]="type.typename">
-              {{type.typename}}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
-        <mat-form-field>
-          <mat-select [formControl]="selectedBrend" name="brend" placeholder="Бренд"
-                      panelClass="panel-for-unitslist" (selectionChange)="getUnitsModeldList()">
-            <mat-option *ngFor="let brend of unitsBrend.brends" [value]="brend.brendname">
-              {{brend.brendname}}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
-        <mat-form-field>
-          <mat-select [formControl]="selectedModel" name="model" placeholder="Модель"
-                      panelClass="panel-for-unitslist">
-            <mat-option *ngFor="let model of unitsModel.models" [value]="model">
-              {{model.modelname}}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
-      </form>
-    </section>
-  </mat-card-content>
-</mat-card>
-<mat-card class="m-2">
-  <mat-card-title class="h5">Добавление роли</mat-card-title>
-  <mat-card-content>
-    <form [formGroup]="forceForm">
-      <mat-form-field>
-        <input type="text" matInput formControlName="usernameCtrl" placeholder="username">
-      </mat-form-field>
-      <mat-form-field class="m-2">
-        <input type="text" matInput formControlName="roleCtrl" placeholder="role">
-      </mat-form-field>
-      <button mat-raised-button="" class="m-2" color="accent" (click)="getAdminForce()">
-        +
-      </button>
-      <button mat-raised-button="" color="accent" (click)="untieAdminForce()">
-        -
-      </button>
-    </form>
-    <label class="text-info">{{forceUnswer}}</label>
-  </mat-card-content>
-</mat-card>
-
+      <label class="text-info">{{forceUnswer}}</label>
+    </mat-card-content>
+  </mat-card>
+</div>
