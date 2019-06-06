@@ -1787,6 +1787,9 @@ th.mat-header-cell, td.mat-cell, td.mat-footer-cell {
 .mat-sidenav-container, .mat-sidenav-content, .mat-tab-body-content {
   transform: none !important; }
 
+.mat-vertical-stepper-header {
+  pointer-events: none !important; }
+
 .mat-badge-content {
   font-weight: 600;
   font-size: 12px;

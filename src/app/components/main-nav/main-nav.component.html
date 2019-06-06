@@ -15,7 +15,7 @@
     <div fxLayout="column" *ngIf="parkContent && uService.authenticated">
       <div fxLayout="column" fxLayoutAlign="start center">
         <img  height="150px"
-             src="assets/pics/buldozer.png" alt="Photo of a machins"/>
+             src="assets/pics/buldozer_.jpg" alt="Photo of a machins"/>
         <div fxLayout="row" fxLayoutAlign="start">
          <button #editParkLocation [disabled]="!mapService.userGeoCode"
             type="button" matTooltip="редактировать" tabindex="-1"
@@ -110,14 +110,14 @@
 
         <!--кнопка поиска-->
         <button
-          type="button" class="search-button" matTooltip="искать технику"
+          type="button" class="search-button" matTooltip="искать технику" tabindex="-1"
           matTooltipPosition="above" *ngIf="url == '/'" aria-label="Toggle start_sidenav"
           mat-icon-button (click)="toggleSearchBar()">
           <mat-icon aria-label="Search nav toggle icon">search</mat-icon>
         </button>
         <!--кнопка технопарка-->
         <button
-          type="button" class="park-button" matTooltip="мой технопарк"
+          type="button" class="park-button" matTooltip="мой технопарк" tabindex="-1"
           matTooltipPosition="above" *ngIf="url == '/'" aria-label="Toggle start_sidenav"
           mat-icon-button (click)="toggleParkBar()">
           <mat-icon aria-label="Park nav toggle icon">home</mat-icon>

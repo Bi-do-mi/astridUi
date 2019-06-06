@@ -54,3 +54,6 @@ $transparent: rgba(0, 0, 0, 0);
 .mat-sidenav-container, .mat-sidenav-content, .mat-tab-body-content {
   transform: none !important;
 }
+.mat-vertical-stepper-header{
+  pointer-events: none !important;
+}

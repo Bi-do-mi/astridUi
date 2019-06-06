@@ -12,6 +12,7 @@ import {User} from '../../_model/User';
 import {SnackBarService} from '../../_services/snack-bar.service';
 import {NgxPicaErrorInterface, NgxPicaService} from '@digitalascetic/ngx-pica';
 import {NgxGalleryAction, NgxGalleryAnimation, NgxGalleryImage, NgxGalleryOptions} from 'ngx-gallery';
+import {Filesystem} from '@angular/service-worker/config';
 
 @Component({
   selector: 'app-unit-create',
@@ -33,6 +34,7 @@ export class UnitCreateDialogComponent implements OnInit, OnDestroy {
   filteredModels: string[];
   galleryOptions: NgxGalleryOptions[];
   galleryImages: NgxGalleryImage[];
+  images: File[] = [];
 
   constructor(
     private formBuilder: FormBuilder,
@@ -90,9 +92,9 @@ export class UnitCreateDialogComponent implements OnInit, OnDestroy {
     this.selectForm = this.formBuilder.group({
       assignmentCtrl: ['', Validators.required],
       typeCtrl: ['', Validators.required],
-      brendCtrl: ['', [Validators.pattern('^([а-яА-ЯA-Za-z0-9 ()-]*)$'),
+      brendCtrl: ['', [Validators.pattern('^([а-яА-ЯA-Za-z0-9 ()-.,]*)$'),
         Validators.required]],
-      modelCtrl: ['', [Validators.pattern('^([а-яА-ЯA-Za-z0-9 ()-]*)$'),
+      modelCtrl: ['', [Validators.pattern('^([а-яА-ЯA-Za-z0-9 ()-.,]*)$'),
         Validators.required]]
     });
     this.selectForm.get('assignmentCtrl')
@@ -143,6 +145,7 @@ export class UnitCreateDialogComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
+    this.images = [];
   }
 
   get sf() {
@@ -201,12 +204,10 @@ export class UnitCreateDialogComponent implements OnInit, OnDestroy {
   }
 
   onFirstStep() {
-    this.submitted = true;
     if (this.selectForm.invalid) {
       console.log('invalid form. return');
       return;
     }
-    this.loading = true;
     this.unit.ouner = this.currentUser.id;
     this.unit.assignment = this.selectForm.get('assignmentCtrl').value;
     this.unit.type = this.selectForm.get('typeCtrl').value;
@@ -215,21 +216,25 @@ export class UnitCreateDialogComponent implements OnInit, OnDestroy {
     this.unit.location = this.currentUser.location;
     this.unit.enabled = true;
     this.unit.paid = false;
-    // this.parkService.createUnit(this.unit).pipe(first(),
-    //   untilDestroyed(this)).subscribe(() => {
-    //     this.loading = false;
-    //     this.dialogRef.close();
-    //     this.snackbarService.success('Единица техники успешно создана',
-    //       'OK', 10000);
-    //   },
-    //   error => {
-    //     this.loading = false;
-    //     console.log(error);
-    //     this.dialogRef.close();
-    //     this.snackbarService.error('Что-то пошло не так', 'OK');
-    //   });
+  }
 
-
+  onSecondStep() {
+    this.submitted = true;
+    this.loading = true;
+    this.parkService.createUnit(this.unit, this.images).pipe(first(),
+      untilDestroyed(this)).subscribe(() => {
+        this.loading = false;
+        this.dialogRef.close();
+        this.snackbarService.success('Единица техники успешно создана',
+          'OK', 10000);
+      },
+      error => {
+        this.loading = false;
+        console.log(error);
+        this.dialogRef.close();
+        this.snackbarService.error('Что-то пошло не так', 'OK');
+      });
+    // todo remove method later
     // this.parkService.createUnitTypesList(this.unitsList).pipe(first(),
     //   untilDestroyed(this)).subscribe(() => {
     //   console.log('unitsList created!');
@@ -237,28 +242,68 @@ export class UnitCreateDialogComponent implements OnInit, OnDestroy {
   }
 
   public handleImages(event: any) {
+    this.loading = true;
     const files: File[] = event.target.files;
+    for (let p = 0; p < files.length; p++) {
+      if (!this.validateFile(files[p].name)) {
+        console.log('wrong extention');
+        this.loading = false;
+        return false;
+      }
+    }
+    if (event.target.files && event.target.files.length > 0) {
+      for (let d = 0; d < files.length; d++) {
+        const filereader = new FileReader();
+        filereader.readAsDataURL(files[d]);
+        filereader.onload = () => {
+          this.unit.images.push({
+            filename: d + 1 + files[d].name.slice(files[d].name.lastIndexOf('.')),
+            filetype: files[d].type,
+            value: filereader.result.toString().split(',')[1]
+          });
+          // console.log('1 image: ' + this.unit.images[0].filename + '\n' +
+          //   this.unit.images[0].value);
+        };
+      }
+    }
     this.ngxPicaService.resizeImages(files, 1500, 1000,
       {aspectRatio: {keepAspectRatio: true, forceMinDimensions: true}})
       .subscribe((imageResized?: File) => {
           const reader: FileReader = new FileReader();
           reader.addEventListener('load', (evnt: any) => {
             if (this.galleryImages.length < 4) {
+              const f: File = evnt.target.result;
               this.galleryImages.push({
-                small: evnt.target.result,
-                medium: evnt.target.result,
-                big: evnt.target.result
+                small: f,
+                medium: f,
+                big: f
               });
+              // this.images.push(f);
+              // this.unit.images.push({filename: (this.unit.images.length + 1).toString()});
             }
+            this.loading = false;
           }, false);
           reader.readAsDataURL(imageResized);
         },
         (er?: NgxPicaErrorInterface) => {
+          this.loading = false;
           throw er.err;
         });
   }
 
+  validateFile(name: String) {
+    const ext = name.substring(name.lastIndexOf('.') + 1);
+    if (ext.toLowerCase() === 'jpg' ||
+      ext.toLowerCase() === 'jpeg') {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   deleteImage(ind: number) {
     this.galleryImages.splice(ind, 1);
+    // this.images.splice(ind, 1);
+    this.unit.images.splice(ind, 1);
   }
 }
