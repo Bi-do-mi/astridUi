@@ -1,7 +1,7 @@
 {
 "version": 3,
-"mappings": "",
-"sources": [],
+"mappings": "AAAA,4BAA4B;EAC1B,KAAK,EAAE,IAAI;EACX,UAAU,EAAE,IAAI;;AAElB,UAAU;EACR,UAAU,EAAE,OAAO;EAAE,WAAW",
+"sources": ["admin-units-collection.component.scss"],
 "names": [],
 "file": "admin-units-collection.component.css"
 }

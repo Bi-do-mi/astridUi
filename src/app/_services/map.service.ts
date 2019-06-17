@@ -1,4 +1,4 @@
-import {Injectable, OnDestroy, OnInit} from '@angular/core';
+import {HostListener, Injectable, OnDestroy, OnInit} from '@angular/core';
 import * as mapboxgl from 'mapbox-gl';
 import {Marker} from 'mapbox-gl';
 import {NGXLogger} from 'ngx-logger';
@@ -30,8 +30,8 @@ export class MapService implements OnInit, OnDestroy {
   private _isFirstLoading: boolean;
   private _mapTemplateId$ = new BehaviorSubject<string>('');
   currentMapId = this._mapTemplateId$.asObservable();
-  private clickedPoint$ = new Subject<GeoJson>();
-  private _clickedPoint = this.clickedPoint$.asObservable();
+  private _clickedPoint$ = new Subject<GeoJson>();
+  private _clickedPoint = this._clickedPoint$.asObservable();
   currentUser: User;
   private userMarker: Marker;
   userGeoCode: GeoCode;
@@ -86,7 +86,7 @@ export class MapService implements OnInit, OnDestroy {
             const p = new GeoJson([
               +event.lngLat.lng.toFixed(6),
               +event.lngLat.lat.toFixed(6)]);
-            this.clickedPoint$.next(p);
+            this._clickedPoint$.next(p);
           });
 
           // load listener
@@ -188,10 +188,18 @@ export class MapService implements OnInit, OnDestroy {
     return this._clickedPoint;
   }
 
+  get clickedPoint$(): Subject<GeoJson> {
+    return this._clickedPoint$;
+  }
+
   getGeocodeByPoint(point: GeoJson): Observable<any> {
-    return this.http.get('https://geocoder.tilehosting.com/r/'
-      + point.geometry.coordinates[0] + '/' + point.geometry.coordinates[1]
-      + '.js?key=hg1h55E0Z3ft5je5zeKI');
+    if (point) {
+      return this.http.get('https://geocoder.tilehosting.com/r/'
+        + point.geometry.coordinates[0] + '/' + point.geometry.coordinates[1]
+        + '.js?key=hg1h55E0Z3ft5je5zeKI');
+    } else {
+      return null;
+    }
   }
 
   getMarkers(): Observable<any> {

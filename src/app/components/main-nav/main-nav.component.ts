@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {Component, HostListener, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {BreakpointObserver, Breakpoints} from '@angular/cdk/layout';
 import {Observable} from 'rxjs';
 import {filter, finalize, first, map} from 'rxjs/operators';
@@ -15,6 +15,8 @@ import {untilDestroyed} from 'ngx-take-until-destroy';
 import {GeoJson} from '../../_model/MarkerSourceModel';
 import {ParkService} from '../../_services/park.service';
 import {UnitCreateDialogComponent} from '../unit-create-dialog/unit-create-dialog.component';
+import {UnitsListTableComponent} from '../units-list/units-list-table.component';
+import {Unit} from '../../_model/Unit';
 
 @Component({
   selector: 'app-main-nav',
@@ -33,6 +35,7 @@ export class MainNavComponent implements OnInit, OnDestroy {
   isHandset$: Observable<boolean> = this.breakpointObserver.observe(
     Breakpoints.Handset).pipe(map(result => result.matches));
   url: string;
+  UnitsListComponent = UnitsListTableComponent;
 
 
   constructor(private breakpointObserver: BreakpointObserver,
@@ -54,9 +57,18 @@ export class MainNavComponent implements OnInit, OnDestroy {
       this.url = this.router.routerState.snapshot.url.split(/[;?]/)[0];
       // this.logger.info(environment);
     });
-    this.uService.currentUser.pipe(untilDestroyed(this)).subscribe(u => {
-      this.currentUser = u;
-    });
+    if (localStorage.getItem('currentUser')) {
+      this.uService.checkAuth().pipe(untilDestroyed(this), finalize(() => {
+        this.uService.currentUser.subscribe(u => {
+          this.currentUser = u;
+        });
+      })).subscribe();
+    } else {
+      this.uService.currentUser.subscribe(u => {
+        this.currentUser = u;
+      });
+    }
+
     this.sidenavService.right_sidenav = this.rightDrawer;
     this.sidenavService.left_sidenav = this.leftDrawer;
   }
@@ -95,44 +107,65 @@ export class MainNavComponent implements OnInit, OnDestroy {
     // });
   }
 
-  setParkLocation(createUnit?: boolean) {
+  @HostListener('document:keydown.escape', ['$event']) onKeydown(event: KeyboardEvent) {
+    if (event.key === 'Escape') {
+      this.mapService.clickedPoint$.next(null);
+    }
+  }
+
+  setParkLocation(openCreateUnitDialog?: boolean, unit?: Unit) {
     if (this.isHandset$) {
       this.sidenavService.closeAll();
     }
     this.mapService.map.getCanvas().style.cursor = 'auto';
-    this.snackBarService.success(
-      'Укажите на карте местоположение парка техники', null, 100000);
+    this.isHandset$.subscribe(isHandset => {
+      this.snackBarService.success(
+        unit ? ('Укажите на карте местоположение еденицы техники' +
+          (isHandset ? '' : ', или нажмите "Escape" для выхода.'))
+          : ('Укажите на карте местоположение парка техники'
+          + (isHandset ? '' : ', или нажмите "Escape" для выхода.')), null, 100000);
+    });
+
     this.mapService.clickedPoint.pipe(first(), finalize(() => {
       this.snackBarService.close();
       this.mapService.map.getCanvas().style.cursor = '';
       this.sidenavService.openLeft();
-      if (createUnit) {
-        this.openUnitCreateDialog();
+      if (openCreateUnitDialog) {
+        this.openUnitCreateDialog(unit);
       }
     }), untilDestroyed(this))
       .subscribe(point => {
-        this.mapService.flyTo(point);
-        this.currentUser.location = point;
-        this.uService.updateUser(this.currentUser)
-          .pipe(first(), untilDestroyed(this)).subscribe(u => {
-        }, error1 => {
-        });
+        if (point) {
+          this.mapService.flyTo(point);
+          if (unit) {
+            unit.location = point;
+          } else {
+            this.currentUser.location = point;
+            this.uService.updateUser(this.currentUser)
+              .pipe(first(), untilDestroyed(this)).subscribe(u => {
+            }, error1 => {
+            });
+          }
+        }
       });
   }
 
-  openUnitCreateDialog(): void {
+  openUnitCreateDialog(unit?: Unit): void {
     if (!this.currentUser.location) {
       this.setParkLocation(true);
     } else {
       this.sidenavService.closeAll();
       const dialogRef = this.dialog.open(UnitCreateDialogComponent, {
         maxHeight: '100vh',
-        maxWidth: '100vw'
+        maxWidth: '100vw',
+        data: {unit: unit}
+      });
+      dialogRef.afterClosed().pipe(untilDestroyed(this)).subscribe(result => {
+        if (result) {
+          this.setParkLocation(true, result);
+        }
       });
     }
-    // dialogRef.afterClosed().pipe(untilDestroyed(this)).subscribe(result => {
-    //   // console.log('The dialog was closed');
-    // });
   }
 
   // todo not forget to clear this

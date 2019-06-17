@@ -12,14 +12,14 @@ export class UnitModel {
   }
 }
 
-export class UnitBrend {
-  brendname = '';
+export class UnitBrand {
+  brandname = '';
   models = new Set<UnitModel>();
   createdOn = ZonedDateTime.now(ZoneId.of('UTC'));
 
   toJSON() {
     return ({
-      brendname: this.brendname,
+      brandname: this.brandname,
       createdOn: this.createdOn,
       models: Array.from(this.models)
     });
@@ -28,12 +28,12 @@ export class UnitBrend {
 
 export class UnitType {
   typename = '';
-  brends = new Set<UnitBrend>();
+  brands = new Set<UnitBrand>();
 
   toJSON() {
     return ({
       typename: this.typename,
-      brends: Array.from(this.brends)
+      brands: Array.from(this.brands)
     });
   }
 }

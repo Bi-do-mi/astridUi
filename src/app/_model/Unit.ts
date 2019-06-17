@@ -6,7 +6,6 @@ import {ZonedDateTime} from 'js-joda';
 export class Unit {
   id: number;
   ouner: number;
-  assignment: string;
   type: string;
   brand: string;
   model: string;

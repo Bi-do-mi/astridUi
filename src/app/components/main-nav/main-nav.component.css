@@ -2373,4 +2373,8 @@ textarea.cdk-textarea-autosize-measuring {
   background-color: #fbc02d;
   color: #212121; }
 
+.units-list-contaner {
+  width: 100%;
+  margin-top: 10px; }
+
 /*# sourceMappingURL=main-nav.component.css.map */

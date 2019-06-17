@@ -18,28 +18,28 @@
           </div>
         </form>
         <form fxLayout="column">
-          <mat-form-field fxFlex="">
-            <mat-select panelClass="panel-for-unitslist" [formControl]="selectedAssignment"
-                        name="assignment" (selectionChange)="getUnitsTypeList()"
-                        placeholder="Группа по виду работ">
-              <mat-option *ngFor="let assignment of unitsList" [value]="assignment.assignmentname">
-                {{assignment.assignmentname}}
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
+          <!--<mat-form-field fxFlex="">-->
+            <!--<mat-select panelClass="panel-for-unitslist" [formControl]="selectedAssignment"-->
+                        <!--name="assignment" (selectionChange)="getUnitsTypeList()"-->
+                        <!--placeholder="Группа по виду работ">-->
+              <!--<mat-option *ngFor="let assignment of unitsList" [value]="assignment.assignmentname">-->
+                <!--{{assignment.assignmentname}}-->
+              <!--</mat-option>-->
+            <!--</mat-select>-->
+          <!--</mat-form-field>-->
           <mat-form-field>
             <mat-select [formControl]="selectedType" placeholder="Тип техники"
-                        panelClass="panel-for-unitslist" (selectionChange)="getUnitsBrendList()">
-              <mat-option *ngFor="let type of unitsType.types" [value]="type.typename">
+                        panelClass="panel-for-unitslist" (selectionChange)="getUnitsBrandList()">
+              <mat-option *ngFor="let type of unitsTypeList" [value]="type.typename">
                 {{type.typename}}
               </mat-option>
             </mat-select>
           </mat-form-field>
           <mat-form-field>
-            <mat-select [formControl]="selectedBrend" name="brend" placeholder="Бренд"
+            <mat-select [formControl]="selectedBrand" name="brand" placeholder="Марка производителя"
                         panelClass="panel-for-unitslist" (selectionChange)="getUnitsModeldList()">
-              <mat-option *ngFor="let brend of unitsBrend.brends" [value]="brend.brendname">
-                {{brend.brendname}}
+              <mat-option *ngFor="let brand of unitsBrand.brands" [value]="brand.brandname">
+                {{brand.brandname}}
               </mat-option>
             </mat-select>
           </mat-form-field>
@@ -55,6 +55,89 @@
       </section>
     </mat-card-content>
   </mat-card>
+
+  <mat-card class="m-2">
+    <mat-card-title class="h5">Перенос техники в новый формат</mat-card-title>
+    <mat-card-content>
+      <div class="mat-elevation-z6" fxLayout="row">
+        <div>
+          <table class="units-list-in-admin-comnent" mat-table matSort [dataSource]="dataSource">
+
+            <ng-container matColumnDef="Старая база">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>Старая база</th>
+              <td mat-cell *matCellDef="let assignment" fxLayout="row" fxLayoutAlign="space-between center">
+
+                {{assignment.assignmentname}}
+                <table>
+                  <ng-container *ngFor="let type of assignment.types">
+                    <tr>
+                      <td>
+                        {{type.typename}}
+                        <button #editUnitkLocation
+                                type="button" matTooltip="местоположение на карте" tabindex="-1"
+                                matTooltipPosition="above" aria-label="Toggle edit unit location"
+                                mat-icon-button (click)="transmit(assignment, type)">
+                          <mat-icon aria-label="Edit toggle icon">arrow_forward</mat-icon>
+                        </button>
+                      </td>
+                    </tr>
+                  </ng-container>
+                </table>
+              </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+          </table>
+          <mat-paginator
+            [length]="dataSource.data?.length"
+            [pageIndex]="0"
+            [pageSize]="50"
+            [pageSizeOptions]="[5, 10, 20, 50, 100]">
+          </mat-paginator>
+        </div>
+
+        <!--Second Table-->
+        <div>
+          <table class="units-list-in-admin-comnent" mat-table matSort [dataSource]="dataSourceNew">
+
+            <ng-container matColumnDef="Новая база">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>Новая база</th>
+              <td mat-cell *matCellDef="let type; let i=index" fxLayout="row" fxLayoutAlign="space-between center">
+
+                {{type?.typename}}
+                <table>
+                  <ng-container *ngFor="let brand of type?.brands">
+                    <tr>
+                      <td>
+                        {{brand?.brandname}}
+                      </td>
+                    </tr>
+                  </ng-container>
+                </table>
+              </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumnsNew"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumnsNew;"
+                [ngClass]="{'highlight': selectedRowNewTable == row.typename}"
+                (click)="selectedRowNewTable = row.typename"></tr>
+          </table>
+          <mat-paginator
+            [length]="dataSourceNew.data?.length"
+            [pageIndex]="0"
+            [pageSize]="50"
+            [pageSizeOptions]="[5, 10, 20, 50, 100]">
+          </mat-paginator>
+        </div>
+      </div>
+      <button mat-raised-button="" class="m-1" color="accent"
+              (click)="saveToFile(dataSourceNew.data, 'newlist')">
+        Save to File
+      </button>
+    </mat-card-content>
+  </mat-card>
+
   <mat-card class="m-2">
     <mat-card-title class="h5">Добавление роли</mat-card-title>
     <mat-card-content>

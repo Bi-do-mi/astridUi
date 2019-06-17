@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpRequest} from '@angular/common/http';
 import {finalize, first, map} from 'rxjs/operators';
-import {UnitAssignment, UnitBrend, UnitType} from '../_model/UnitTypesModel';
+import {UnitAssignment, UnitBrand, UnitType} from '../_model/UnitTypesModel';
 import {Unit} from '../_model/Unit';
 import {NgxSpinnerService} from 'ngx-spinner';
 import {UserService} from './user.service';
@@ -41,12 +41,12 @@ export class ParkService {
       (a.typename < b.typename ? -1 : 0);
   }
 
-  sortBrend(a: UnitBrend, b: UnitBrend) {
-    return (a.brendname > b.brendname) ? 1 :
-      (a.brendname < b.brendname ? -1 : 0);
+  sortBrand(a: UnitBrand, b: UnitBrand) {
+    return (a.brandname > b.brandname) ? 1 :
+      (a.brandname < b.brandname ? -1 : 0);
   }
 
-  createUnit(unit: Unit, files: File[]) {
+  createUnit(unit: Unit) {
     let notFinished = true;
     setTimeout(() => {
       if (notFinished) {
@@ -61,45 +61,13 @@ export class ParkService {
         , map(user => {
           if (user) {
             this.userService.updateCurrentUser(user, true);
-            // if (files.length > 0) {
-            //   console.log('colling saveUnitImage()');
-            //   this.saveUnitImage(files)
-            //     .pipe(first())
-            //     .subscribe(() => {
-            //     });
-            // }
           }
           return;
         })
       );
   }
 
-  saveUnitImage(files: File[]) {
-    let notFinished = true;
-    setTimeout(() => {
-      if (notFinished) {
-        this.spinner.show();
-      }
-    }, 1000);
-    const formdata: FormData = new FormData();
-    for (let i = 0; i < files.length; i++) {
-      formdata.append('photo', files[i]);
-    }
-    return this.http.post<any>('rest/units/save_unit_image', formdata)
-      .pipe(finalize(() => {
-          notFinished = false;
-          this.spinner.hide();
-        })
-        , map(user => {
-          if (user) {
-            this.userService.updateCurrentUser(user, true);
-          }
-          return;
-        })
-      );
-  }
-
-  createUnitTypesList(list: Array<UnitAssignment>) {
+  createUnitTypesList(list: Array<UnitType>) {
     let notFinished = true;
     setTimeout(() => {
       if (notFinished) {

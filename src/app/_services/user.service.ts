@@ -6,6 +6,7 @@ import {NGXLogger} from 'ngx-logger';
 import {finalize, first, map} from 'rxjs/operators';
 import {untilDestroyed} from 'ngx-take-until-destroy';
 import {NgxSpinnerService} from 'ngx-spinner';
+import {Unit} from '../_model/Unit';
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +14,9 @@ import {NgxSpinnerService} from 'ngx-spinner';
 export class UserService implements OnDestroy {
   authenticated = false;
   private currentUser$ = new BehaviorSubject<User>(new User());
+  private currentUserUnits$ = new BehaviorSubject<Unit[]>(new Array<Unit>());
   currentUser = this.currentUser$.asObservable();
+  currentUserUnits = this.currentUserUnits$.asObservable();
   private url: string;
   private authHeader = new HttpHeaders();
   public admin: boolean;
@@ -21,24 +24,24 @@ export class UserService implements OnDestroy {
   constructor(private http: HttpClient,
               private spinner: NgxSpinnerService,
               private logger: NGXLogger) {
-    // console.log('UserService constructor triggered!');
-    if (localStorage.getItem('currentUser')) {
+  }
+  checkAuth(): Observable<any> {
       try {
-        this.http.get<any>('/rest/users/check-auth')
-          .pipe(map((u) => {
+        return this.http.get<any>('/rest/users/check-auth')
+          .pipe(map((u: User) => {
             this.updateCurrentUser(u, true);
-            // console.log('incoming string User: ' + u);
+            // console.log('incoming string User: \n' + u.units[0].model);
             this.authenticated = true;
             this.checkAdmin();
-          }), untilDestroyed(this)).subscribe();
+          }), untilDestroyed(this));
       } catch (e) {
         console.log(e.toString());
       }
-    }
   }
 
   updateCurrentUser(user: User, updateUserInLocalStore?: boolean) {
     this.currentUser$.next(user);
+    this.currentUserUnits$.next(user.units);
     if (updateUserInLocalStore) {
       localStorage.setItem('currentUser', JSON.stringify(user));
     }
@@ -246,6 +249,7 @@ export class UserService implements OnDestroy {
         return u;
       }));
   }
+
   untieAdminForce(username: string, role: string) {
     let notFinished = true;
     setTimeout(() => {

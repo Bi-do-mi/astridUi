@@ -1,40 +1,41 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
-import {MatDialogRef} from '@angular/material';
+import {AfterViewInit, Component, Inject, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {MAT_DIALOG_DATA, MatDialogRef, MatStepper} from '@angular/material';
 import {untilDestroyed} from 'ngx-take-until-destroy';
-import {UnitAssignment, UnitBrend, UnitModel, UnitType} from '../../_model/UnitTypesModel';
+import {UnitBrand, UnitModel, UnitType} from '../../_model/UnitTypesModel';
 import {ParkService} from '../../_services/park.service';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {first} from 'rxjs/operators';
-import {color} from 'openlayers';
+import {finalize, first} from 'rxjs/operators';
 import {Unit} from '../../_model/Unit';
 import {UserService} from '../../_services/user.service';
 import {User} from '../../_model/User';
 import {SnackBarService} from '../../_services/snack-bar.service';
 import {NgxPicaErrorInterface, NgxPicaService} from '@digitalascetic/ngx-pica';
-import {NgxGalleryAction, NgxGalleryAnimation, NgxGalleryImage, NgxGalleryOptions} from 'ngx-gallery';
-import {Filesystem} from '@angular/service-worker/config';
+import {NgxGalleryAnimation, NgxGalleryImage, NgxGalleryOptions} from 'ngx-gallery';
+import {MapService} from '../../_services/map.service';
+import {GeoCode} from '../../_model/GeoCode';
 
 @Component({
   selector: 'app-unit-create',
   templateUrl: './unit-create-dialog.component.html',
   styleUrls: ['./unit-create-dialog.component.scss']
 })
-export class UnitCreateDialogComponent implements OnInit, OnDestroy {
+export class UnitCreateDialogComponent implements OnInit, AfterViewInit, OnDestroy {
 
   currentUser: User;
   unit = new Unit();
   loading = false;
   submitted = false;
   selectForm: FormGroup;
-  unitsList = new Array<UnitAssignment>();
-  unitsTypeOptions = new UnitAssignment();
-  unitsBrendOptions = new UnitType();
-  filteredBrends: string[];
-  unitsModelOptions = new UnitBrend();
+  unitsList = new Array<UnitType>();
+  unitsBrandOptions = new UnitType();
+  filteredBrands: string[];
+  unitsModelOptions = new UnitBrand();
   filteredModels: string[];
   galleryOptions: NgxGalleryOptions[];
   galleryImages: NgxGalleryImage[];
-  images: File[] = [];
+  @ViewChild('stepper') stepper: MatStepper;
+  linear = true;
+  unitGeoCode: GeoCode;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -42,8 +43,19 @@ export class UnitCreateDialogComponent implements OnInit, OnDestroy {
     private parkService: ParkService,
     private userService: UserService,
     private snackbarService: SnackBarService,
-    private ngxPicaService: NgxPicaService
+    private ngxPicaService: NgxPicaService,
+    @Inject(MAT_DIALOG_DATA) public data: { unit: Unit },
+    private mapService: MapService
   ) {
+  }
+
+  ngAfterViewInit() {
+    setTimeout(() => {
+      if (this.data.unit) {
+        this.stepper.selectedIndex = 2;
+      }
+    }, 1000);
+
   }
 
   ngOnInit() {
@@ -57,62 +69,65 @@ export class UnitCreateDialogComponent implements OnInit, OnDestroy {
     this.userService.currentUser.pipe(untilDestroyed(this)).subscribe(u => {
       this.currentUser = u;
     });
-    this.parkService.getJSONfromFile().pipe(first(), untilDestroyed(this))
-      .subscribe(data => {
-        this.unitsList = data;
-        this.unitsList.sort(function (a: UnitAssignment,
-                                      b: UnitAssignment) {
-          return (a.assignmentname > b.assignmentname) ? 1 :
-            (a.assignmentname < b.assignmentname ? -1 : 0);
-        }).forEach((ass: UnitAssignment) => {
-          const t = Array.from(ass.types);
-          t.sort(function (c: UnitType, d: UnitType) {
-            return (c.typename > d.typename) ? 1 :
-              (c.typename < d.typename ? -1 : 0);
+    this.parkService.getJSONfromFile().pipe(first(), untilDestroyed(this)
+      , finalize(() => {
+        if (this.data.unit) {
+          this.unit = this.data.unit;
+          this.linear = false;
+          this.selectForm.get('typeCtrl').setValue(this.unit.type);
+          this.selectForm.get('brandCtrl').setValue(this.unit.brand);
+          this.selectForm.get('modelCtrl').setValue(this.unit.model);
+        }
+        if (localStorage.getItem('unitImages')) {
+          this.galleryImages = JSON.parse(localStorage.getItem('unitImages'));
+        } else {
+          this.galleryImages = [];
+        }
+        if (!this.unit.location) {
+          this.unit.location = this.currentUser.location;
+        }
+        this.mapService.getGeocodeByPoint(this.unit.location)
+          .subscribe((geoCode?: GeoCode) => {
+            this.unitGeoCode = geoCode;
           });
-          ass.types = new Set<UnitType>(t);
-          ass.types.forEach((tps: UnitType) => {
-            const b = Array.from(tps.brends);
-            b.sort(function (e: UnitBrend, f: UnitBrend) {
-              return (e.brendname > f.brendname) ? 1 :
-                (e.brendname < f.brendname ? -1 : 0);
-            });
-            tps.brends = new Set<UnitBrend>(b);
-            tps.brends.forEach((brd: UnitBrend) => {
-              const m = Array.from(brd.models);
-              m.sort(function (g: UnitModel, h: UnitModel) {
-                return (g.modelname > h.modelname) ? 1 :
-                  (g.modelname < h.modelname ? -1 : 0);
-              });
-              brd.models = new Set<UnitModel>(m);
-            });
+      })
+    ).subscribe(data => {
+      this.unitsList = data;
+      this.unitsList.sort(function (a: UnitType,
+                                    b: UnitType) {
+        return (a.typename > b.typename) ? 1 :
+          (a.typename < b.typename ? -1 : 0);
+      }).forEach((tp: UnitType) => {
+        const brds = Array.from(tp.brands);
+        brds.sort(function (c: UnitBrand, d: UnitBrand) {
+          return (c.brandname > d.brandname) ? 1 :
+            (c.brandname < d.brandname ? -1 : 0);
+        });
+        tp.brands = new Set<UnitBrand>(brds);
+        tp.brands.forEach((br: UnitBrand) => {
+          const m = Array.from(br.models);
+          m.sort(function (e: UnitModel, f: UnitModel) {
+            return (e.modelname > f.modelname) ? 1 :
+              (e.modelname < f.modelname ? -1 : 0);
           });
+          br.models = new Set<UnitModel>(m);
         });
       });
+    });
     this.selectForm = this.formBuilder.group({
-      assignmentCtrl: ['', Validators.required],
       typeCtrl: ['', Validators.required],
-      brendCtrl: ['', [Validators.pattern('^([а-яА-ЯA-Za-z0-9 ()-.,]*)$'),
-        Validators.required]],
-      modelCtrl: ['', [Validators.pattern('^([а-яА-ЯA-Za-z0-9 ()-.,]*)$'),
+      brandCtrl: ['', [Validators.pattern('^([а-яА-ЯA-Za-z0-9 ()-.,]*)$'), Validators.required]],
+      modelCtrl: [(this.unit.model ? this.unit.model : ''), [Validators.pattern('^([а-яА-ЯA-Za-z0-9 ()-.,]*)$'),
         Validators.required]]
     });
-    this.selectForm.get('assignmentCtrl')
-      .valueChanges.subscribe((value: string) => {
-        this.filterTypeList(value);
+    this.selectForm.get('typeCtrl').valueChanges.subscribe((value: string) => {
+        this.filterBrandList(value);
       }
     );
-    this.selectForm.get('typeCtrl')
-      .valueChanges.subscribe((value: string) => {
-        this.filterBrendList(value);
-      }
-    );
-    this.selectForm.get('brendCtrl')
-      .valueChanges.subscribe((value: string) => {
-      this.filterBrendOptions(value);
+    this.selectForm.get('brandCtrl').valueChanges.subscribe((value: string) => {
+      this.filterBrandOptions(value);
     });
-    this.selectForm.get('modelCtrl')
-      .valueChanges.subscribe((value: string) => {
+    this.selectForm.get('modelCtrl').valueChanges.subscribe((value: string) => {
       this.filterModelOptions(value);
     });
 
@@ -141,48 +156,45 @@ export class UnitCreateDialogComponent implements OnInit, OnDestroy {
         preview: false
       }
     ];
-    this.galleryImages = [];
   }
 
   ngOnDestroy() {
-    this.images = [];
   }
 
   get sf() {
     return this.selectForm.controls;
   }
 
+  onSetPoint(): void {
+    localStorage.setItem('unitImages', JSON.stringify(this.galleryImages));
+    this.dialogRef.close(this.unit);
+  }
+
   onCancel(): void {
+    if (localStorage.getItem('unitImages')) {
+      localStorage.removeItem('unitImages');
+    }
     this.dialogRef.close();
   }
 
-  filterTypeList(value: string) {
-    this.unitsList.filter((v) => {
-      if (v.assignmentname === value) {
-        this.unitsTypeOptions = v;
-      }
-    });
-    this.selectForm.get('brendCtrl').setValue('');
-  }
-
-  filterBrendList(value: string) {
-    this.unitsTypeOptions.types.forEach(t => {
+  filterBrandList(value: string) {
+    this.unitsList.forEach(t => {
       if (t.typename === value) {
-        this.unitsBrendOptions = t;
+        this.unitsBrandOptions = t;
       }
     });
-    this.selectForm.get('brendCtrl').setValue('');
+    this.selectForm.get('brandCtrl').setValue('');
   }
 
-  filterBrendOptions(value: string) {
-    this.filteredBrends = [];
-    this.unitsBrendOptions.brends.forEach(b => {
-      if (b.brendname.includes(value) || value === '') {
-        this.filteredBrends.push(b.brendname);
+  filterBrandOptions(value: string) {
+    this.filteredBrands = [];
+    this.unitsBrandOptions.brands.forEach(b => {
+      if (b.brandname.includes(value) || value === '') {
+        this.filteredBrands.push(b.brandname);
       }
     });
-    this.unitsBrendOptions.brends.forEach((b: UnitBrend) => {
-      if (b.brendname === value) {
+    this.unitsBrandOptions.brands.forEach((b: UnitBrand) => {
+      if (b.brandname === value) {
         this.unitsModelOptions = b;
       }
     });
@@ -209,21 +221,22 @@ export class UnitCreateDialogComponent implements OnInit, OnDestroy {
       return;
     }
     this.unit.ouner = this.currentUser.id;
-    this.unit.assignment = this.selectForm.get('assignmentCtrl').value;
     this.unit.type = this.selectForm.get('typeCtrl').value;
-    this.unit.brand = this.selectForm.get('brendCtrl').value;
+    this.unit.brand = this.selectForm.get('brandCtrl').value;
     this.unit.model = this.selectForm.get('modelCtrl').value;
-    this.unit.location = this.currentUser.location;
     this.unit.enabled = true;
     this.unit.paid = false;
   }
 
-  onSecondStep() {
+  onThirdStep() {
     this.submitted = true;
     this.loading = true;
-    this.parkService.createUnit(this.unit, this.images).pipe(first(),
+    this.parkService.createUnit(this.unit).pipe(first(),
       untilDestroyed(this)).subscribe(() => {
         this.loading = false;
+        if (localStorage.getItem('unitImages')) {
+          localStorage.removeItem('unitImages');
+        }
         this.dialogRef.close();
         this.snackbarService.success('Единица техники успешно создана',
           'OK', 10000);
@@ -251,26 +264,20 @@ export class UnitCreateDialogComponent implements OnInit, OnDestroy {
         return false;
       }
     }
-    if (event.target.files && event.target.files.length > 0) {
-      for (let d = 0; d < files.length; d++) {
-        const filereader = new FileReader();
-        filereader.readAsDataURL(files[d]);
-        filereader.onload = () => {
-          this.unit.images.push({
-            filename: d + 1 + files[d].name.slice(files[d].name.lastIndexOf('.')),
-            filetype: files[d].type,
-            value: filereader.result.toString().split(',')[1]
-          });
-          // console.log('1 image: ' + this.unit.images[0].filename + '\n' +
-          //   this.unit.images[0].value);
-        };
-      }
-    }
     this.ngxPicaService.resizeImages(files, 1500, 1000,
       {aspectRatio: {keepAspectRatio: true, forceMinDimensions: true}})
+      .pipe(finalize(() => {
+        this.loading = false;
+      }))
       .subscribe((imageResized?: File) => {
           const reader: FileReader = new FileReader();
           reader.addEventListener('load', (evnt: any) => {
+            this.unit.images.push({
+              filename: this.unit.images.length + 1 + imageResized.name.slice(
+                imageResized.name.lastIndexOf('.')),
+              filetype: imageResized.type,
+              value: reader.result.toString().split(',')[1]
+            });
             if (this.galleryImages.length < 4) {
               const f: File = evnt.target.result;
               this.galleryImages.push({
@@ -278,10 +285,7 @@ export class UnitCreateDialogComponent implements OnInit, OnDestroy {
                 medium: f,
                 big: f
               });
-              // this.images.push(f);
-              // this.unit.images.push({filename: (this.unit.images.length + 1).toString()});
             }
-            this.loading = false;
           }, false);
           reader.readAsDataURL(imageResized);
         },
@@ -303,7 +307,6 @@ export class UnitCreateDialogComponent implements OnInit, OnDestroy {
 
   deleteImage(ind: number) {
     this.galleryImages.splice(ind, 1);
-    // this.images.splice(ind, 1);
     this.unit.images.splice(ind, 1);
   }
 }

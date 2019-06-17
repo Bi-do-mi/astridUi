@@ -54,7 +54,11 @@
             </div>
           </form>
         </mat-tab>
-        <mat-tab label="Восстановить / изменить пароль">
+        <mat-tab>
+          <ng-template mat-tab-label>
+            <span class="tab-text">Восстановить /</span>
+            <span class="tab-text">изменить пароль</span>
+          </ng-template>
           <form [formGroup]="repairForm" (ngSubmit)="onRepair()">
 
             <mat-form-field class="example-full-width">

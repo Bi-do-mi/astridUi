@@ -1,25 +1,14 @@
 <mat-spinner class="mat-accent" [diameter]="40" *ngIf="unitsList.length == 0"></mat-spinner>
 <div *ngIf="unitsList.length > 0">
   <h5 class="form-group-size">Новая еденица техники</h5>
-  <mat-vertical-stepper linear>
+  <mat-vertical-stepper [linear]="linear" #stepper>
 
     <!--Step One-->
     <mat-step label="Укажите тип" state="assignment" [stepControl]="selectForm">
       <form [formGroup]="selectForm" fxLayout="column" (ngSubmit)="onFirstStep()">
         <mat-form-field>
-          <mat-select formControlName="assignmentCtrl" #ctrlAssignment
-                      required placeholder="Группа по виду работ">
-            <mat-option *ngFor="let assignment of unitsList" [value]="assignment.assignmentname">
-              {{assignment.assignmentname}}
-            </mat-option>
-          </mat-select>
-          <mat-error *ngIf="sf.assignmentCtrl.hasError('required')">
-            выберите группу
-          </mat-error>
-        </mat-form-field>
-        <mat-form-field>
           <mat-select formControlName="typeCtrl" placeholder="Тип техники" required>
-            <mat-option *ngFor="let type of unitsTypeOptions.types" [value]="type.typename">
+            <mat-option *ngFor="let type of unitsList" [value]="type.typename">
               {{type.typename}}
             </mat-option>
           </mat-select>
@@ -28,19 +17,19 @@
           </mat-error>
         </mat-form-field>
         <mat-form-field>
-          <input type="text" matInput formControlName="brendCtrl"
-                 [matAutocomplete]="brendAutocomplete" placeholder="Марка"
+          <input type="text" matInput formControlName="brandCtrl"
+                 [matAutocomplete]="brandAutocomplete" placeholder="Марка производителя"
                  oninput="this.value = this.value.toUpperCase()"
                  (blur)="normalizeSpaces($event)">
-          <mat-error *ngIf="sf.brendCtrl.hasError('pattern')">
+          <mat-error *ngIf="sf.brandCtrl.hasError('pattern')">
             недопустимые символы
           </mat-error>
-          <mat-error *ngIf="sf.brendCtrl.hasError('required')">
+          <mat-error *ngIf="sf.brandCtrl.hasError('required')">
             введите марку
           </mat-error>
-          <mat-autocomplete #brendAutocomplete="matAutocomplete">
-            <mat-option *ngFor="let brend of filteredBrends" [value]="brend">
-              {{brend}}
+          <mat-autocomplete #brandAutocomplete="matAutocomplete">
+            <mat-option *ngFor="let brand of filteredBrands" [value]="brand">
+              {{brand}}
             </mat-option>
           </mat-autocomplete>
         </mat-form-field>
@@ -122,24 +111,47 @@
       <div fxLayout="row wrap" fxLayoutAlign="space-between center">
         <div>
           <button mat-button (click)="onCancel()" tabindex="-1"
-                  [disabled]="loading">Отмена</button>
+                  [disabled]="loading">Отмена
+          </button>
         </div>
         <div fxLayout="row" fxLayoutAlign="end">
           <button mat-button matStepperPrevious [disabled]="loading">Назад</button>
-          <button mat-raised-button color="accent" (click)="onSecondStep()"
-          [disabled]="loading">Далее</button>
+          <button mat-raised-button color="accent" matStepperNext [disabled]="loading">Далее
+          </button>
         </div>
       </div>
     </mat-step>
 
     <!--Step Three-->
-    <!--<mat-step label="Обозначьте на карте местоположение" state="location">-->
-    <!--<div>-->
-    <!--<ng-template></ng-template>-->
-    <!--</div>-->
-    <!--<button mat-button matStepperPrevious>Назад</button>-->
-    <!--<button mat-raised-button color="accent" matStepperNext>Далее</button>-->
-    <!--</mat-step>-->
+    <mat-step label="Обозначьте местоположение на карте" state="location">
+      <div class="m-3">
+        <div fxLayout="row wrap" fxLayoutAlign="start center">
+          <button class="m-3" mat-fab matTooltip="указать на карте" tabindex="-1"
+                  matTooltipPosition="above" aria-label="Toggle edit unit location"
+                  (click)="onSetPoint()">
+            <i class="material-icons">location_on</i>
+          </button>
+          <p class="m-3">{{(unitGeoCode?.results[0]?.name) + ', ' +
+            (unitGeoCode?.results[1]?.name)+'\n'+
+            (unitGeoCode?.results[unitGeoCode?.results.length-1]?.name)}}</p>
+        </div>
+        <p class="m-3">Укажите на карте местоположение еденицы техники, или пропустите этот шаг. В
+          этом
+          случае техника будет локализована в вашем парке.</p>
+      </div>
+      <div fxLayout="row wrap" fxLayoutAlign="space-between center">
+        <div>
+          <button mat-button (click)="onCancel()" tabindex="-1" [disabled]="loading">Отмена
+          </button>
+        </div>
+        <div fxLayout="row" fxLayoutAlign="end">
+          <button mat-button matStepperPrevious>Назад</button>
+          <button mat-raised-button color="accent" matStepperNext
+                  [disabled]="loading" (click)="onThirdStep()">Далее
+          </button>
+        </div>
+      </div>
+    </mat-step>
 
     <!--step icons-->
     <ng-template matStepperIcon="edit">

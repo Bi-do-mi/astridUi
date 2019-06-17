@@ -2341,4 +2341,12 @@ textarea.cdk-textarea-autosize-measuring {
   min-height: 100%;
   position: absolute; }
 
+::ng-deep.mat-tab-label .mat-tab-label-content {
+  flex-wrap: wrap !important; }
+
+::ng-deep.mat-tab-label .mat-tab-label-content span {
+  display: flex !important;
+  flex: 1 0 100% !important;
+  justify-content: center !important; }
+
 /*# sourceMappingURL=login.component.css.map */

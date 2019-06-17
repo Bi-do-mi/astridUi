@@ -8,3 +8,4 @@ import { Component } from '@angular/core';
 export class AppComponent {
   title = 'Astrid';
 }
+// todo сделать фильтр с отображением на карте юнитов с ценами, другими характеристиками, например длина стрелы

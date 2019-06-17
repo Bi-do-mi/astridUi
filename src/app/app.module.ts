@@ -14,16 +14,25 @@ import {RequestInterceptor} from './_guards/RequestInterceptor';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {MatToolbarModule} from '@angular/material/toolbar';
 import {
+  MatAutocompleteModule,
   MatButtonModule,
+  MatCardModule,
+  MatCheckboxModule,
+  MatDialogModule,
+  MatDividerModule,
   MatFormFieldModule,
   MatIconModule,
+  MatInputModule,
+  MatListModule, MatPaginatorModule,
+  MatProgressSpinnerModule,
+  MatSelectModule,
   MatSidenavModule,
+  MatSlideToggleModule,
+  MatSnackBarModule, MatSortModule,
+  MatStepperModule,
+  MatTableModule,
   MatTabsModule,
-  MatListModule,
-  MatCardModule, MatInputModule,
-  MatSnackBarModule, MatDialogModule,
-  MatCheckboxModule, MatTooltipModule,
-  MatDividerModule, MatSelectModule, MatStepperModule, MatAutocompleteModule, MatSlideToggleModule, MatProgressSpinnerModule
+  MatTooltipModule
 } from '@angular/material';
 import {NgxMapboxGLModule} from 'ngx-mapbox-gl';
 import {MapBoxComponent} from './components/map-box/map-box.component';
@@ -33,15 +42,15 @@ import {MainNavComponent} from './components/main-nav/main-nav.component';
 import {PageNotFoundComponent} from './components/page-not-found/page-not-found.component';
 import {AppRoutingModule} from './app-routing.module';
 import {UserOptionsDialogComponent} from './components/user-options-dialog/user-options-dialog.component';
-import {ServiceWorkerModule} from '@angular/service-worker';
 import {environment} from '../environments/environment.prod';
 import {DeleteUserDialogComponent} from './components/delete-user-dialog/delete-user-dialog.component';
 import {UnitOptionsDialogComponent} from './components/unit-options-dialog/unit-options-dialog.component';
-import { AdminUnitsCollectionComponent } from './components/admin-units-collection/admin-units-collection.component';
-import { UnitCreateDialogComponent } from './components/unit-create-dialog/unit-create-dialog.component';
+import {AdminUnitsCollectionComponent} from './components/admin-units-collection/admin-units-collection.component';
+import {UnitCreateDialogComponent} from './components/unit-create-dialog/unit-create-dialog.component';
 import {STEPPER_GLOBAL_OPTIONS} from '@angular/cdk/stepper';
 import {NgxPicaModule} from '@digitalascetic/ngx-pica';
 import {NgxGalleryModule} from 'ngx-gallery';
+import {UnitsListTableComponent} from './components/units-list/units-list-table.component';
 
 // import {registerLocaleData} from '@angular/common';
 // import localeRu from '@angular/common/locales/ru';
@@ -64,7 +73,8 @@ export const httpInterceptorProviders = [
     DeleteUserDialogComponent,
     UnitOptionsDialogComponent,
     AdminUnitsCollectionComponent,
-    UnitCreateDialogComponent
+    UnitCreateDialogComponent,
+    UnitsListTableComponent
   ],
   imports: [
     BrowserModule,
@@ -88,6 +98,9 @@ export const httpInterceptorProviders = [
     MatSelectModule,
     MatCardModule,
     MatTabsModule,
+    MatTableModule,
+    MatPaginatorModule,
+    MatSortModule,
     MatStepperModule,
     MatSidenavModule,
     MatDividerModule,
@@ -115,7 +128,8 @@ export const httpInterceptorProviders = [
     UserOptionsDialogComponent,
     UnitOptionsDialogComponent,
     DeleteUserDialogComponent,
-    UnitCreateDialogComponent
+    UnitCreateDialogComponent,
+    UnitsListTableComponent
   ],
   providers: [AuthGuard, httpInterceptorProviders,
     {
