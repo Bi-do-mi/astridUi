@@ -28,6 +28,7 @@ export class UnitBrand {
 
 export class UnitType {
   typename = '';
+  brandsmap = new Map<string, UnitBrand>();
   brands = new Set<UnitBrand>();
 
   toJSON() {
@@ -41,7 +42,7 @@ export class UnitType {
 
 export class UnitAssignment {
   assignmentname = '';
-  types = new Set<UnitType>();
+  types = new Map<string, UnitType>();
 
   toJSON() {
     return ({

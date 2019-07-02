@@ -3,7 +3,7 @@ import {MAT_DIALOG_DATA, MatDialogRef, MatStepper} from '@angular/material';
 import {untilDestroyed} from 'ngx-take-until-destroy';
 import {UnitBrand, UnitModel, UnitType} from '../../_model/UnitTypesModel';
 import {ParkService} from '../../_services/park.service';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {AbstractControl, FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {finalize, first} from 'rxjs/operators';
 import {Unit} from '../../_model/Unit';
 import {UserService} from '../../_services/user.service';
@@ -13,6 +13,8 @@ import {NgxPicaErrorInterface, NgxPicaService} from '@digitalascetic/ngx-pica';
 import {NgxGalleryAnimation, NgxGalleryImage, NgxGalleryOptions} from 'ngx-gallery';
 import {MapService} from '../../_services/map.service';
 import {GeoCode} from '../../_model/GeoCode';
+import {UnitOptionDropdown, UnitOptionModel, UnitOptionNumberbox, UnitOptionTextbox} from './UnitOptions/UnitOptionModel';
+import {UNIT_OPTIONS_CONSTANTS} from '../../constants/UnitOptionsConstants';
 
 @Component({
   selector: 'app-unit-create',
@@ -26,6 +28,7 @@ export class UnitCreateDialogComponent implements OnInit, AfterViewInit, OnDestr
   loading = false;
   submitted = false;
   selectForm: FormGroup;
+  optionsForm: FormGroup;
   unitsList = new Array<UnitType>();
   unitsBrandOptions = new UnitType();
   filteredBrands: string[];
@@ -36,6 +39,7 @@ export class UnitCreateDialogComponent implements OnInit, AfterViewInit, OnDestr
   @ViewChild('stepper') stepper: MatStepper;
   linear = true;
   unitGeoCode: GeoCode;
+  unitOptions: UnitOptionModel<any>[];
 
   constructor(
     private formBuilder: FormBuilder,
@@ -55,7 +59,9 @@ export class UnitCreateDialogComponent implements OnInit, AfterViewInit, OnDestr
         this.stepper.selectedIndex = 2;
       }
     }, 1000);
-
+    // const option: UnitOptionModel = UNIT_OPTIONS_CONSTANTS[0];
+    // option.value = 100;
+    // console.log(option.optionName + '\n' + option.unitType + '\n' + option.value);
   }
 
   ngOnInit() {
@@ -91,33 +97,13 @@ export class UnitCreateDialogComponent implements OnInit, AfterViewInit, OnDestr
             this.unitGeoCode = geoCode;
           });
       })
-    ).subscribe(data => {
-      this.unitsList = data;
-      this.unitsList.sort(function (a: UnitType,
-                                    b: UnitType) {
-        return (a.typename > b.typename) ? 1 :
-          (a.typename < b.typename ? -1 : 0);
-      }).forEach((tp: UnitType) => {
-        const brds = Array.from(tp.brands);
-        brds.sort(function (c: UnitBrand, d: UnitBrand) {
-          return (c.brandname > d.brandname) ? 1 :
-            (c.brandname < d.brandname ? -1 : 0);
-        });
-        tp.brands = new Set<UnitBrand>(brds);
-        tp.brands.forEach((br: UnitBrand) => {
-          const m = Array.from(br.models);
-          m.sort(function (e: UnitModel, f: UnitModel) {
-            return (e.modelname > f.modelname) ? 1 :
-              (e.modelname < f.modelname ? -1 : 0);
-          });
-          br.models = new Set<UnitModel>(m);
-        });
-      });
+    ).subscribe(list => {
+      this.unitsList = list;
     });
     this.selectForm = this.formBuilder.group({
       typeCtrl: ['', Validators.required],
-      brandCtrl: ['', [Validators.pattern('^([а-яА-ЯA-Za-z0-9 ()-.,]*)$'), Validators.required]],
-      modelCtrl: [(this.unit.model ? this.unit.model : ''), [Validators.pattern('^([а-яА-ЯA-Za-z0-9 ()-.,]*)$'),
+      brandCtrl: ['', [Validators.pattern('^([а-яА-ЯA-Za-z0-9 ()-./,]*)$'), Validators.required]],
+      modelCtrl: [(this.unit.model ? this.unit.model : ''), [Validators.pattern('^([а-яА-ЯA-Za-z0-9 ()-./,]*)$'),
         Validators.required]]
     });
     this.selectForm.get('typeCtrl').valueChanges.subscribe((value: string) => {
@@ -138,17 +124,14 @@ export class UnitCreateDialogComponent implements OnInit, AfterViewInit, OnDestr
         thumbnailsColumns: 4,
         imageAnimation: NgxGalleryAnimation.Slide
       },
-      // max-width 800
       {
         breakpoint: 800,
         width: '400px',
         height: '350px',
-        // imagePercent: 70,
         thumbnailsPercent: 20,
         thumbnailsMargin: 20,
         thumbnailMargin: 20
       },
-      // max-width 550
       {
         breakpoint: 550,
         width: '180px',
@@ -163,6 +146,52 @@ export class UnitCreateDialogComponent implements OnInit, AfterViewInit, OnDestr
 
   get sf() {
     return this.selectForm.controls;
+  }
+
+  createOptionsForm() {
+    try {
+      const selectedUnitType: string = this.sf.typeCtrl.value;
+      const _unitOptions = new Array<UnitOptionModel<any>>();
+      UNIT_OPTIONS_CONSTANTS.forEach(op => {
+        if (op.unitType.includes(selectedUnitType) ||
+          op.unitType.includes('all')) {
+          switch (op.controlType) {
+            case 'text': {
+              op.key = op.key.replace(/\s+/g, '_').toLowerCase();
+              _unitOptions.push(new UnitOptionTextbox(op));
+              break;
+            }
+            case 'number': {
+              op.key = op.key.replace(/\s+/g, '_').toLowerCase();
+              _unitOptions.push(new UnitOptionNumberbox(op));
+              break;
+            }
+            case 'select': {
+              op.key = op.key.replace(/\s+/g, '_').toLowerCase();
+              _unitOptions.push(new UnitOptionDropdown(op));
+              break;
+            }
+          }
+        }
+        const group: any = {};
+        _unitOptions.forEach(question => {
+          const fc: FormControl = new FormControl(question.value || '');
+          fc.setValidators([
+            (question.required ? Validators.required : Validators.nullValidator),
+            (question.controlType === 'number' ? Validators.pattern('^\d+$')
+              : Validators.nullValidator)
+          ]);
+          fc.updateValueAndValidity();
+          group[question.key] = fc;
+        });
+        this.optionsForm = new FormGroup(group);
+        this.unitOptions = _unitOptions.sort((a, b) => {
+          return a.label > b.label ? 1 : (a.label < b.label ? -1 : 0);
+        });
+      });
+    } catch (e) {
+      console.log('from error catch: \n' + e);
+    }
   }
 
   onSetPoint(): void {
@@ -191,12 +220,11 @@ export class UnitCreateDialogComponent implements OnInit, AfterViewInit, OnDestr
     this.unitsBrandOptions.brands.forEach(b => {
       if (b.brandname.includes(value) || value === '') {
         this.filteredBrands.push(b.brandname);
-      }
-    });
-    this.unitsBrandOptions.brands.forEach((b: UnitBrand) => {
-      if (b.brandname === value) {
         this.unitsModelOptions = b;
       }
+      this.filteredBrands.sort((c, d) => {
+        return c > d ? 1 : (c === d ? 0 : -1);
+      });
     });
     this.selectForm.get('modelCtrl').setValue('');
   }
@@ -207,6 +235,9 @@ export class UnitCreateDialogComponent implements OnInit, AfterViewInit, OnDestr
       if (m.modelname.includes(value) || value === '') {
         this.filteredModels.push(m.modelname);
       }
+      this.filteredModels.sort((c, d) => {
+        return c > d ? 1 : (c === d ? 0 : -1);
+      });
     });
   }
 
@@ -226,9 +257,28 @@ export class UnitCreateDialogComponent implements OnInit, AfterViewInit, OnDestr
     this.unit.model = this.selectForm.get('modelCtrl').value;
     this.unit.enabled = true;
     this.unit.paid = false;
+    this.createOptionsForm();
   }
 
-  onThirdStep() {
+  onSecondStep() {
+    if (this.optionsForm.invalid) {
+      console.log('invalid form. return');
+      return;
+    }
+    this.unit.options.splice(0);
+    this.unitOptions.forEach(op => {
+      if (this.optionsForm.get(op.key).value) {
+        op.value = this.optionsForm.get(op.key).value;
+        this.unit.options.push(op);
+      }
+    });
+    console.log('secondStep triggered!');
+    this.unit.options.forEach(op => {
+      console.log(op);
+    });
+  }
+
+  onFourth() {
     this.submitted = true;
     this.loading = true;
     this.parkService.createUnit(this.unit).pipe(first(),
@@ -248,9 +298,9 @@ export class UnitCreateDialogComponent implements OnInit, AfterViewInit, OnDestr
         this.snackbarService.error('Что-то пошло не так', 'OK');
       });
     // todo remove method later
-    // this.parkService.createUnitTypesList(this.unitsList).pipe(first(),
+    // this.parkService.createUnitTypesList(this.unitsTabList).pipe(first(),
     //   untilDestroyed(this)).subscribe(() => {
-    //   console.log('unitsList created!');
+    //   console.log('unitsTabList created!');
     // });
   }
 

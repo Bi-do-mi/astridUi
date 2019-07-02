@@ -51,6 +51,8 @@ import {STEPPER_GLOBAL_OPTIONS} from '@angular/cdk/stepper';
 import {NgxPicaModule} from '@digitalascetic/ngx-pica';
 import {NgxGalleryModule} from 'ngx-gallery';
 import {UnitsListTableComponent} from './components/units-list/units-list-table.component';
+import {Transliterate} from 'transliteration/dist/node/src/common/transliterate';
+import {TransliterateFunction} from 'transliteration/dist/node/src/types';
 
 // import {registerLocaleData} from '@angular/common';
 // import localeRu from '@angular/common/locales/ru';

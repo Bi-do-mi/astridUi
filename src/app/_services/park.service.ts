@@ -25,9 +25,16 @@ export class ParkService {
     const localUrl = './assets/ParkList/list.json';
     const url = '/rest/units/get_unit_types_list';
     return this.http.get(fromFile ? localUrl : url).pipe(
-      map(data => {
+      map((data: UnitType[]) => {
         const allText: string = JSON.stringify(data);
-        return data = JSON.parse(allText);
+        data = JSON.parse(allText);
+        data.forEach(t => {
+          t.brandsmap = new Map<string, UnitBrand>();
+          t.brands.forEach((v) => {
+            t.brandsmap.set(v.brandname, v);
+          });
+        });
+        return data;
       }));
   }
 

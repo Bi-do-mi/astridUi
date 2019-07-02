@@ -22,7 +22,7 @@
             <!--<mat-select panelClass="panel-for-unitslist" [formControl]="selectedAssignment"-->
                         <!--name="assignment" (selectionChange)="getUnitsTypeList()"-->
                         <!--placeholder="Группа по виду работ">-->
-              <!--<mat-option *ngFor="let assignment of unitsList" [value]="assignment.assignmentname">-->
+              <!--<mat-option *ngFor="let assignment of unitsTabList" [value]="assignment.assignmentname">-->
                 <!--{{assignment.assignmentname}}-->
               <!--</mat-option>-->
             <!--</mat-select>-->
@@ -38,8 +38,8 @@
           <mat-form-field>
             <mat-select [formControl]="selectedBrand" name="brand" placeholder="Марка производителя"
                         panelClass="panel-for-unitslist" (selectionChange)="getUnitsModeldList()">
-              <mat-option *ngFor="let brand of unitsBrand.brands" [value]="brand.brandname">
-                {{brand.brandname}}
+              <mat-option *ngFor="let brand of unitsBrand.brandsmap | keyvalue" [value]="brand.value.brandname">
+                {{brand.key}}
               </mat-option>
             </mat-select>
           </mat-form-field>
@@ -61,19 +61,19 @@
     <mat-card-content>
       <div class="mat-elevation-z6" fxLayout="row">
         <div>
-          <table class="units-list-in-admin-comnent" mat-table matSort [dataSource]="dataSource">
+          <table class="units-list-in-admin-comnent" mat-table [dataSource]="dataSource">
 
             <ng-container matColumnDef="Старая база">
-              <th mat-header-cell *matHeaderCellDef mat-sort-header>Старая база</th>
+              <th mat-header-cell *matHeaderCellDef >Старая база</th>
               <td mat-cell *matCellDef="let assignment" fxLayout="row" fxLayoutAlign="space-between center">
 
                 {{assignment.assignmentname}}
                 <table>
-                  <ng-container *ngFor="let type of assignment.types">
+                  <ng-container *ngFor="let type of assignment.types | keyvalue">
                     <tr>
                       <td>
-                        {{type.typename}}
-                        <button #editUnitkLocation
+                        {{type.key}}
+                        <button #editUnitLocation
                                 type="button" matTooltip="местоположение на карте" tabindex="-1"
                                 matTooltipPosition="above" aria-label="Toggle edit unit location"
                                 mat-icon-button (click)="transmit(assignment, type)">
@@ -89,28 +89,22 @@
             <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
             <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
           </table>
-          <mat-paginator
-            [length]="dataSource.data?.length"
-            [pageIndex]="0"
-            [pageSize]="50"
-            [pageSizeOptions]="[5, 10, 20, 50, 100]">
-          </mat-paginator>
         </div>
 
         <!--Second Table-->
         <div>
-          <table class="units-list-in-admin-comnent" mat-table matSort [dataSource]="dataSourceNew">
+          <table class="units-list-in-admin-comnent" mat-table [dataSource]="dataSourceNew">
 
             <ng-container matColumnDef="Новая база">
-              <th mat-header-cell *matHeaderCellDef mat-sort-header>Новая база</th>
-              <td mat-cell *matCellDef="let type; let i=index" fxLayout="row" fxLayoutAlign="space-between center">
+              <th mat-header-cell *matHeaderCellDef>Новая база</th>
+              <td mat-cell *matCellDef="let type;" fxLayout="row" fxLayoutAlign="space-between center">
 
                 {{type?.typename}}
                 <table>
-                  <ng-container *ngFor="let brand of type?.brands">
+                  <ng-container *ngFor="let brand of type?.brands | keyvalue">
                     <tr>
                       <td>
-                        {{brand?.brandname}}
+                        {{brand?.key + ' ' + brand.value?.models.length}}
                       </td>
                     </tr>
                   </ng-container>
@@ -123,16 +117,10 @@
                 [ngClass]="{'highlight': selectedRowNewTable == row.typename}"
                 (click)="selectedRowNewTable = row.typename"></tr>
           </table>
-          <mat-paginator
-            [length]="dataSourceNew.data?.length"
-            [pageIndex]="0"
-            [pageSize]="50"
-            [pageSizeOptions]="[5, 10, 20, 50, 100]">
-          </mat-paginator>
         </div>
       </div>
       <button mat-raised-button="" class="m-1" color="accent"
-              (click)="saveToFile(dataSourceNew.data, 'newlist')">
+              (click)="saveToFile(unitsTypeList, 'newlist')">
         Save to File
       </button>
     </mat-card-content>

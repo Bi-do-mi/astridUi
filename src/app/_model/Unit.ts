@@ -2,6 +2,7 @@ import {GeoJson} from './MarkerSourceModel';
 import {User} from './User';
 import {UnitImage} from './UnitImage';
 import {ZonedDateTime} from 'js-joda';
+import {UnitOptionModel} from '../components/unit-create-dialog/UnitOptions/UnitOptionModel';
 
 export class Unit {
   id: number;
@@ -16,22 +17,5 @@ export class Unit {
   images: UnitImage[] = [];
   createdOn: ZonedDateTime;
   lastUpdate: ZonedDateTime;
-
-  // toJSON() {
-  //   return ({
-  //     id: this.id,
-  //     ouner: this.ouner,
-  //     assignment: this.assignment,
-  //     type: this.type,
-  //     brand: this.brand,
-  //     model: this.model,
-  //     location: this.location,
-  //     enabled: this.enabled,
-  //     paid: this.paid,
-  //     testFor: this.testFor,
-  //     images: this.images,
-  //     createdOn: this.createdOn,
-  //     lastUpdate: this.lastUpdate
-  //   });
-  // }
+  options: UnitOptionModel<any>[] = [];
 }

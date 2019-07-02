@@ -3,14 +3,16 @@ import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {UnitAssignment, UnitBrand, UnitModel, UnitType} from '../../_model/UnitTypesModel';
 import {HttpClient} from '@angular/common/http';
 import {ParkService} from '../../_services/park.service';
-import {first, map} from 'rxjs/operators';
+import {finalize, first, map} from 'rxjs/operators';
 import {untilDestroyed} from 'ngx-take-until-destroy';
 import {UserService} from '../../_services/user.service';
 import {UnitDataSource} from '../units-list/units-list-table.component';
 import {MatPaginator, MatSort} from '@angular/material';
 import {DataSource} from '@angular/cdk/table';
 import {Unit} from '../../_model/Unit';
-import {merge, Observable} from 'rxjs';
+import {BehaviorSubject, merge, Observable} from 'rxjs';
+import {CollectionViewer} from '@angular/cdk/collections';
+import {KeyValue} from '@angular/common';
 
 @Component({
   selector: 'app-admin-units-collection',
@@ -21,7 +23,7 @@ export class AdminUnitsCollectionComponent implements OnInit, OnDestroy {
 
   fileForm: FormGroup;
   forceForm: FormGroup;
-  // public unitsList = new Array<UnitAssignment>();
+  public unitsTabList = new Array<UnitAssignment>();
   public unitsTypeList = new Array<UnitType>();
   public list = new Array<UnitAssignment>();
   public unitsType = new UnitAssignment();
@@ -33,14 +35,12 @@ export class AdminUnitsCollectionComponent implements OnInit, OnDestroy {
   selectedModel = new FormControl();
   forceUnswer: string;
   downloadFromServer = new FormControl();
-  dataSource: UnitDataSourceInAdminComponent;
+  // dataSource: UnitDataSourceInAdminComponent;
   displayedColumns: string[] = ['Старая база'];
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
   dataSourceNew: NewUnitDataSourceInAdminComponent;
   displayedColumnsNew: string[] = ['Новая база'];
-  @ViewChild(MatPaginator) paginatorNew: MatPaginator;
-  @ViewChild(MatSort) sortNew: MatSort;
   selectedRowNewTable = '';
 
   constructor(
@@ -59,11 +59,12 @@ export class AdminUnitsCollectionComponent implements OnInit, OnDestroy {
       usernameCtrl: [''],
       roleCtrl: ['']
     });
-    this.dataSource = new UnitDataSourceInAdminComponent(this.paginator,
-      this.sort, this.parkService);
-    this.dataSourceNew = new NewUnitDataSourceInAdminComponent(this.paginatorNew,
-      this.sortNew);
-
+    // this.dataSource = new UnitDataSourceInAdminComponent(this.parkService);
+    // this.dataSourceNew = new NewUnitDataSourceInAdminComponent();
+    // this.parkService.getJSONfromFile(true).subscribe(data => {
+    //   this.unitsTabList = data;
+    // });
+    // this.checkFiles();
   }
 
   getJson() {
@@ -79,54 +80,123 @@ export class AdminUnitsCollectionComponent implements OnInit, OnDestroy {
       });
   }
 
-  transmit(assig: UnitAssignment, type: UnitType) {
-    for (const ass of this.dataSource.data) {
-      if (ass.assignmentname === assig.assignmentname) {
-        ass.types.forEach((tpOld) => {
-          if (tpOld.typename === type.typename && Array.from(tpOld.brands).length > 0) {
-            for (const tpNew of this.dataSourceNew.data) {
-              if (tpNew.typename === this.selectedRowNewTable) {
-                const newBrandList: Set<UnitBrand> = new Set<UnitBrand>();
-                tpOld.brands.forEach((b) => {
-                  newBrandList.add(b);
-                });
-                const tempBrandList = new Set<UnitBrand>();
-                tpNew.brands.forEach((b) => {
-                  newBrandList.forEach((newB) => {
-                    if (b.brandname === newB.brandname) {
-                      tempBrandList.add(b);
-                    } else {
-                      newBrandList.add(b);
-                    }
-                  });
-                });
-                tempBrandList.forEach((b) => {
-                  const tempModelList = new Set<UnitModel>();
-                  newBrandList.forEach((nb) => {
-                    if (nb.brandname === b.brandname) {
-                      b.models.forEach((m) => {
-                        tempModelList.add(m);
-                      });
-                      nb.models.forEach((m) => {
-                        tempModelList.add(m);
-                      });
-                      newBrandList.delete(nb);
-                    }
-                  });
-                  b.models = tempModelList;
-                });
-                tempBrandList.forEach((b) => {
-                  newBrandList.add(b);
-                });
-                tpNew.brands = newBrandList;
-              }
-            }
-            tpOld.typename = '';
-          }
-        });
-      }
-    }
-  }
+  // transmit(assig: UnitAssignment, oldType: KeyValue<string, UnitType>) {
+  //   if (this.selectedRowNewTable) {
+  //     for (const oldAss of this.dataSource.data.getValue()) {
+  //       if (oldAss.assignmentname === assig.assignmentname) {
+  //         for (const newType of this.dataSourceNew.data.getValue()) {
+  //           if (newType.typename === this.selectedRowNewTable) {
+  //             oldType.value.brands.forEach((brandOldValue: UnitBrand,
+  //                                           brandOldKey: string,
+  //                                           brandOldMap: Map<string, UnitBrand>) => {
+  //               if (newType.brands.size === 0) {
+  //                 newType.brands.set(brandOldKey, brandOldValue);
+  //                 brandOldMap.delete(brandOldKey);
+  //               } else {
+  //                 newType.brands.forEach((brandNewValue: UnitBrand,
+  //                                         brandNewKey: string,
+  //                                         brandNewMap: Map<string, UnitBrand>) => {
+  //                   if (brandNewKey === brandOldKey) {
+  //                     const tempModelsSet: Array<UnitModel> = Array.from(brandNewValue.models);
+  //                     brandOldValue.models.forEach((m: UnitModel) => {
+  //                       tempModelsSet.push(m);
+  //                     });
+  //                     brandOldMap.delete(brandOldKey);
+  //                   } else {
+  //                     brandNewMap.set(brandOldKey, brandOldValue);
+  //                     brandOldMap.delete(brandOldKey);
+  //                   }
+  //                 });
+  //               }
+  //             });
+  //           }
+  //         }
+  //         oldAss.types.delete(oldType.key);
+  //       }
+  //     }
+  //   }
+  // }
+
+  // checkFiles() {
+  //   let oldFile: Array<UnitAssignment>;
+  //   let newFile: Array<UnitType>;
+  //   this.getOldFile().pipe(finalize(() => {
+  //     this.getNewFile().pipe(finalize(() => {
+  //       let oldModelsCounter = 0;
+  //       let newModelsCounter = 0;
+  //       oldFile.forEach(oldAss => {
+  //         oldAss.types.forEach(oldType => {
+  //           oldType.brands.forEach(oldBrand => {
+  //             oldBrand.models.forEach(oldModel => {
+  //               if (oldModel) {
+  //                 oldModelsCounter++;
+  //               }
+  //             });
+  //           });
+  //         });
+  //       });
+  //       newFile.forEach(newType => {
+  //         if (Array.from(newType.brands).length > 0) {
+  //           newType.brands.forEach(newBrand => {
+  //             if (Array.from(newBrand.models).length > 0) {
+  //               newBrand.models.forEach(newModel => {
+  //                 if (newModel) {
+  //                   newModelsCounter++;
+  //                 }
+  //               });
+  //             }
+  //           });
+  //         }
+  //       });
+  //       console.log('oldModelCounter = ' + oldModelsCounter +
+  //         '\nnewModelCounter = ' + newModelsCounter);
+  //     })).subscribe(fn => {
+  //       newFile = fn;
+  //     });
+  //   })).subscribe(f => {
+  //     oldFile = f;
+  //   });
+  // }
+
+  // public getOldFile() {
+  //   const localUrlOLd = './assets/ParkList/list.json';
+  //   const files = new Array();
+  //   return this.http.get(localUrlOLd).pipe(
+  //     map((d: UnitAssignment[]) => {
+  //       d.forEach(ass => {
+  //         const typeMap = new Map<string, UnitType>();
+  //         ass.types.forEach(t => {
+  //           const brandMap = new Map<string, UnitBrand>();
+  //           t.brands.forEach(b => {
+  //             brandMap.set(b.brandname, b);
+  //             t.brands = brandMap;
+  //           });
+  //           typeMap.set(t.typename, t);
+  //         });
+  //         ass.types = typeMap;
+  //       });
+  //       return d;
+  //     }));
+  // }
+
+  // public getNewFile() {
+  //   const localUrlNew = './assets/ParkList/list_last.json';
+  //   const files = new Array();
+  //   return this.http.get(localUrlNew).pipe(
+  //     map((types: UnitType[]) => {
+  //       const typeMap = new Array<UnitType>();
+  //       types.forEach(t => {
+  //         const brandMap = new Map<string, UnitBrand>();
+  //         t.brands.forEach(b => {
+  //           brandMap.set(b.brandname, b);
+  //           t.brands = brandMap;
+  //         });
+  //         typeMap.push(t);
+  //       });
+  //       types = typeMap;
+  //       return types;
+  //     }));
+  // }
 
   // onFileChange(event) {
   //   const reader = new FileReader();
@@ -150,7 +220,7 @@ export class AdminUnitsCollectionComponent implements OnInit, OnDestroy {
   //       //         i++;
   //       //       }
   //       //       element.assignmentname = assigenmentLine.trim();
-  //       //       this.unitsList.push(element);
+  //       //       this.unitsTabList.push(element);
   //       //       i++;
   //       //     }
   //       //     if (allText.charAt(i) === String.fromCharCode(9)) {
@@ -161,80 +231,80 @@ export class AdminUnitsCollectionComponent implements OnInit, OnDestroy {
   //       //       }
   //       //       const br = new UnitBrand();
   //       //       br.brandname = brandLine.trim();
-  //       //       this.unitsList[this.unitsList.length - 1].brands
+  //       //       this.unitsTabList[this.unitsTabList.length - 1].brands
   //       //         .push(br);
   //       //     }
   //       //   }
-  //       //   console.log(JSON.stringify(this.unitsList));
-  //       //   this.saveToFile(this.unitsList, 'UnitsList');
+  //       //   console.log(JSON.stringify(this.unitsTabList));
+  //       //   this.saveToFile(this.unitsTabList, 'UnitsList');
   //
-  //       this.unitsList = JSON.parse(allText);
-  //       console.log(JSON.stringify(this.unitsList));
+  //       this.unitsTabList = JSON.parse(allText);
+  //       console.log(JSON.stringify(this.unitsTabList));
   //     };
   //   }
   // }
 
-  onFileChange2(event) {
-
-    if (event.target.files && event.target.files.length) {
-      const files: any = event.target.files;
-      const relativePath = files[0].webkitRelativePath;
-      const folder = relativePath.split('/');
-      const unitAssignment = new UnitAssignment();
-      unitAssignment.assignmentname = folder[0];
-      for (let i = 0; i < files.length; i++) {
-        const fileName: string = files[i].name;
-        const reader = new FileReader();
-        reader.readAsText(files[i], 'utf-u');
-
-        reader.onload = (e) => {
-          const fileType = new UnitType();
-          fileType.typename = fileName.substring(0, (fileName.length - 4));
-          const text = reader.result.toString();
-          const allText: string = text;
-
-          let brandLine = '';
-          let modelLine = '';
-          for (let l = 0; l < allText.length; l++) {
-            if (allText.charAt(l) === String.fromCharCode(9)
-              && (allText.charAt(l + 1)) !== String.fromCharCode(9)) {
-              const brandElement = new UnitBrand();
-              brandLine = '';
-              while (allText.charAt(l) !== '\n') {
-                brandLine += allText.charAt(l);
-                l++;
-              }
-              brandElement.brandname = brandLine.trim().toUpperCase();
-              fileType.brands.add(brandElement);
-            }
-            if (allText.charAt(l) === String.fromCharCode(9)
-              && (allText.charAt(l + 1)) === String.fromCharCode(9)) {
-              const modelElement = new UnitModel();
-              modelLine = '';
-              while (allText.charAt(l) !== '\n') {
-                modelLine += allText.charAt(l);
-                l++;
-              }
-              modelLine = modelLine.trim().toUpperCase()
-                .replace(String.fromCharCode(9), '');
-              fileType.brands.forEach(b => {
-                if (modelLine.startsWith(b.brandname)) {
-                  modelElement.modelname = modelLine;
-                  if (this.modelsFilter(b, modelElement)) {
-                    b.models.add(modelElement);
-                  }
-                }
-              });
-            }
-            if ((l + 1) === allText.length) {
-              unitAssignment.types.add(fileType);
-            }
-          }
-        };
-      }
-      this.list.push(unitAssignment);
-    }
-  }
+  // onFileChange2(event) {
+  //
+  //   if (event.target.files && event.target.files.length) {
+  //     const files: any = event.target.files;
+  //     const relativePath = files[0].webkitRelativePath;
+  //     const folder = relativePath.split('/');
+  //     const unitAssignment = new UnitAssignment();
+  //     unitAssignment.assignmentname = folder[0];
+  //     for (let i = 0; i < files.length; i++) {
+  //       const fileName: string = files[i].name;
+  //       const reader = new FileReader();
+  //       reader.readAsText(files[i], 'utf-u');
+  //
+  //       reader.onload = (e) => {
+  //         const fileType = new UnitType();
+  //         fileType.typename = fileName.substring(0, (fileName.length - 4));
+  //         const text = reader.result.toString();
+  //         const allText: string = text;
+  //
+  //         let brandLine = '';
+  //         let modelLine = '';
+  //         for (let l = 0; l < allText.length; l++) {
+  //           if (allText.charAt(l) === String.fromCharCode(9)
+  //             && (allText.charAt(l + 1)) !== String.fromCharCode(9)) {
+  //             const brandElement = new UnitBrand();
+  //             brandLine = '';
+  //             while (allText.charAt(l) !== '\n') {
+  //               brandLine += allText.charAt(l);
+  //               l++;
+  //             }
+  //             brandElement.brandname = brandLine.trim().toUpperCase();
+  //             fileType.brands.set(brandElement.brandname, brandElement);
+  //           }
+  //           if (allText.charAt(l) === String.fromCharCode(9)
+  //             && (allText.charAt(l + 1)) === String.fromCharCode(9)) {
+  //             const modelElement = new UnitModel();
+  //             modelLine = '';
+  //             while (allText.charAt(l) !== '\n') {
+  //               modelLine += allText.charAt(l);
+  //               l++;
+  //             }
+  //             modelLine = modelLine.trim().toUpperCase()
+  //               .replace(String.fromCharCode(9), '');
+  //             fileType.brands.forEach(b => {
+  //               if (modelLine.startsWith(b.brandname)) {
+  //                 modelElement.modelname = modelLine;
+  //                 if (this.modelsFilter(b, modelElement)) {
+  //                   b.models.add(modelElement);
+  //                 }
+  //               }
+  //             });
+  //           }
+  //           if ((l + 1) === allText.length) {
+  //             unitAssignment.types.set(fileType.typename, fileType);
+  //           }
+  //         }
+  //       };
+  //     }
+  //     this.list.push(unitAssignment);
+  //   }
+  // }
 
   modelsFilter(brand: UnitBrand, unitModel: UnitModel): boolean {
     let toPrint = true;
@@ -247,7 +317,7 @@ export class AdminUnitsCollectionComponent implements OnInit, OnDestroy {
   }
 
   onSubmit() {
-    this.saveToFile(this.list, 'list');
+    this.saveToFile(this.dataSourceNew.data.getValue(), 'list');
   }
 
   saveToServer() {
@@ -263,7 +333,8 @@ export class AdminUnitsCollectionComponent implements OnInit, OnDestroy {
     console.log(JSON.stringify(l));
   }
 
-  saveToFile(obj, filename) {
+  saveToFile(obj: Array<UnitType>, filename) {
+    const typeArray = new Array<UnitType>();
     const a = document.createElement('a');
     a.setAttribute('href', 'data:text/plain;charset=utf-u,'
       + encodeURIComponent(JSON.stringify(obj)));
@@ -272,7 +343,7 @@ export class AdminUnitsCollectionComponent implements OnInit, OnDestroy {
   }
 
   // getUnitsTypeList() {
-  //   this.unitsList.filter((v, i, array) => {
+  //   this.unitsTabList.filter((v, i, array) => {
   //     if (v.assignmentname === this.selectedAssignment.value) {
   //       this.unitsType = v;
   //       this.unitsBrand = new UnitType();
@@ -284,9 +355,9 @@ export class AdminUnitsCollectionComponent implements OnInit, OnDestroy {
   // }
 
   getUnitsBrandList() {
-    this.unitsTypeList.forEach(t => {
-      if (t.typename === this.selectedType.value) {
-        this.unitsBrand = t;
+    this.unitsTypeList.forEach((v: UnitType, i: number, array: UnitType[]) => {
+      if (v.typename === this.selectedType.value) {
+        this.unitsBrand = v;
         this.unitsModel = new UnitBrand();
       }
     });
@@ -336,115 +407,66 @@ export class AdminUnitsCollectionComponent implements OnInit, OnDestroy {
 //
 //
 //  Data Source Class    //////////////////////////////////////////////////////////////////////
-export class UnitDataSourceInAdminComponent extends DataSource<UnitAssignment> {
-  data: UnitAssignment[];
-
-  constructor(
-    private paginator: MatPaginator,
-    private sort: MatSort,
-    private parkService: ParkService) {
-    super();
-    this.parkService.getJSONfromFile().subscribe(u => this.data = u);
-  }
-
-  connect(): Observable<UnitAssignment[]> {
-    const dataMutations = [
-      this.parkService.getJSONfromFile(),
-      this.paginator.page,
-      this.sort.sortChange
-    ];
-    this.parkService.getJSONfromFile().subscribe(u => {
-      this.paginator.length = this.data.length;
-    });
-    return merge(...dataMutations).pipe(map(() => {
-      return this.getPagedData(this.getSortedData([...this.data]));
-    }));
-  }
-
-  disconnect() {
-  }
-
-  private getPagedData(data: UnitAssignment[]) {
-    const startIndex = this.paginator.pageIndex * this.paginator.pageSize;
-    return data.splice(startIndex, this.paginator.pageSize);
-  }
-
-  private getSortedData(data: UnitAssignment[]) {
-    if (!this.sort.active || this.sort.direction === '') {
-      return data;
-    }
-    return data.sort((a, b) => {
-      const isAsc = this.sort.direction === 'asc';
-      switch (this.sort.active) {
-        case 'Старая база':
-          return this.compare(a.assignmentname, b.assignmentname, isAsc);
-        default:
-          return 0;
-      }
-    });
-  }
-
-  private compare(a, b, isAsc) {
-    return (a < b ? -1 : 1) * (isAsc ? -1 : 1);
-  }
-}
+// export class UnitDataSourceInAdminComponent extends DataSource<UnitAssignment> {
+//   data = new BehaviorSubject<UnitAssignment[]>([]);
+//
+//   constructor(private parkService: ParkService) {
+//     super();
+//     this.parkService.getJSONfromFile(true)
+//       .pipe(map((d: UnitAssignment[]) => {
+//         d.forEach(ass => {
+//           const typeMap = new Map<string, UnitType>();
+//           ass.types.forEach(t => {
+//             const brandMap = new Map<string, UnitBrand>();
+//             t.brands.forEach(b => {
+//               brandMap.set(b.brandname, b);
+//               t.brands = brandMap;
+//             });
+//             typeMap.set(t.typename, t);
+//           });
+//           ass.types = typeMap;
+//         });
+//         return d;
+//       }))
+//       .subscribe(data => {
+//         this.data.next(data);
+//       });
+//   }
+//
+//   connect(collectionViewer: CollectionViewer): Observable<UnitAssignment[]> {
+//     return this.data.asObservable();
+//   }
+//
+//   disconnect(collectionViewer: CollectionViewer) {
+//     this.data.complete();
+//   }
+//
+// }
 
 
 //
 //
 //  New Data Source Class    //////////////////////////////////////////////////////////////////////
 export class NewUnitDataSourceInAdminComponent extends DataSource<UnitType> {
-  data: UnitType[];
+  data = new BehaviorSubject<UnitType[]>([]);
 
-  constructor(
-    private paginator: MatPaginator,
-    private sort: MatSort) {
+  constructor() {
     super();
-    this.data = new Array<UnitType>();
+    const tempData = new Array<UnitType>();
     for (const tpename of NEW_UNITS_LIST) {
       const type = new UnitType();
       type.typename = tpename;
-      this.data.push(type);
+      tempData.push(type);
     }
+    this.data.next(tempData);
   }
 
-  connect(): Observable<UnitType[]> {
-    const dataMutations = [
-      this.data,
-      this.paginator.page,
-      this.sort.sortChange
-    ];
-    this.paginator.length = this.data.length;
-    return merge(...dataMutations).pipe(map(() => {
-      return this.getPagedData(this.getSortedData([...this.data]));
-    }));
+  connect(collectionViewer: CollectionViewer): Observable<UnitType[]> {
+    return this.data.asObservable();
   }
 
-  disconnect() {
-  }
-
-  private getPagedData(data: UnitType[]) {
-    const startIndex = this.paginator.pageIndex * this.paginator.pageSize;
-    return data.splice(startIndex, this.paginator.pageSize);
-  }
-
-  private getSortedData(data: UnitType[]) {
-    if (!this.sort.active || this.sort.direction === '') {
-      return data;
-    }
-    return data.sort((a, b) => {
-      const isAsc = this.sort.direction === 'asc';
-      switch (this.sort.active) {
-        case 'Новая база':
-          return this.compare(a.typename, b.typename, isAsc);
-        default:
-          return 0;
-      }
-    });
-  }
-
-  private compare(a, b, isAsc) {
-    return (a < b ? -1 : 1) * (isAsc ? -1 : 1);
+  disconnect(collectionViewer: CollectionViewer) {
+    this.data.complete();
   }
 }
 
@@ -459,7 +481,7 @@ const NEW_UNITS_LIST: string[] = [
   'Гидромолоты',
   'Грейдеры',
   'Грейферы и драглайны',
-  'Дорожные катки и асфальтоукладчики',
+  'Дорожно-строительная техника',
   'Манипуляторы',
   'Мини - погрузчики',
   'Мини - экскаваторы',
