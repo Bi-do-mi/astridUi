@@ -98,7 +98,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
 
   onSubmit() {
     this.submitted = true;
-    // stop here if form is invalid
+    // stop here if optionsForm is invalid
     if (this.registerForm.invalid) {
       return;
     }

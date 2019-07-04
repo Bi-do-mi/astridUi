@@ -79,7 +79,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   onSubmit() {
     this.submitted = true;
     if (this.loginForm.invalid) {
-      this.logger.info('invalid form. return');
+      this.logger.info('invalid optionsForm. return');
       return;
     }
     this.loading = true;
@@ -136,7 +136,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   onRepair() {
     this.submitted = true;
     if (this.repairForm.invalid) {
-      this.logger.info('invalid form. return ' + this.repairForm.errors);
+      this.logger.info('invalid optionsForm. return ' + this.repairForm.errors);
       return;
     }
     this.loading = true;

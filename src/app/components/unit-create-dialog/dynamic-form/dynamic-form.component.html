@@ -1,0 +1,20 @@
+<div *ngIf="optionsForm">
+  <form [formGroup]="optionsForm" (ngSubmit)="onSecondStep()">
+    <div *ngFor="let elem of unitOptions" fxLayout="row wrap" fxLayoutAlign="start center">
+     <app-dynamic-form-question [question]="elem"
+                                [form]="optionsForm"></app-dynamic-form-question>
+    </div>
+    <div fxLayout="row wrap" fxLayoutAlign="space-between center">
+      <div>
+        <button mat-button (click)="onCancel()" tabindex="-1"
+                [disabled]="loading">Отмена
+        </button>
+      </div>
+      <div fxLayout="row" fxLayoutAlign="end">
+        <button mat-button matStepperPrevious [disabled]="loading">Назад</button>
+        <button mat-raised-button color="accent" matStepperNext [disabled]="loading">Далее
+        </button>
+      </div>
+    </div>
+  </form>
+</div>

@@ -53,6 +53,8 @@ import {NgxGalleryModule} from 'ngx-gallery';
 import {UnitsListTableComponent} from './components/units-list/units-list-table.component';
 import {Transliterate} from 'transliteration/dist/node/src/common/transliterate';
 import {TransliterateFunction} from 'transliteration/dist/node/src/types';
+import { DynamicFormQuestionComponent } from './components/unit-create-dialog/dynamic-form-question/dynamic-form-question.component';
+import { DynamicFormComponent } from './components/unit-create-dialog/dynamic-form/dynamic-form.component';
 
 // import {registerLocaleData} from '@angular/common';
 // import localeRu from '@angular/common/locales/ru';
@@ -76,7 +78,9 @@ export const httpInterceptorProviders = [
     UnitOptionsDialogComponent,
     AdminUnitsCollectionComponent,
     UnitCreateDialogComponent,
-    UnitsListTableComponent
+    UnitsListTableComponent,
+    DynamicFormQuestionComponent,
+    DynamicFormComponent
   ],
   imports: [
     BrowserModule,

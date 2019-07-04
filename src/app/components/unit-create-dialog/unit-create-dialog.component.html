@@ -63,46 +63,9 @@
     </mat-step>
 
     <!--Step Two-->
-    <mat-step label="Опишите технику подробнее" state="assignment" [stepControl]="optionsForm">
-
-      <div *ngIf="optionsForm">
-        <form [formGroup]="optionsForm" (ngSubmit)="onSecondStep()">
-          <div *ngFor="let elem of unitOptions" fxLayout="row wrap" fxLayoutAlign="start center">
-            <label [attr.for]="elem.key">{{elem.label + (elem.required?'*':'')}}</label>
-            <mat-form-field *ngIf="elem" class="ml-4 mr-4 opt-inp-num">
-              <div [ngSwitch]="elem.controlType">
-                <input matInput *ngSwitchCase="'textbox'" [type]="elem.type"
-                       [formControlName]="elem.key" [id]="elem.key">
-                <input matInput *ngSwitchCase="'number'" [type]="elem.type"
-                       [formControlName]="elem.key" [id]="elem.key">
-                <mat-select [id]="elem.key" *ngSwitchCase="'dropdown'" [formControlName]="elem.key">
-                  <mat-option *ngFor="let opt of elem.options" [value]="opt.key">{{opt.value}}</mat-option>
-                </mat-select>
-              </div>
-              <mat-error *ngIf="optionsForm.controls[elem.key]?.hasError('required')">
-                заполните поле
-              </mat-error>
-              <mat-error *ngIf="optionsForm.controls[elem.key]?.hasError('pattern')">
-                только цифры
-              </mat-error>
-              <span matSuffix>{{elem?.measure}}</span>
-            </mat-form-field>
-          </div>
-          <div fxLayout="row wrap" fxLayoutAlign="space-between center">
-            <div>
-              <button mat-button (click)="onCancel()" tabindex="-1"
-                      [disabled]="loading">Отмена
-              </button>
-            </div>
-            <div fxLayout="row" fxLayoutAlign="end">
-              <button mat-button matStepperPrevious [disabled]="loading">Назад</button>
-              <button mat-raised-button color="accent" matStepperNext [disabled]="loading">Далее
-              </button>
-            </div>
-          </div>
-        </form>
-      </div>
-
+    <mat-step label="Опишите технику подробнее" state="assignment"
+              [stepControl]="optForm">
+      <app-dynamic-form></app-dynamic-form>
     </mat-step>
 
     <!--Step Three-->
