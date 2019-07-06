@@ -37,11 +37,12 @@ export class UnitCreateDialogComponent implements OnInit, AfterViewInit, OnDestr
   unitsModelOptions = new UnitBrand();
   filteredModels: string[];
   galleryOptions: NgxGalleryOptions[];
-  galleryImages: NgxGalleryImage[];
+  galleryImages: NgxGalleryImage[] = [];
   @ViewChild('stepper') stepper: MatStepper;
   linear = true;
   unitGeoCode: GeoCode;
   optForm: FormGroup;
+  unitOptions: UnitOptionModel<any>[] = [];
 
   constructor(
     private formBuilder: FormBuilder,
@@ -61,17 +62,18 @@ export class UnitCreateDialogComponent implements OnInit, AfterViewInit, OnDestr
   ngAfterViewInit() {
     setTimeout(() => {
       if (this.data.unit) {
-        this.stepper.selectedIndex = 2;
+        this.stepper.selectedIndex = 3;
       }
     }, 1000);
-    // this.questionService.unitOptions.subscribe(options => {
-    //   this.questionCtrlService.toFormGroup(options);
-    //   this.cdr.detectChanges();
-    // });
-    this.questionCtrlService.formGroup.subscribe(optForm => {
-      this.optForm = optForm;
-      this.cdr.detectChanges();
-    });
+    this.questionService.unitOptions.pipe(untilDestroyed(this))
+      .subscribe(options => {
+        this.unitOptions = options;
+      });
+    this.questionCtrlService.formGroup.pipe(untilDestroyed(this))
+      .subscribe(optForm => {
+        this.optForm = optForm;
+        this.cdr.detectChanges();
+      });
   }
 
   ngOnInit() {
@@ -177,7 +179,7 @@ export class UnitCreateDialogComponent implements OnInit, AfterViewInit, OnDestr
       }
     });
     this.selectForm.get('brandCtrl').setValue('');
-    this.questionService.getQuestions(this.sf.typeCtrl.value);
+    this.questionService.getQuestions(this.sf.typeCtrl.value, this.unit.options);
   }
 
   filterBrandOptions(value: string) {
@@ -230,15 +232,11 @@ export class UnitCreateDialogComponent implements OnInit, AfterViewInit, OnDestr
       return;
     }
     this.unit.options.splice(0);
-    // this.unitOptions.forEach(op => {
-    //   if (this.optionsForm.get(op.key).value) {
-    //     op.value = this.optionsForm.get(op.key).value;
-    //     this.unit.options.push(op);
-    //   }
-    // });
-    console.log('secondStep triggered!');
-    this.unit.options.forEach(op => {
-      console.log(op);
+    this.unitOptions.forEach(op => {
+      if (this.optForm.get(op.key).value) {
+        op.value = this.optForm.get(op.key).value;
+        this.unit.options.push(op);
+      }
     });
   }
 

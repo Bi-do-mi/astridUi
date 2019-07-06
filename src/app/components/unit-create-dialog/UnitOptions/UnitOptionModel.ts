@@ -3,7 +3,6 @@ export class UnitOptionModel<T> {
   key: string;
   label: string;
   required: boolean;
-  order: number;
   controlType: string;
   measure: string;
   unitType: string;
@@ -14,7 +13,6 @@ export class UnitOptionModel<T> {
     key?: string,
     label?: string,
     required?: boolean,
-    order?: number,
     controlType?: string,
     measure?: string,
     unitType?: string

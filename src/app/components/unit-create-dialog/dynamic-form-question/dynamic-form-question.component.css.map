@@ -1,7 +1,7 @@
 {
 "version": 3,
-"mappings": "",
-"sources": [],
+"mappings": "AAAA,YAAa;EACX,KAAK,EAAE,IAAI;;AAEb,YAAY;EACV,UAAU,EAAE,MAAM",
+"sources": ["dynamic-form-question.component.scss"],
 "names": [],
 "file": "dynamic-form-question.component.css"
 }
