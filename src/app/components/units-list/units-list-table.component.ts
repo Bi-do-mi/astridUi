@@ -3,8 +3,9 @@ import {UserService} from '../../_services/user.service';
 import {map} from 'rxjs/operators';
 import {Unit} from '../../_model/Unit';
 import {DataSource} from '@angular/cdk/collections';
-import {merge, Observable} from 'rxjs';
+import {merge, Observable, Subscription} from 'rxjs';
 import {MatPaginator, MatSort} from '@angular/material';
+import {untilDestroyed} from 'ngx-take-until-destroy';
 
 @Component({
   selector: 'app-units-list',
@@ -37,15 +38,21 @@ export class UnitsListTableComponent implements OnInit, OnDestroy {
 //
 //
 //  Data Source Class    //////////////////////////////////////////////////////////////////////
-export class UnitDataSource extends DataSource<Unit> {
+export class UnitDataSource extends DataSource<Unit> implements OnDestroy {
   data: Unit[];
+  private subscription1: Subscription;
+  private subscription2: Subscription;
 
   constructor(
     private paginator: MatPaginator,
     private sort: MatSort,
     private userService: UserService) {
     super();
-    this.userService.currentUserUnits.subscribe(u => this.data = u);
+    this.subscription1 = this.userService.currentUserUnits
+      .pipe(untilDestroyed(this)).subscribe(u => this.data = u);
+  }
+
+  ngOnDestroy() {
   }
 
   connect(): Observable<Unit[]> {
@@ -54,15 +61,22 @@ export class UnitDataSource extends DataSource<Unit> {
       this.paginator.page,
       this.sort.sortChange
     ];
-    this.userService.currentUserUnits.subscribe(u => {
-      this.paginator.length = this.data.length;
-    });
+    this.subscription2 = this.userService.currentUserUnits.pipe(untilDestroyed(this))
+      .subscribe(u => {
+        if (u) {
+          this.paginator.length = this.data.length;
+        }
+      });
     return merge(...dataMutations).pipe(map(() => {
-      return this.getPagedData(this.getSortedData([...this.data]));
+      if (this.data) {
+        return this.getPagedData(this.getSortedData([...this.data]));
+      }
     }));
   }
 
   disconnect() {
+    this.subscription1.unsubscribe();
+    this.subscription2.unsubscribe();
   }
 
   private getPagedData(data: Unit[]) {

@@ -71,6 +71,9 @@ export class MainNavComponent implements OnInit, OnDestroy {
 
     this.sidenavService.right_sidenav = this.rightDrawer;
     this.sidenavService.left_sidenav = this.leftDrawer;
+    if (localStorage.getItem('unitImages')) {
+      localStorage.removeItem('unitImages');
+    }
   }
 
   ngOnDestroy() {
@@ -109,16 +112,16 @@ export class MainNavComponent implements OnInit, OnDestroy {
 
   @HostListener('document:keydown.escape', ['$event']) onKeydown(event: KeyboardEvent) {
     if (event.key === 'Escape') {
-      this.mapService.clickedPoint$.next(null);
+      this.mapService.clickedPoint$.next();
     }
   }
 
-  setParkLocation(openCreateUnitDialog?: boolean, unit?: Unit) {
+  setLocation(openCreateUnitDialog?: boolean, unit?: Unit) {
     if (this.isHandset$) {
       this.sidenavService.closeAll();
     }
     this.mapService.map.getCanvas().style.cursor = 'auto';
-    this.isHandset$.subscribe(isHandset => {
+    this.isHandset$.pipe(untilDestroyed(this)).subscribe(isHandset => {
       this.snackBarService.success(
         unit ? ('Укажите на карте местоположение еденицы техники' +
           (isHandset ? '' : ', или нажмите "Escape" для выхода.'))
@@ -147,12 +150,15 @@ export class MainNavComponent implements OnInit, OnDestroy {
             });
           }
         }
+        if (!this.currentUser.location && !point) {
+          openCreateUnitDialog = false;
+        }
       });
   }
 
   openUnitCreateDialog(unit?: Unit): void {
     if (!this.currentUser.location) {
-      this.setParkLocation(true);
+      this.setLocation(true);
     } else {
       this.sidenavService.closeAll();
       const dialogRef = this.dialog.open(UnitCreateDialogComponent, {
@@ -162,7 +168,7 @@ export class MainNavComponent implements OnInit, OnDestroy {
       });
       dialogRef.afterClosed().pipe(untilDestroyed(this)).subscribe(result => {
         if (result) {
-          this.setParkLocation(true, result);
+          this.setLocation(true, result);
         }
       });
     }

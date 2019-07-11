@@ -5,7 +5,8 @@
       <th mat-header-cell *matHeaderCellDef mat-sort-header>Модель</th>
       <td mat-cell *matCellDef="let unit" fxLayout="row" fxLayoutAlign="space-between center">
         <div fxFlex="20%">
-          <img class="img-size" [src]="'data:image/jpg;base64,' + unit.images[0]?.value">
+          <img class="img-size" *ngIf="unit.images[0]" [src]="'data:image/jpg;base64,' + unit.images[0]?.value">
+          <img class="img-size" *ngIf="!unit.images[0]" src="assets/pics/unit_pic_spacer.jpg">
         </div>
 
         {{unit.model}}

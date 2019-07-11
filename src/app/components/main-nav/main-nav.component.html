@@ -20,7 +20,7 @@
           <button #editParkLocation [disabled]="!mapService.userGeoCode"
                   type="button" matTooltip="редактировать" tabindex="-1"
                   matTooltipPosition="above" aria-label="Toggle edit park location"
-                  mat-icon-button (click)="setParkLocation()">
+                  mat-icon-button (click)="setLocation()">
             <mat-icon aria-label="Edit toggle icon">location_on</mat-icon>
           </button>
           <span fxLayout="column" fxLayoutAlign="center stretch" *ngIf="currentUser?.location">
@@ -41,7 +41,7 @@
 
     <!--если не авторизован-->
     <div *ngIf="parkContent && !uService.authenticated">
-      <p>Пожалуйста, авторизуйтесь или зарегистрируйтесь как новый пользователь.</p>
+      <p class="ml-3 mr-3">Пожалуйста, авторизуйтесь или зарегистрируйтесь как новый пользователь.</p>
       <div fxLayout="row" fxLayoutAlign="center start">
         <button mat-raised-button="" tabindex="-1" (click)="sidenavService.closeAll()"
                 routerLink="/preload/login" color="accent">Войти

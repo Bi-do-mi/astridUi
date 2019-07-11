@@ -89,6 +89,7 @@ export class UserService implements OnDestroy {
         if (u) {
           this.updateCurrentUser(u, true);
           this.authenticated = true;
+          // console.log(JSON.stringify(u));
         }
         return;
       }));

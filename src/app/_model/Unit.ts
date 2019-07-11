@@ -17,5 +17,6 @@ export class Unit {
   images: UnitImage[] = [];
   createdOn: ZonedDateTime;
   lastUpdate: ZonedDateTime;
+  paidUntil: ZonedDateTime;
   options: UnitOptionModel<any>[] = [];
 }

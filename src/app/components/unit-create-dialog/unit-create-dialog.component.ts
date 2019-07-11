@@ -87,7 +87,7 @@ export class UnitCreateDialogComponent implements OnInit, AfterViewInit, OnDestr
     this.userService.currentUser.pipe(untilDestroyed(this)).subscribe(u => {
       this.currentUser = u;
     });
-    this.parkService.getJSONfromFile().pipe(first(), untilDestroyed(this)
+    this.parkService.getJSONfromFile(true).pipe(first(), untilDestroyed(this)
       , finalize(() => {
         if (this.data.unit) {
           this.unit = this.data.unit;
@@ -238,6 +238,9 @@ export class UnitCreateDialogComponent implements OnInit, AfterViewInit, OnDestr
         this.unit.options.push(op);
       }
     });
+    // this.unit.options.forEach(o => {
+    //   console.log(JSON.stringify(o));
+    // });
   }
 
   onFourth() {
