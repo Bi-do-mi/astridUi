@@ -12,7 +12,6 @@ import {UserOptionsDialogComponent} from '../user-options-dialog/user-options-di
 import {SnackBarService} from '../../_services/snack-bar.service';
 import {MapService} from '../../_services/map.service';
 import {untilDestroyed} from 'ngx-take-until-destroy';
-import {GeoJson} from '../../_model/MarkerSourceModel';
 import {ParkService} from '../../_services/park.service';
 import {UnitCreateDialogComponent} from '../unit-create-dialog/unit-create-dialog.component';
 import {UnitsListTableComponent} from '../units-list/units-list-table.component';
@@ -36,6 +35,7 @@ export class MainNavComponent implements OnInit, OnDestroy {
     Breakpoints.Handset).pipe(map(result => result.matches));
   url: string;
   UnitsListComponent = UnitsListTableComponent;
+  setPointMode = false;
 
 
   constructor(private breakpointObserver: BreakpointObserver,
@@ -61,6 +61,7 @@ export class MainNavComponent implements OnInit, OnDestroy {
       this.uService.checkAuth().pipe(untilDestroyed(this), finalize(() => {
         this.uService.currentUser.subscribe(u => {
           this.currentUser = u;
+          // console.log('user: ' + JSON.stringify(u));
         });
       })).subscribe();
     } else {
@@ -120,6 +121,7 @@ export class MainNavComponent implements OnInit, OnDestroy {
     if (this.isHandset$) {
       this.sidenavService.closeAll();
     }
+    this.setPointMode = true;
     this.mapService.map.getCanvas().style.cursor = 'auto';
     this.isHandset$.pipe(untilDestroyed(this)).subscribe(isHandset => {
       this.snackBarService.success(
@@ -130,6 +132,7 @@ export class MainNavComponent implements OnInit, OnDestroy {
     });
 
     this.mapService.clickedPoint.pipe(first(), finalize(() => {
+      this.setPointMode = false;
       this.snackBarService.close();
       this.mapService.map.getCanvas().style.cursor = '';
       this.sidenavService.openLeft();

@@ -9,13 +9,13 @@
           <img class="img-size" *ngIf="!unit.images[0]" src="assets/pics/unit_pic_spacer.jpg">
         </div>
 
-        {{unit.model}}
+        <div fxLayout="row" fxFlex fxLayoutAlign="start none">{{unit.model}}</div>
 
         <button #editUnitkLocation
                 type="button" matTooltip="местоположение на карте" tabindex="-1"
                 matTooltipPosition="above" aria-label="Toggle edit unit location"
-                mat-icon-button (click)="setUnitLocation()">
-          <mat-icon aria-label="Edit toggle icon">location_on</mat-icon>
+                mat-icon-button (click)="flyToUnit(unit)">
+          <mat-icon aria-label="Edit toggle icon">gps_fixed</mat-icon>
         </button>
       </td>
     </ng-container>

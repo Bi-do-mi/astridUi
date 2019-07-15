@@ -61,7 +61,8 @@ export class RegisterComponent implements OnInit, OnDestroy {
         , Validators.pattern('^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[a-zA-Z\\d]{8,}$')]],
       repeat_password: [''],
       name: ['', [Validators.minLength(1),
-        Validators.maxLength(60)]]
+        Validators.maxLength(60),
+      Validators.pattern('^([а-яА-ЯA-Za-z]*)$')]]
     }, {validators: this.checkPasswords});
     this.userService.logout();
   }

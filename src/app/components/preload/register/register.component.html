@@ -53,6 +53,9 @@
           <mat-error *ngIf="submitted && f.name.hasError('required')">
             введите свое имя
           </mat-error>
+          <mat-error *ngIf="f.name.hasError('pattern')">
+            недопустимые символы
+          </mat-error>
         </mat-form-field>
 
         <div class="form-group">

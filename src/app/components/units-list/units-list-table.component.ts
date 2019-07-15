@@ -6,6 +6,8 @@ import {DataSource} from '@angular/cdk/collections';
 import {merge, Observable, Subscription} from 'rxjs';
 import {MatPaginator, MatSort} from '@angular/material';
 import {untilDestroyed} from 'ngx-take-until-destroy';
+import {MapService} from '../../_services/map.service';
+import {SidenavService} from '../../_services/sidenav.service';
 
 @Component({
   selector: 'app-units-list',
@@ -19,7 +21,9 @@ export class UnitsListTableComponent implements OnInit, OnDestroy {
   dataSource: UnitDataSource;
   displayedColumns: string[] = ['model'];
 
-  constructor(public userService: UserService) {
+  constructor(public userService: UserService,
+              private mapServ: MapService,
+              private sidenavService: SidenavService) {
   }
 
   ngOnInit() {
@@ -29,8 +33,9 @@ export class UnitsListTableComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
   }
 
-  setUnitLocation() {
-    console.log('\nsetUnitLocation() triggered!');
+  flyToUnit(unit: Unit) {
+    this.sidenavService.closeAll();
+    this.mapServ.flyTo(unit.location);
   }
 }
 

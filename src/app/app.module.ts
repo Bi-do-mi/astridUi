@@ -44,7 +44,6 @@ import {AppRoutingModule} from './app-routing.module';
 import {UserOptionsDialogComponent} from './components/user-options-dialog/user-options-dialog.component';
 import {environment} from '../environments/environment.prod';
 import {DeleteUserDialogComponent} from './components/delete-user-dialog/delete-user-dialog.component';
-import {UnitOptionsDialogComponent} from './components/unit-options-dialog/unit-options-dialog.component';
 import {AdminUnitsCollectionComponent} from './components/admin-units-collection/admin-units-collection.component';
 import {UnitCreateDialogComponent} from './components/unit-create-dialog/unit-create-dialog.component';
 import {STEPPER_GLOBAL_OPTIONS} from '@angular/cdk/stepper';
@@ -75,7 +74,6 @@ export const httpInterceptorProviders = [
     PageNotFoundComponent,
     UserOptionsDialogComponent,
     DeleteUserDialogComponent,
-    UnitOptionsDialogComponent,
     AdminUnitsCollectionComponent,
     UnitCreateDialogComponent,
     UnitsListTableComponent,
@@ -132,7 +130,6 @@ export const httpInterceptorProviders = [
   ],
   entryComponents: [
     UserOptionsDialogComponent,
-    UnitOptionsDialogComponent,
     DeleteUserDialogComponent,
     UnitCreateDialogComponent,
     UnitsListTableComponent

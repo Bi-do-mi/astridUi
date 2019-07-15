@@ -1,16 +1,17 @@
 import {HostListener, Injectable, OnDestroy, OnInit} from '@angular/core';
 import * as mapboxgl from 'mapbox-gl';
-import {Marker} from 'mapbox-gl';
+import {LngLatBounds, Marker} from 'mapbox-gl';
 import {NGXLogger} from 'ngx-logger';
 import {BehaviorSubject, Observable, Subject} from 'rxjs';
 import {HttpClient} from '@angular/common/http';
 import {User} from '../_model/User';
 import {SnackBarService} from './snack-bar.service';
 import {untilDestroyed} from 'ngx-take-until-destroy';
-import {GeoJson} from '../_model/MarkerSourceModel';
+import {FeatureCollection, GeoJson} from '../_model/MarkerSourceModel';
 import {UserService} from './user.service';
 import {first} from 'rxjs/operators';
 import {GeoCode} from '../_model/GeoCode';
+import {SidenavService} from './sidenav.service';
 
 
 @Injectable({
@@ -34,13 +35,16 @@ export class MapService implements OnInit, OnDestroy {
   private _clickedPoint = this._clickedPoint$.asObservable();
   currentUser: User;
   private userMarker: Marker;
+  public privateMarkers = new Array<Marker>();
   userGeoCode: GeoCode;
+  public _hidePrivateUnits = false;
 
 
   constructor(private logger: NGXLogger,
               private userService: UserService,
               private snackBarService: SnackBarService,
-              private http: HttpClient) {
+              private http: HttpClient,
+              private sidenavService: SidenavService) {
     this.initializeMap();
   }
 
@@ -66,6 +70,7 @@ export class MapService implements OnInit, OnDestroy {
       if (mapId) {
         // отступ по времени для правильного отображения карты
         setTimeout(() => {
+          // map initialization
           this._map = new mapboxgl.Map({
             container: mapId,
             style: this._style,
@@ -92,6 +97,7 @@ export class MapService implements OnInit, OnDestroy {
           // load listener
           this.map.on('load', (event) => {
 
+            // Adding popup, user's marker and user's geocode
             this.userService.currentUser.pipe(untilDestroyed(this))
               .subscribe(user => {
                 this.currentUser = user;
@@ -100,10 +106,10 @@ export class MapService implements OnInit, OnDestroy {
                     if (this.userMarker) {
                       this.userMarker.remove();
                     }
-                    const popup = new mapboxgl.Popup({offset: 50});
+                    const popup = new mapboxgl.Popup({offset: 45});
                     const el = document.createElement('div');
-                    el.className = 'marker';
-                    this.userMarker = new Marker(el, {offset: [0, -20]});
+                    el.className = 'office_marker';
+                    this.userMarker = new Marker(el, {offset: [0, -23]});
                     this.userMarker.setLngLat([
                       this.currentUser.location.geometry.coordinates[0],
                       this.currentUser.location.geometry.coordinates[1]])
@@ -114,6 +120,27 @@ export class MapService implements OnInit, OnDestroy {
                       untilDestroyed(this)).subscribe((geoCode: GeoCode) => {
                       this.userGeoCode = geoCode;
                     });
+                  }
+                } catch (e) {
+                  console.log(e);
+                }
+                try {
+                  if (user.units && user.units.length > 0) {
+                    this.hidePrivateUnits(true);
+                    this.privateMarkers.splice(0);
+                    user.units.forEach(unit => {
+                      const popup = new mapboxgl.Popup({offset: 10});
+                      const el = document.createElement('div');
+                      el.className = 'private_unit_marker';
+                      const unitMarker = new Marker(el);
+                      unitMarker.setLngLat([
+                        unit.location.geometry.coordinates[0],
+                        unit.location.geometry.coordinates[1]
+                      ]).setPopup(popup.setText(unitMarker.getLngLat().lng
+                        + ', ' + unitMarker.getLngLat().lat));
+                      this.privateMarkers.push(unitMarker);
+                    });
+                    this.hidePrivateUnits(false);
                   }
                 } catch (e) {
                   console.log(e);
@@ -203,6 +230,7 @@ export class MapService implements OnInit, OnDestroy {
   }
 
   getMarkers(): Observable<any> {
+    // this.logger.info('getMarkers triggered!');
     return this.http.get<any>('rest/users/all');
   }
 
@@ -211,6 +239,61 @@ export class MapService implements OnInit, OnDestroy {
       center: [data.geometry.coordinates[0], data.geometry.coordinates[1]],
       zoom: 9
     });
+  }
+
+  hidePrivateUnits(hide: boolean) {
+    this.sidenavService.closeAll();
+    this._hidePrivateUnits = hide || !this._hidePrivateUnits;
+    if (this._hidePrivateUnits) {
+      this.privateMarkers.forEach(marker => {
+        marker.remove();
+      });
+    } else {
+      this.privateMarkers.forEach(marker => {
+        if (this.currentUser.location.geometry.coordinates[0]
+          !== marker.getLngLat().lng &&
+          this.currentUser.location.geometry.coordinates[1]
+          !== marker.getLngLat().lng) {
+          marker.addTo(this.map);
+        }
+      });
+    }
+  }
+
+  // get bbox of private units
+  getBoundingBox(data: Array<Marker>): LngLatBounds {
+    const fs: FeatureCollection = new FeatureCollection(new Array<GeoJson>());
+    const bounds: LngLatBounds = new LngLatBounds();
+    let coords: number[];
+    let latitude: number;
+    let longitude: number;
+    data.forEach(marker => {
+      const feature = new GeoJson(marker.getLngLat().toArray());
+      fs.features.push(feature);
+    });
+    for (let i = 0; i < fs.features.length; i++) {
+      coords = fs.features[i].geometry.coordinates;
+      longitude = coords[0];
+      latitude = coords[1];
+      if (bounds.getSouthWest()) {
+        const west = bounds.getWest() < longitude ? bounds.getWest() : longitude;
+        const east = bounds.getEast() > longitude ? bounds.getEast() : longitude;
+        const south = bounds.getSouth() < latitude ? bounds.getSouth() : latitude;
+        const north = bounds.getNorth() > latitude ? bounds.getNorth() : latitude;
+        bounds.setSouthWest([west, south]);
+        bounds.setNorthEast([east, north]);
+      } else {
+        bounds.setSouthWest([longitude, latitude]);
+        bounds.setNorthEast([longitude, latitude]);
+      }
+    }
+    return bounds;
+  }
+
+  // панарамирование своей техники
+  fitBounds(bounds: LngLatBounds) {
+    this.sidenavService.closeAll();
+    this.map.fitBounds(bounds, {padding: {top: 20, bottom: 20, left: 20, right: 20}});
   }
 
 //   addPopup(marker: Marker) {

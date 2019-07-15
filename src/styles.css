@@ -14,12 +14,20 @@ html, body {
   min-height: 100%;
   position: absolute; }
 
-.marker {
+.office_marker {
   border: none;
   cursor: pointer;
-  height: 56px;
-  width: 56px;
-  background-image: url(assets/icons/marker.png);
+  height: 45px;
+  width: 30px;
+  background-image: url(assets/icons/office.png);
+  background-color: rgba(0, 0, 0, 0); }
+
+.private_unit_marker {
+  border: none;
+  cursor: pointer;
+  height: 15px;
+  width: 15px;
+  background-image: url(assets/icons/private_unit.png);
   background-color: rgba(0, 0, 0, 0); }
 
 /*# sourceMappingURL=styles.css.map */
