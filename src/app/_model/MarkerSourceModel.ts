@@ -22,6 +22,13 @@ export class GeoJson implements IGeoJson {
   }
 }
 
+export class FeatureCollection {
+  type = 'FeatureCollection';
+
+  constructor(public features: Array<GeoJson>) {
+  }
+}
+
 // export class Point implements IGeometry {
 //   coordinates: number[];
 //   type: string;
@@ -31,10 +38,3 @@ export class GeoJson implements IGeoJson {
 //     this.coordinates = coordinates;
 //   }
 // }
-
-export class FeatureCollection {
-  type = 'FeatureCollection';
-
-  constructor(public features: Array<GeoJson>) {
-  }
-}

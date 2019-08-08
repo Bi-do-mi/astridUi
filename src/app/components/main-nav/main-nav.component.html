@@ -39,16 +39,19 @@
           </div>
         </div>
         <div fxLayout="column" fxLayoutAlign="end none">
-          <mat-icon *ngIf="mapService?.privateMarkers.length > 0"
+          <mat-icon *ngIf="mapService?.privateMarkers.length > 0 && !mapService._hidePrivateUnits"
                     matTooltip="понорамировать свою технику на карте" tabindex="-1"
                     matTooltipPosition="above" (click)=" mapService.fitBounds(
-                    mapService.getBoundingBox(mapService.privateMarkers))">
-            crop_free
+                    mapService.getBoundingBox(mapService.privateMarkers))">crop_free
           </mat-icon>
           <mat-icon *ngIf="mapService?.privateMarkers.length > 0"
                     matTooltip="показать/скрыть свою технику на карте" tabindex="-1"
                     matTooltipPosition="above" (click)=" mapService.hidePrivateUnits()">
             {{mapService._hidePrivateUnits ? 'visibility_off' : 'visibility'}}
+          </mat-icon>
+          <mat-icon *ngIf="mapService?.privateMarkers.length > 0"
+                    matTooltip="открыть список" tabindex="-1"
+                    matTooltipPosition="above" (click)="openUnitsMainListDialog()">list
           </mat-icon>
         </div>
       </div>

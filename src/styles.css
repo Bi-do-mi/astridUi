@@ -22,12 +22,21 @@ html, body {
   background-image: url(assets/icons/office.png);
   background-color: rgba(0, 0, 0, 0); }
 
-.private_unit_marker {
-  border: none;
+.private_unit_marker_out {
   cursor: pointer;
-  height: 15px;
-  width: 15px;
-  background-image: url(assets/icons/private_unit.png);
-  background-color: rgba(0, 0, 0, 0); }
+  height: 12px;
+  width: 12px;
+  border-radius: 50%;
+  background-color: #212121;
+  position: relative; }
+
+.private_unit_marker_in {
+  border-radius: 50%;
+  background-color: #fbc02d;
+  top: 15%;
+  left: 15%;
+  width: 70%;
+  height: 70%;
+  position: relative; }
 
 /*# sourceMappingURL=styles.css.map */

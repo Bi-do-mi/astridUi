@@ -16,6 +16,7 @@ import {ParkService} from '../../_services/park.service';
 import {UnitCreateDialogComponent} from '../unit-create-dialog/unit-create-dialog.component';
 import {UnitsListTableComponent} from '../units-list/units-list-table.component';
 import {Unit} from '../../_model/Unit';
+import {UnitsMainListDialogComponent} from '../units-main-list-dialog/units-main-list-dialog.component';
 
 @Component({
   selector: 'app-main-nav',
@@ -105,14 +106,11 @@ export class MainNavComponent implements OnInit, OnDestroy {
     const dialogRef = this.dialog.open(UserOptionsDialogComponent, {
       minHeight: '250px'
     });
-
-    // dialogRef.afterClosed().pipe(untilDestroyed(this)).subscribe(result => {
-    //   // console.log('The dialog was closed');
-    // });
   }
 
   @HostListener('document:keydown.escape', ['$event']) onKeydown(event: KeyboardEvent) {
-    if (event.key === 'Escape') {
+    if (event.key === 'Escape' && this.setPointMode) {
+      // console.log('escape triggered! - ' + this.setPointMode);
       this.mapService.clickedPoint$.next();
     }
   }
@@ -177,9 +175,12 @@ export class MainNavComponent implements OnInit, OnDestroy {
     }
   }
 
-  // todo not forget to clear this
-  openParkDialog() {
+  openUnitsMainListDialog() {
     this.sidenavService.closeAll();
+    const dialogRef = this.dialog.open(UnitsMainListDialogComponent, {
+      maxHeight: '100vh',
+      maxWidth: '100vw'
+    });
   }
 
   toggleMenu(hasBackdrop?: boolean) {

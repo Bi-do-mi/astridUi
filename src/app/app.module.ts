@@ -54,6 +54,7 @@ import {Transliterate} from 'transliteration/dist/node/src/common/transliterate'
 import {TransliterateFunction} from 'transliteration/dist/node/src/types';
 import { DynamicFormQuestionComponent } from './components/unit-create-dialog/dynamic-form-question/dynamic-form-question.component';
 import { DynamicFormComponent } from './components/unit-create-dialog/dynamic-form/dynamic-form.component';
+import { UnitsMainListDialogComponent } from './components/units-main-list-dialog/units-main-list-dialog.component';
 
 // import {registerLocaleData} from '@angular/common';
 // import localeRu from '@angular/common/locales/ru';
@@ -78,7 +79,8 @@ export const httpInterceptorProviders = [
     UnitCreateDialogComponent,
     UnitsListTableComponent,
     DynamicFormQuestionComponent,
-    DynamicFormComponent
+    DynamicFormComponent,
+    UnitsMainListDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -132,7 +134,8 @@ export const httpInterceptorProviders = [
     UserOptionsDialogComponent,
     DeleteUserDialogComponent,
     UnitCreateDialogComponent,
-    UnitsListTableComponent
+    UnitsListTableComponent,
+    UnitsMainListDialogComponent
   ],
   providers: [AuthGuard, httpInterceptorProviders,
     {

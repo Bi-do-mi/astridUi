@@ -1,4 +1,4 @@
-import {HostListener, Injectable, OnDestroy, OnInit} from '@angular/core';
+import {Injectable, OnDestroy, OnInit} from '@angular/core';
 import * as mapboxgl from 'mapbox-gl';
 import {LngLatBounds, Marker} from 'mapbox-gl';
 import {NGXLogger} from 'ngx-logger';
@@ -38,6 +38,7 @@ export class MapService implements OnInit, OnDestroy {
   public privateMarkers = new Array<Marker>();
   userGeoCode: GeoCode;
   public _hidePrivateUnits = false;
+  isPopupOpened = false;
 
 
   constructor(private logger: NGXLogger,
@@ -94,6 +95,21 @@ export class MapService implements OnInit, OnDestroy {
             this._clickedPoint$.next(p);
           });
 
+          // movestart listener
+          this.map.on('movestart', (event) => {
+            if ((this.privateMarkers.length > 0 || this.userMarker) && this.isPopupOpened) {
+              this.privateMarkers.forEach(m => {
+                if (m.getPopup().isOpen()) {
+                  m.togglePopup();
+                }
+              });
+              if (this.userMarker.getPopup().isOpen()) {
+                this.userMarker.togglePopup();
+              }
+              this.isPopupOpened = false;
+            }
+          });
+
           // load listener
           this.map.on('load', (event) => {
 
@@ -107,6 +123,9 @@ export class MapService implements OnInit, OnDestroy {
                       this.userMarker.remove();
                     }
                     const popup = new mapboxgl.Popup({offset: 45});
+                    popup.on('open', e => {
+                      this.isPopupOpened = true;
+                    });
                     const el = document.createElement('div');
                     el.className = 'office_marker';
                     this.userMarker = new Marker(el, {offset: [0, -23]});
@@ -130,14 +149,21 @@ export class MapService implements OnInit, OnDestroy {
                     this.privateMarkers.splice(0);
                     user.units.forEach(unit => {
                       const popup = new mapboxgl.Popup({offset: 10});
-                      const el = document.createElement('div');
-                      el.className = 'private_unit_marker';
-                      const unitMarker = new Marker(el);
+                      const outerCircle = document.createElement('div');
+                      outerCircle.className = 'private_unit_marker_out';
+                      const innerCircle = document.createElement('div');
+                      innerCircle.className = 'private_unit_marker_in';
+                      outerCircle.appendChild(innerCircle);
+
+                      const unitMarker = new Marker(outerCircle);
                       unitMarker.setLngLat([
                         unit.location.geometry.coordinates[0],
                         unit.location.geometry.coordinates[1]
                       ]).setPopup(popup.setText(unitMarker.getLngLat().lng
                         + ', ' + unitMarker.getLngLat().lat));
+                      unitMarker.getPopup().on('open', e => {
+                        this.isPopupOpened = true;
+                      });
                       this.privateMarkers.push(unitMarker);
                     });
                     this.hidePrivateUnits(false);
@@ -293,27 +319,36 @@ export class MapService implements OnInit, OnDestroy {
   // панарамирование своей техники
   fitBounds(bounds: LngLatBounds) {
     this.sidenavService.closeAll();
-    this.map.fitBounds(bounds, {padding: {top: 20, bottom: 20, left: 20, right: 20}});
+    this.map.fitBounds(bounds, {
+      padding: {
+        top: 40, bottom: 40,
+        left: 40, right: 40
+      }
+    });
+    // this.drawLines();
   }
 
-//   addPopup(marker: Marker) {
-//     const coordinates = marker.getLngLat().toArray().slice();
-//
-// // Ensure that if the map is zoomed out such that multiple
-// // copies of the feature are visible, the popup appears
-// // over the copy being pointed to.
-//     while (Math.abs(marker.getLngLat().lng - coordinates[0]) > 180) {
-//       coordinates[0] += marker.getLngLat().lng > coordinates[0] ? 360 : -360;
-//     }
-//
-//     new mapboxgl.Popup()
-//       .setLngLat(coordinates)
-//       .setHTML('<strong>Truckeroo</strong><p> brings dozens of food trucks, live music,' +
-//         ' and games to half and M Street SE (across from Navy Yard Metro Station)' +
-//         ' today from 11:00 a.m. to 11:00 p.m.</p>')
-//       .addTo(this.map);
-//   }
-
+  // drawLines() {
+  //   const featureCollection = new FeatureCollection(new Array<GeoJson>());
+  //   const startPoint = this.currentUser.location.geometry.coordinates;
+  //   this.privateMarkers.forEach(marker => {
+  //     const line = new GeoJson([startPoint, marker.getLngLat().toArray()]);
+  //     line.type = 'LineString';
+  //     featureCollection.features.push(line);
+  //   });
+  //   // const source: AnySourceData = JSON.stringify(featureCollection);
+  //   this.map.addSource('lines_to_units', featureCollection);
+  //   this.map.addLayer({
+  //     'id': 'lines_to_units',
+  //     'type': 'line',
+  //
+  //     'source': {
+  //       'type': 'geojson',
+  //       'data': source
+  //     }
+  //   });
+  //   console.log(JSON.stringify(featureCollection));
+  // }
 
   ngOnDestroy() {
   }

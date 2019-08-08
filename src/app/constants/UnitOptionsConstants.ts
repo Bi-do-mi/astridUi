@@ -269,8 +269,8 @@ export const UNIT_OPTIONS_CONSTANTS = [
       label: 'Наличие рыхлителя',
       controlType: 'select',
       options: [
-        {key: 'true', value: true},
-        {key: 'false', value: false}
+        {key: 'есть', value: 'есть'},
+        {key: 'нет', value: 'нет'}
       ]
     },
     {
@@ -346,10 +346,10 @@ export const UNIT_OPTIONS_CONSTANTS = [
         ['Манипуляторы'],
       key: 'Низкорамный',
       label: 'Низкорамный',
-      controlType: 'checkbox',
+      controlType: 'select',
       options: [
-        {key: 'true', value: true},
-        {key: 'false', value: false}
+        {key: 'да', value: 'да'},
+        {key: 'нет', value: 'нет'}
       ]
     },
     {
@@ -489,12 +489,11 @@ export const UNIT_OPTIONS_CONSTANTS = [
         ['Низкорамные тралы'],
       key: 'Наличие сходен трала',
       label: 'Наличие сходен трала',
-      controlType: 'checkbox',
-      options:
-        [
-          {key: 'true', value: true},
-          {key: 'false', value: false}
-        ]
+      controlType: 'select',
+      options: [
+        {key: 'есть', value: 'есть'},
+        {key: 'нет', value: 'нет'}
+      ]
     },
     {
       required: false,
