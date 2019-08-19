@@ -3,16 +3,13 @@ import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {UnitAssignment, UnitBrand, UnitModel, UnitType} from '../../_model/UnitTypesModel';
 import {HttpClient} from '@angular/common/http';
 import {ParkService} from '../../_services/park.service';
-import {finalize, first, map} from 'rxjs/operators';
+import {first} from 'rxjs/operators';
 import {untilDestroyed} from 'ngx-take-until-destroy';
 import {UserService} from '../../_services/user.service';
-import {UnitDataSource} from '../units-list/units-list-table.component';
 import {MatPaginator, MatSort} from '@angular/material';
 import {DataSource} from '@angular/cdk/table';
-import {Unit} from '../../_model/Unit';
-import {BehaviorSubject, merge, Observable} from 'rxjs';
+import {BehaviorSubject, Observable} from 'rxjs';
 import {CollectionViewer} from '@angular/cdk/collections';
-import {KeyValue} from '@angular/common';
 
 @Component({
   selector: 'app-admin-units-collection',

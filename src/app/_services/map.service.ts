@@ -34,7 +34,7 @@ export class MapService implements OnInit, OnDestroy {
   private _clickedPoint$ = new Subject<GeoJson>();
   private _clickedPoint = this._clickedPoint$.asObservable();
   currentUser: User;
-  private userMarker: Marker;
+  public userMarker: Marker;
   public privateMarkers = new Array<Marker>();
   userGeoCode: GeoCode;
   public _hidePrivateUnits = false;
@@ -59,7 +59,6 @@ export class MapService implements OnInit, OnDestroy {
   }
 
   buildMap() {
-    // console.log('buildMap triggered!');
     this._mapOps = {
       lng: 37.622504,
       lat: 55.753215,
@@ -72,12 +71,16 @@ export class MapService implements OnInit, OnDestroy {
         // отступ по времени для правильного отображения карты
         setTimeout(() => {
           // map initialization
-          this._map = new mapboxgl.Map({
-            container: mapId,
-            style: this._style,
-            zoom: this._mapOps.zoom,
-            center: [this._mapOps.lng, this._mapOps.lat]
-          });
+          try {
+            this._map = new mapboxgl.Map({
+              container: mapId,
+              style: this._style,
+              zoom: this._mapOps.zoom,
+              center: [this._mapOps.lng, this._mapOps.lat]
+            });
+          } catch (e) {
+            console.log('Failed to load map!');
+          }
 
           // Add map controls
           this._map.addControl(new mapboxgl.NavigationControl());
@@ -118,10 +121,10 @@ export class MapService implements OnInit, OnDestroy {
               .subscribe(user => {
                 this.currentUser = user;
                 try {
+                  if (this.userMarker) {
+                    this.userMarker.remove();
+                  }
                   if (user.location) {
-                    if (this.userMarker) {
-                      this.userMarker.remove();
-                    }
                     const popup = new mapboxgl.Popup({offset: 45});
                     popup.on('open', e => {
                       this.isPopupOpened = true;
@@ -144,8 +147,9 @@ export class MapService implements OnInit, OnDestroy {
                   console.log(e);
                 }
                 try {
+                  this.hidePrivateUnits(true);
+                  this.sidenavService.closeAll();
                   if (user.units && user.units.length > 0) {
-                    this.hidePrivateUnits(true);
                     this.privateMarkers.splice(0);
                     user.units.forEach(unit => {
                       const popup = new mapboxgl.Popup({offset: 10});
@@ -172,8 +176,8 @@ export class MapService implements OnInit, OnDestroy {
                   console.log(e);
                 }
               });
+            this.navigatorCheck();
           });
-          this.navigatorCheck();
         }, 10);
       }
     });
@@ -267,8 +271,7 @@ export class MapService implements OnInit, OnDestroy {
     });
   }
 
-  hidePrivateUnits(hide: boolean) {
-    this.sidenavService.closeAll();
+  hidePrivateUnits(hide?: boolean) {
     this._hidePrivateUnits = hide || !this._hidePrivateUnits;
     if (this._hidePrivateUnits) {
       this.privateMarkers.forEach(marker => {
@@ -287,7 +290,7 @@ export class MapService implements OnInit, OnDestroy {
   }
 
   // get bbox of private units
-  getBoundingBox(data: Array<Marker>): LngLatBounds {
+  getBoundingBox(data: Array<Marker>, parkPoint?: Marker): LngLatBounds {
     const fs: FeatureCollection = new FeatureCollection(new Array<GeoJson>());
     const bounds: LngLatBounds = new LngLatBounds();
     let coords: number[];
@@ -297,6 +300,10 @@ export class MapService implements OnInit, OnDestroy {
       const feature = new GeoJson(marker.getLngLat().toArray());
       fs.features.push(feature);
     });
+    if (parkPoint) {
+      const feature = new GeoJson(parkPoint.getLngLat().toArray());
+      fs.features.push(feature);
+    }
     for (let i = 0; i < fs.features.length; i++) {
       coords = fs.features[i].geometry.coordinates;
       longitude = coords[0];

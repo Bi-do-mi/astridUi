@@ -23,12 +23,14 @@ import {
   MatFormFieldModule,
   MatIconModule,
   MatInputModule,
-  MatListModule, MatPaginatorModule,
+  MatListModule,
+  MatPaginatorModule,
   MatProgressSpinnerModule,
   MatSelectModule,
   MatSidenavModule,
   MatSlideToggleModule,
-  MatSnackBarModule, MatSortModule,
+  MatSnackBarModule,
+  MatSortModule,
   MatStepperModule,
   MatTableModule,
   MatTabsModule,
@@ -50,11 +52,11 @@ import {STEPPER_GLOBAL_OPTIONS} from '@angular/cdk/stepper';
 import {NgxPicaModule} from '@digitalascetic/ngx-pica';
 import {NgxGalleryModule} from 'ngx-gallery';
 import {UnitsListTableComponent} from './components/units-list/units-list-table.component';
-import {Transliterate} from 'transliteration/dist/node/src/common/transliterate';
-import {TransliterateFunction} from 'transliteration/dist/node/src/types';
-import { DynamicFormQuestionComponent } from './components/unit-create-dialog/dynamic-form-question/dynamic-form-question.component';
-import { DynamicFormComponent } from './components/unit-create-dialog/dynamic-form/dynamic-form.component';
-import { UnitsMainListDialogComponent } from './components/units-main-list-dialog/units-main-list-dialog.component';
+import {DynamicFormQuestionComponent} from './components/unit-create-dialog/dynamic-form-question/dynamic-form-question.component';
+import {DynamicFormComponent} from './components/unit-create-dialog/dynamic-form/dynamic-form.component';
+import {UnitsMainListDialogComponent} from './components/units-main-list-dialog/units-main-list-dialog.component';
+import {UnitInfoCardDialogComponent} from './components/unit-info-card-dialog/unit-info-card-dialog.component';
+import { DeleteUnitDialogComponent } from './components/delete-unit-dialog/delete-unit-dialog.component';
 
 // import {registerLocaleData} from '@angular/common';
 // import localeRu from '@angular/common/locales/ru';
@@ -80,7 +82,9 @@ export const httpInterceptorProviders = [
     UnitsListTableComponent,
     DynamicFormQuestionComponent,
     DynamicFormComponent,
-    UnitsMainListDialogComponent
+    UnitsMainListDialogComponent,
+    UnitInfoCardDialogComponent,
+    DeleteUnitDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -133,9 +137,11 @@ export const httpInterceptorProviders = [
   entryComponents: [
     UserOptionsDialogComponent,
     DeleteUserDialogComponent,
+    DeleteUnitDialogComponent,
     UnitCreateDialogComponent,
     UnitsListTableComponent,
-    UnitsMainListDialogComponent
+    UnitsMainListDialogComponent,
+    UnitInfoCardDialogComponent
   ],
   providers: [AuthGuard, httpInterceptorProviders,
     {

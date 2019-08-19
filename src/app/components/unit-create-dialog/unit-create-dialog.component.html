@@ -1,6 +1,7 @@
 <mat-spinner class="mat-accent" [diameter]="40" *ngIf="unitsList.length == 0"></mat-spinner>
 <div *ngIf="unitsList.length > 0">
-  <h5 class="form-group-size">Новая еденица техники</h5>
+  <h5 *ngIf="!data.editing" class="form-group-size">Новая единица техники</h5>
+  <h5 *ngIf="data.editing" class="form-group-size">Редактирование единицы техники</h5>
   <mat-vertical-stepper [linear]="linear" #stepper>
 
     <!--Step One-->
@@ -56,7 +57,7 @@
             <button mat-raised-button="" (click)="onCancel()" tabindex="-1">Отмена</button>
           </div>
           <button mat-raised-button color="accent" matStepperNext
-                  [disabled]="loading">Далее
+                  [disabled]="loading || selectForm?.invalid">Далее
           </button>
         </div>
       </form>
@@ -75,7 +76,7 @@
         <div fxLayout="row" fxLayoutAlign="end">
           <button class="mr-3" mat-button matStepperPrevious [disabled]="loading">Назад</button>
           <button mat-raised-button color="accent" matStepperNext
-                  (click)="onSecondStep()" [disabled]="loading">Далее</button>
+                  (click)="onSecondStep()" [disabled]="loading || optForm?.invalid">Далее</button>
         </div>
       </div>
     </mat-step>
@@ -85,7 +86,7 @@
       <div fxLayout="column" fxLayoutAlign="center center">
         <div fxLayout="column" fxLayoutAlign="center stretch">
           <mat-spinner class="mat-accent" [diameter]="40"
-                       *ngIf="loading && galleryImages.length == 0"></mat-spinner>
+                       *ngIf="loading && galleryImages?.length == 0"></mat-spinner>
           <ngx-gallery [options]="galleryOptions" *ngIf="galleryImages.length > 0"
                        [images]="galleryImages"
           ></ngx-gallery>
@@ -153,19 +154,19 @@
             (unitGeoCode?.results[1]?.name)+'\n'+
             (unitGeoCode?.results[unitGeoCode?.results.length-1]?.name)}}</p>
         </div>
-        <p class="m-3">Укажите на карте местоположение еденицы техники, или пропустите этот шаг. В
+        <p class="m-3">Укажите на карте местоположение единицы техники, или пропустите этот шаг. В
           этом
           случае техника будет локализована в вашем парке.</p>
       </div>
       <div fxLayout="row wrap" fxLayoutAlign="space-between center">
         <div>
-          <button mat-button (click)="onCancel()" tabindex="-1" [disabled]="loading">Отмена
+          <button mat-raised-button="" (click)="onCancel()" tabindex="-1" [disabled]="loading">Отмена
           </button>
         </div>
         <div fxLayout="row" fxLayoutAlign="end">
           <button class="mr-3" mat-button matStepperPrevious>Назад</button>
           <button mat-raised-button color="accent" matStepperNext
-                  [disabled]="loading" (click)="onFourth()">Создать
+                  [disabled]="loading" (click)="onFourth()">Сохранить
           </button>
         </div>
       </div>

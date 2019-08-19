@@ -1,5 +1,5 @@
 import {AfterViewInit, Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {MatDialogRef, MatPaginator, MatSort} from '@angular/material';
+import {MatDialog, MatDialogRef, MatPaginator, MatSort} from '@angular/material';
 import {Unit} from '../../_model/Unit';
 import {UserService} from '../../_services/user.service';
 import {MapService} from '../../_services/map.service';
@@ -9,7 +9,10 @@ import {Observable, Subscription, merge} from 'rxjs';
 import {untilDestroyed} from 'ngx-take-until-destroy';
 import {map} from 'rxjs/operators';
 import {NgxGalleryAnimation, NgxGalleryImage, NgxGalleryOptions} from 'ngx-gallery';
-import {UnitDataSource} from '../units-list/units-list-table.component';
+import {UnitDataSource} from '../../_model/UnitDataSource';
+import {UnitInfoCardDialogComponent} from '../unit-info-card-dialog/unit-info-card-dialog.component';
+import {UnitCreateDialogComponent} from '../unit-create-dialog/unit-create-dialog.component';
+
 
 @Component({
   selector: 'app-units-main-list-dialog',
@@ -26,6 +29,7 @@ export class UnitsMainListDialogComponent implements OnInit, OnDestroy {
 
   constructor(
     private dialogRef: MatDialogRef<UnitsMainListDialogComponent>,
+    private dialog: MatDialog,
     public userService: UserService,
     private mapServ: MapService,
     private sidenavService: SidenavService) {
@@ -35,7 +39,7 @@ export class UnitsMainListDialogComponent implements OnInit, OnDestroy {
     this.dialogRef.disableClose = true;
     this.dialogRef.backdropClick().pipe(untilDestroyed(this))
       .subscribe(_ => {
-          this.onCancel();
+        this.onCancel();
       });
     this.dataSource = new UnitDataSource(
       this.paginator, this.sort, this.userService);
@@ -51,13 +55,12 @@ export class UnitsMainListDialogComponent implements OnInit, OnDestroy {
               medium: im,
               big: im
             });
-            // console.log(i.value);
           });
         } else {
           galleryImages.push({
-            small: 'assets/pics/unit_pic_spacer-600x400.png',
-            medium: 'assets/pics/unit_pic_spacer-600x400.png',
-            big: 'assets/pics/unit_pic_spacer-600x400.png'
+            small: null,
+            medium: null,
+            big: null
           });
         }
         this.galleryImagesMap.set(u.id, galleryImages);
@@ -99,7 +102,50 @@ export class UnitsMainListDialogComponent implements OnInit, OnDestroy {
     this.onCancel();
     this.mapServ.flyTo(unit.location);
   }
+
   onCancel(): void {
     this.dialogRef.close();
+  }
+
+  openUnitInfoCardDialog(unit: Unit) {
+    const unitInfoDialogRef = this.dialog.open(UnitInfoCardDialogComponent, {
+      maxHeight: '100vh',
+      maxWidth: '100vw',
+      backdropClass: 'leanerBack',
+      data: {unit, image: this.galleryImagesMap.get(unit.id)}
+    });
+    unitInfoDialogRef.afterClosed().pipe(untilDestroyed(this)).subscribe(result => {
+      if (result) {
+        this.openUnitCreateDialog(result);
+      }
+    });
+  }
+
+  openUnitCreateDialog(unit?: Unit): void {
+    const dialogRef = this.dialog.open(UnitCreateDialogComponent, {
+      maxHeight: '100vh',
+      maxWidth: '100vw',
+      backdropClass: 'leanerBack',
+      data: {unit: unit, stepNum: 0, editing: true}
+    });
+    dialogRef.afterClosed().pipe(untilDestroyed(this)).subscribe(result => {
+      if (result) {
+        this.openUnitInfoCardDialog(result);
+      }
+    });
+  }
+
+  getSpacer(unit: Unit) {
+    let galleryImages: NgxGalleryImage[] = [];
+    if (unit.images.length > 0) {
+      galleryImages = this.galleryImagesMap.get(unit.id);
+    } else {
+      galleryImages.push({
+        small: 'assets/pics/unit_pic_spacer-600x400.png',
+        medium: 'assets/pics/unit_pic_spacer-600x400.png',
+        big: 'assets/pics/unit_pic_spacer-600x400.png'
+      });
+    }
+    return galleryImages;
   }
 }

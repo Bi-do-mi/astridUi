@@ -51,7 +51,11 @@ export class UnitCreateDialogComponent implements OnInit, AfterViewInit, OnDestr
     private userService: UserService,
     private snackbarService: SnackBarService,
     private ngxPicaService: NgxPicaService,
-    @Inject(MAT_DIALOG_DATA) public data: { unit: Unit },
+    @Inject(MAT_DIALOG_DATA) public data: {
+      unit: Unit,
+      stepNum?: number,
+      editing?: boolean
+    },
     private mapService: MapService,
     private questionCtrlService: QuestionControlService,
     private questionService: QuestionService,
@@ -61,8 +65,8 @@ export class UnitCreateDialogComponent implements OnInit, AfterViewInit, OnDestr
 
   ngAfterViewInit() {
     setTimeout(() => {
-      if (this.data.unit) {
-        this.stepper.selectedIndex = 3;
+      if (this.data.stepNum) {
+        this.stepper.selectedIndex = this.data.stepNum;
       }
     }, 1000);
     this.questionService.unitOptions.pipe(untilDestroyed(this))
@@ -134,7 +138,10 @@ export class UnitCreateDialogComponent implements OnInit, AfterViewInit, OnDestr
         width: '600px',
         height: '500px',
         thumbnailsColumns: 4,
-        imageAnimation: NgxGalleryAnimation.Slide
+        imageAnimation: NgxGalleryAnimation.Slide,
+        previewInfinityMove: true,
+        imageInfinityMove: true,
+        previewCloseOnEsc: true
       },
       {
         breakpoint: 800,
@@ -215,7 +222,7 @@ export class UnitCreateDialogComponent implements OnInit, AfterViewInit, OnDestr
 
   onFirstStep() {
     if (this.selectForm.invalid) {
-      console.log('invalid optionsForm. return');
+      console.log('invalid selectForm. return');
       return;
     }
     this.unit.ouner = this.currentUser.id;
@@ -233,7 +240,7 @@ export class UnitCreateDialogComponent implements OnInit, AfterViewInit, OnDestr
     }
     this.unit.options.splice(0);
     this.unitOptions.forEach(op => {
-      if (this.optForm.get(op.key).value) {
+      if (this.optForm.get(op.key) && this.optForm.get(op.key).value) {
         op.value = this.optForm.get(op.key).value;
         this.unit.options.push(op);
       }
@@ -246,22 +253,41 @@ export class UnitCreateDialogComponent implements OnInit, AfterViewInit, OnDestr
   onFourth() {
     this.submitted = true;
     this.loading = true;
-    this.parkService.createUnit(this.unit).pipe(first(),
-      untilDestroyed(this)).subscribe(() => {
-        this.loading = false;
-        if (localStorage.getItem('unitImages')) {
-          localStorage.removeItem('unitImages');
-        }
-        this.dialogRef.close();
-        this.snackbarService.success('Единица техники успешно создана',
-          'OK', 10000);
-      },
-      error => {
-        this.loading = false;
-        console.log(error);
-        this.dialogRef.close();
-        this.snackbarService.error('Что-то пошло не так', 'OK');
-      });
+    if (this.data.editing) {
+      this.parkService.updateUnit(this.unit).pipe(first(),
+        untilDestroyed(this)).subscribe(() => {
+          this.loading = false;
+          if (localStorage.getItem('unitImages')) {
+            localStorage.removeItem('unitImages');
+          }
+          this.dialogRef.close();
+          this.snackbarService.success('Единица техники успешно сохранена',
+            'OK', 10000);
+        },
+        error => {
+          this.loading = false;
+          console.log(error);
+          this.dialogRef.close();
+          this.snackbarService.error('Что-то пошло не так', 'OK');
+        });
+    } else {
+      this.parkService.createUnit(this.unit).pipe(first(),
+        untilDestroyed(this)).subscribe(() => {
+          this.loading = false;
+          if (localStorage.getItem('unitImages')) {
+            localStorage.removeItem('unitImages');
+          }
+          this.dialogRef.close();
+          this.snackbarService.success('Единица техники успешно создана',
+            'OK', 10000);
+        },
+        error => {
+          this.loading = false;
+          console.log(error);
+          this.dialogRef.close();
+          this.snackbarService.error('Что-то пошло не так', 'OK');
+        });
+    }
     // todo remove method later
     // this.parkService.createUnitTypesList(this.unitsTabList).pipe(first(),
     //   untilDestroyed(this)).subscribe(() => {
@@ -274,7 +300,7 @@ export class UnitCreateDialogComponent implements OnInit, AfterViewInit, OnDestr
     const files: File[] = event.target.files;
     for (let p = 0; p < files.length; p++) {
       if (!this.validateFile(files[p].name)) {
-        console.log('wrong extention');
+        this.snackbarService.error('Допустимое расширение файлов - "jpg"', 'OK');
         this.loading = false;
         return false;
       }
@@ -287,12 +313,21 @@ export class UnitCreateDialogComponent implements OnInit, AfterViewInit, OnDestr
       .subscribe((imageResized?: File) => {
           const reader: FileReader = new FileReader();
           reader.addEventListener('load', (evnt: any) => {
+            console.log('unit.images.length: ' + this.unit.images.length);
             this.unit.images.push({
               filename: this.unit.images.length + 1 + imageResized.name.slice(
                 imageResized.name.lastIndexOf('.')),
               filetype: imageResized.type,
               value: reader.result.toString().split(',')[1]
             });
+
+            this.galleryImages.forEach(i => {
+              console.log(i);
+            });
+            console.log('gallery size: ' + this.galleryImages.length);
+            console.log('this.unit.images.length: ' + this.unit.images.length);
+            console.log('data.unit.images: ' + this.data.unit.images.length);
+
             if (this.galleryImages.length < 4) {
               const f: File = evnt.target.result;
               this.galleryImages.push({

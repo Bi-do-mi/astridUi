@@ -74,6 +74,48 @@ export class ParkService {
       );
   }
 
+  updateUnit(unit: Unit) {
+    let notFinished = true;
+    setTimeout(() => {
+      if (notFinished) {
+        this.spinner.show();
+      }
+    }, 1000);
+    return this.http.post<any>('rest/units/update_unit', unit)
+      .pipe(finalize(() => {
+          notFinished = false;
+          this.spinner.hide();
+        })
+        , map(user => {
+          if (user) {
+            this.userService.updateCurrentUser(user, true);
+          }
+          return;
+        })
+      );
+  }
+
+  deleteUnit(unit: Unit) {
+    let notFinished = true;
+    setTimeout(() => {
+      if (notFinished) {
+        this.spinner.show();
+      }
+    }, 1000);
+    return this.http.post<any>('rest/units/delete_unit', unit)
+      .pipe(finalize(() => {
+          notFinished = false;
+          this.spinner.hide();
+        })
+        , map(user => {
+          if (user) {
+            this.userService.updateCurrentUser(user, true);
+          }
+          return user;
+        })
+      );
+  }
+
   createUnitTypesList(list: Array<UnitType>) {
     let notFinished = true;
     setTimeout(() => {
@@ -88,26 +130,4 @@ export class ParkService {
       }));
   }
 
-
-// {
-//   var bytes = [];
-//   var fileReader = new FileReader();
-//   fileReader.onload = function (e) {
-//     var naveen = fileReader.result;
-//     for (var i = 0; i < naveen.length; ++i) {
-//       bytes.push(naveen.charCodeAt(i));
-//       bytes.push(0);
-//     }
-//     console.log('bytes', bytes);
-//     $scope.call(bytes);
-//   };
-//   fileReader.onerror = function (err) {
-//     console.log(err);
-//   };
-//   fileReader.readAsBinaryString(file);
-//
-//   $scope.call = function (bytes) {
-//     $scope.image = bytes;
-//   };
-// }
 }

@@ -121,9 +121,9 @@ export class MainNavComponent implements OnInit, OnDestroy {
     }
     this.setPointMode = true;
     this.mapService.map.getCanvas().style.cursor = 'auto';
-    this.isHandset$.pipe(untilDestroyed(this)).subscribe(isHandset => {
+    this.isHandset$.pipe(untilDestroyed(this), first()).subscribe(isHandset => {
       this.snackBarService.success(
-        unit ? ('Укажите на карте местоположение еденицы техники' +
+        unit ? ('Укажите на карте местоположение единицы техники' +
           (isHandset ? '' : ', или нажмите "Escape" для выхода.'))
           : ('Укажите на карте местоположение парка техники'
           + (isHandset ? '' : ', или нажмите "Escape" для выхода.')), null, 100000);
@@ -133,9 +133,9 @@ export class MainNavComponent implements OnInit, OnDestroy {
       this.setPointMode = false;
       this.snackBarService.close();
       this.mapService.map.getCanvas().style.cursor = '';
-      this.sidenavService.openLeft();
+      // this.sidenavService.openLeft();
       if (openCreateUnitDialog) {
-        this.openUnitCreateDialog(unit);
+        this.openUnitCreateDialog(unit, 3);
       }
     }), untilDestroyed(this))
       .subscribe(point => {
@@ -157,7 +157,7 @@ export class MainNavComponent implements OnInit, OnDestroy {
       });
   }
 
-  openUnitCreateDialog(unit?: Unit): void {
+  openUnitCreateDialog(unit?: Unit, stepNum?: number): void {
     if (!this.currentUser.location) {
       this.setLocation(true);
     } else {
@@ -165,7 +165,8 @@ export class MainNavComponent implements OnInit, OnDestroy {
       const dialogRef = this.dialog.open(UnitCreateDialogComponent, {
         maxHeight: '100vh',
         maxWidth: '100vw',
-        data: {unit: unit}
+        backdropClass: 'leanerBack',
+        data: {unit: unit, stepNum}
       });
       dialogRef.afterClosed().pipe(untilDestroyed(this)).subscribe(result => {
         if (result) {
@@ -181,6 +182,11 @@ export class MainNavComponent implements OnInit, OnDestroy {
       maxHeight: '100vh',
       maxWidth: '100vw'
     });
+    // dialogRef.afterClosed().pipe(untilDestroyed(this)).subscribe(result => {
+    //   if (result) {
+    //     this.setLocation(true, result);
+    //   }
+    // });
   }
 
   toggleMenu(hasBackdrop?: boolean) {
@@ -203,6 +209,11 @@ export class MainNavComponent implements OnInit, OnDestroy {
     this.sidenavService.closeRight();
     this.hasBackdrop = false;
     this.leftDrawer.toggle();
+  }
+
+  hideMyUnits() {
+    this.sidenavService.closeAll();
+    this.mapService.hidePrivateUnits();
   }
 
 }

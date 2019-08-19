@@ -9,7 +9,7 @@ $astrid-theme: mat-light-theme($astrid-primary, $astrid-accent);
 @include angular-material-theme($astrid-theme);
 
 .snack-bar-info {
-  background-color: limegreen;
+  background-color: #32cd32;
   color: mat-color($astrid-primary);
   position: relative;
   top: 70px;
