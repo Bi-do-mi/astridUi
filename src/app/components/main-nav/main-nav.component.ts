@@ -1,4 +1,4 @@
-import {Component, HostListener, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {Component, EventEmitter, HostListener, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
 import {BreakpointObserver, Breakpoints} from '@angular/cdk/layout';
 import {Observable} from 'rxjs';
 import {filter, finalize, first, map} from 'rxjs/operators';
@@ -17,6 +17,7 @@ import {UnitCreateDialogComponent} from '../unit-create-dialog/unit-create-dialo
 import {UnitsListTableComponent} from '../units-list/units-list-table.component';
 import {Unit} from '../../_model/Unit';
 import {UnitsMainListDialogComponent} from '../units-main-list-dialog/units-main-list-dialog.component';
+import {SetLocationCallService} from '../../_services/set-location-call.service';
 
 @Component({
   selector: 'app-main-nav',
@@ -47,7 +48,8 @@ export class MainNavComponent implements OnInit, OnDestroy {
               public mapService: MapService,
               private parkService: ParkService,
               private snackBarService: SnackBarService,
-              private dialog: MatDialog) {
+              private dialog: MatDialog,
+              private setLocationService: SetLocationCallService) {
   }
 
   ngOnInit() {
@@ -76,6 +78,16 @@ export class MainNavComponent implements OnInit, OnDestroy {
     if (localStorage.getItem('unitImages')) {
       localStorage.removeItem('unitImages');
     }
+    this.setLocationService.setLocation
+      .pipe(untilDestroyed(this))
+      .subscribe((data: {
+        openCreateUnitDialog?: boolean,
+        unit?: Unit,
+        stepNum?: number }) => {
+        if (data) {
+          this.setLocation(data.openCreateUnitDialog, data.unit, data.stepNum);
+        }
+      });
   }
 
   ngOnDestroy() {
@@ -135,7 +147,7 @@ export class MainNavComponent implements OnInit, OnDestroy {
       this.mapService.map.getCanvas().style.cursor = '';
       // this.sidenavService.openLeft();
       if (openCreateUnitDialog) {
-        this.openUnitCreateDialog(unit, stepNum );
+        this.openUnitCreateDialog(unit, stepNum);
       }
     }), untilDestroyed(this))
       .subscribe(point => {

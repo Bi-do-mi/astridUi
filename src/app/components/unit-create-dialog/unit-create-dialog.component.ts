@@ -265,7 +265,7 @@ export class UnitCreateDialogComponent implements OnInit, AfterViewInit, OnDestr
                 localStorage.removeItem('unitImages');
               }
               this.dialogRef.close();
-              this.snackbarService.success('Единица техники успешно сохранена',
+              this.snackbarService.success('Единица техники успешно обновлена',
                 'OK', 10000);
             },
             error => {
@@ -319,12 +319,14 @@ export class UnitCreateDialogComponent implements OnInit, AfterViewInit, OnDestr
       .subscribe((imageResized?: File) => {
           const reader: FileReader = new FileReader();
           reader.addEventListener('load', (evnt: any) => {
-            this.data.unit.images.push({
-              filename: this.data.unit.images.length + 1 + imageResized.name.slice(
-                imageResized.name.lastIndexOf('.')),
-              filetype: imageResized.type,
-              value: reader.result.toString().split(',')[1]
-            });
+            if (this.data.unit.images.length < 4) {
+              this.data.unit.images.push({
+                filename: this.data.unit.images.length + 1 + imageResized.name.slice(
+                  imageResized.name.lastIndexOf('.')),
+                filetype: imageResized.type,
+                value: reader.result.toString().split(',')[1]
+              });
+            }
 
             if (this.galleryImages.length < 4) {
               const f: File = evnt.target.result;

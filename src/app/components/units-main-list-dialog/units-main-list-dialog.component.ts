@@ -127,7 +127,7 @@ export class UnitsMainListDialogComponent implements OnInit, OnDestroy {
       maxHeight: '100vh',
       maxWidth: '100vw',
       backdropClass: 'leanerBack',
-      data: {unit: unit, stepNum: 0, editing: true}
+      data: {unit: unit, stepNum: 0}
     });
     dialogRef.afterClosed().pipe(untilDestroyed(this)).subscribe(result => {
       if (result) {
