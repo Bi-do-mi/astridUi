@@ -115,7 +115,7 @@ export class MainNavComponent implements OnInit, OnDestroy {
     }
   }
 
-  setLocation(openCreateUnitDialog?: boolean, unit?: Unit) {
+  setLocation(openCreateUnitDialog?: boolean, unit?: Unit, stepNum?: number) {
     if (this.isHandset$) {
       this.sidenavService.closeAll();
     }
@@ -135,7 +135,7 @@ export class MainNavComponent implements OnInit, OnDestroy {
       this.mapService.map.getCanvas().style.cursor = '';
       // this.sidenavService.openLeft();
       if (openCreateUnitDialog) {
-        this.openUnitCreateDialog(unit, 3);
+        this.openUnitCreateDialog(unit, stepNum );
       }
     }), untilDestroyed(this))
       .subscribe(point => {
@@ -158,21 +158,23 @@ export class MainNavComponent implements OnInit, OnDestroy {
   }
 
   openUnitCreateDialog(unit?: Unit, stepNum?: number): void {
+    unit = unit || new Unit();
     if (!this.currentUser.location) {
-      this.setLocation(true);
+      this.setLocation(true, null, 0);
     } else {
       this.sidenavService.closeAll();
       const dialogRef = this.dialog.open(UnitCreateDialogComponent, {
         maxHeight: '100vh',
         maxWidth: '100vw',
         backdropClass: 'leanerBack',
-        data: {unit: unit, stepNum}
+        data: {unit: unit, stepNum: stepNum}
       });
-      dialogRef.afterClosed().pipe(untilDestroyed(this)).subscribe(result => {
-        if (result) {
-          this.setLocation(true, result);
-        }
-      });
+      dialogRef.afterClosed().pipe(untilDestroyed(this), first())
+        .subscribe((result?: string) => {
+          if (result === 'setLocation') {
+            this.setLocation(true, unit, 3);
+          }
+        });
     }
   }
 
@@ -182,11 +184,11 @@ export class MainNavComponent implements OnInit, OnDestroy {
       maxHeight: '100vh',
       maxWidth: '100vw'
     });
-    // dialogRef.afterClosed().pipe(untilDestroyed(this)).subscribe(result => {
-    //   if (result) {
-    //     this.setLocation(true, result);
-    //   }
-    // });
+    dialogRef.afterClosed().pipe(untilDestroyed(this)).subscribe(unit_ => {
+      if (unit_) {
+        this.openUnitCreateDialog(unit_, 0);
+      }
+    });
   }
 
   toggleMenu(hasBackdrop?: boolean) {

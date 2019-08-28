@@ -27,7 +27,7 @@ import {DynamicFormComponent} from './dynamic-form/dynamic-form.component';
 export class UnitCreateDialogComponent implements OnInit, AfterViewInit, OnDestroy {
 
   currentUser: User;
-  unit = new Unit();
+  // unit = new Unit();
   loading = false;
   submitted = false;
   selectForm: FormGroup;
@@ -53,8 +53,7 @@ export class UnitCreateDialogComponent implements OnInit, AfterViewInit, OnDestr
     private ngxPicaService: NgxPicaService,
     @Inject(MAT_DIALOG_DATA) public data: {
       unit: Unit,
-      stepNum?: number,
-      editing?: boolean
+      stepNum?: number
     },
     private mapService: MapService,
     private questionCtrlService: QuestionControlService,
@@ -65,13 +64,15 @@ export class UnitCreateDialogComponent implements OnInit, AfterViewInit, OnDestr
 
   ngAfterViewInit() {
     setTimeout(() => {
-      if (this.data.stepNum) {
+      if (this.data.stepNum !== undefined) {
         this.stepper.selectedIndex = this.data.stepNum;
+        // console.log('Triggered if (this.data.stepNum)');
       }
     }, 1000);
     this.questionService.unitOptions.pipe(untilDestroyed(this))
       .subscribe(options => {
         this.unitOptions = options;
+        // console.log('this.unitOptions: ' + JSON.stringify(this.unitOptions));
       });
     this.questionCtrlService.formGroup.pipe(untilDestroyed(this))
       .subscribe(optForm => {
@@ -93,22 +94,22 @@ export class UnitCreateDialogComponent implements OnInit, AfterViewInit, OnDestr
     });
     this.parkService.getJSONfromFile(true).pipe(first(), untilDestroyed(this)
       , finalize(() => {
-        if (this.data.unit) {
-          this.unit = this.data.unit;
+        this.selectForm.get('typeCtrl').setValue(this.data.unit.type);
+        this.selectForm.get('brandCtrl').setValue(this.data.unit.brand);
+        this.selectForm.get('modelCtrl').setValue(this.data.unit.model);
+        if (this.data.stepNum !== undefined) {
           this.linear = false;
-          this.selectForm.get('typeCtrl').setValue(this.unit.type);
-          this.selectForm.get('brandCtrl').setValue(this.unit.brand);
-          this.selectForm.get('modelCtrl').setValue(this.unit.model);
         }
         if (localStorage.getItem('unitImages')) {
           this.galleryImages = JSON.parse(localStorage.getItem('unitImages'));
-        } else {
-          this.galleryImages = [];
         }
-        if (!this.unit.location) {
-          this.unit.location = this.currentUser.location;
+        // else {
+        //   this.galleryImages = [];
+        // }
+        if (!this.data.unit.location) {
+          this.data.unit.location = this.currentUser.location;
         }
-        this.mapService.getGeocodeByPoint(this.unit.location)
+        this.mapService.getGeocodeByPoint(this.data.unit.location)
           .subscribe((geoCode?: GeoCode) => {
             this.unitGeoCode = geoCode;
           });
@@ -117,9 +118,10 @@ export class UnitCreateDialogComponent implements OnInit, AfterViewInit, OnDestr
       this.unitsList = list;
     });
     this.selectForm = this.formBuilder.group({
-      typeCtrl: ['', Validators.required],
-      brandCtrl: ['', [Validators.pattern('^([а-яА-ЯA-Za-z0-9 ()-./,]*)$'), Validators.required]],
-      modelCtrl: [(this.unit.model ? this.unit.model : ''), [Validators.pattern('^([а-яА-ЯA-Za-z0-9 ()-./,]*)$'),
+      typeCtrl: [(this.data.unit.type ? this.data.unit.type : ''), Validators.required],
+      brandCtrl: [(this.data.unit.brand ? this.data.unit.brand : ''),
+        [Validators.pattern('^([а-яА-ЯA-Za-z0-9 ()-./,]*)$'), Validators.required]],
+      modelCtrl: [(this.data.unit.model ? this.data.unit.model : ''), [Validators.pattern('^([а-яА-ЯA-Za-z0-9 ()-./,]*)$'),
         Validators.required]]
     });
     this.selectForm.get('typeCtrl').valueChanges.subscribe((value: string) => {
@@ -169,7 +171,7 @@ export class UnitCreateDialogComponent implements OnInit, AfterViewInit, OnDestr
 
   onSetPoint(): void {
     localStorage.setItem('unitImages', JSON.stringify(this.galleryImages));
-    this.dialogRef.close(this.unit);
+    this.dialogRef.close('setLocation');
   }
 
   onCancel(): void {
@@ -186,7 +188,7 @@ export class UnitCreateDialogComponent implements OnInit, AfterViewInit, OnDestr
       }
     });
     this.selectForm.get('brandCtrl').setValue('');
-    this.questionService.getQuestions(this.sf.typeCtrl.value, this.unit.options);
+    this.questionService.getQuestions(this.sf.typeCtrl.value, this.data.unit.options);
   }
 
   filterBrandOptions(value: string) {
@@ -225,12 +227,12 @@ export class UnitCreateDialogComponent implements OnInit, AfterViewInit, OnDestr
       console.log('invalid selectForm. return');
       return;
     }
-    this.unit.ouner = this.currentUser.id;
-    this.unit.type = this.selectForm.get('typeCtrl').value;
-    this.unit.brand = this.selectForm.get('brandCtrl').value;
-    this.unit.model = this.selectForm.get('modelCtrl').value;
-    this.unit.enabled = true;
-    this.unit.paid = false;
+    this.data.unit.ouner = this.currentUser.id;
+    this.data.unit.type = this.selectForm.get('typeCtrl').value;
+    this.data.unit.brand = this.selectForm.get('brandCtrl').value;
+    this.data.unit.model = this.selectForm.get('modelCtrl').value;
+    this.data.unit.enabled = true;
+    this.data.unit.paid = false;
   }
 
   onSecondStep() {
@@ -238,11 +240,11 @@ export class UnitCreateDialogComponent implements OnInit, AfterViewInit, OnDestr
       console.log('invalid optionsForm. return');
       return;
     }
-    this.unit.options.splice(0);
+    this.data.unit.options.splice(0);
     this.unitOptions.forEach(op => {
       if (this.optForm.get(op.key) && this.optForm.get(op.key).value) {
         op.value = this.optForm.get(op.key).value;
-        this.unit.options.push(op);
+        this.data.unit.options.push(op);
       }
     });
     // this.unit.options.forEach(o => {
@@ -253,25 +255,29 @@ export class UnitCreateDialogComponent implements OnInit, AfterViewInit, OnDestr
   onFourth() {
     this.submitted = true;
     this.loading = true;
-    if (this.data.editing) {
-      this.parkService.updateUnit(this.unit).pipe(first(),
-        untilDestroyed(this)).subscribe(() => {
-          this.loading = false;
-          if (localStorage.getItem('unitImages')) {
-            localStorage.removeItem('unitImages');
-          }
-          this.dialogRef.close();
-          this.snackbarService.success('Единица техники успешно сохранена',
-            'OK', 10000);
-        },
-        error => {
-          this.loading = false;
-          console.log(error);
-          this.dialogRef.close();
-          this.snackbarService.error('Что-то пошло не так', 'OK');
-        });
+    if (this.currentUser.units.includes(this.data.unit)) {
+      this.currentUser.units.forEach(u => {
+        if (u.id === this.data.unit.id) {
+          this.parkService.updateUnit(this.data.unit).pipe(first(),
+            untilDestroyed(this)).subscribe(() => {
+              this.loading = false;
+              if (localStorage.getItem('unitImages')) {
+                localStorage.removeItem('unitImages');
+              }
+              this.dialogRef.close();
+              this.snackbarService.success('Единица техники успешно сохранена',
+                'OK', 10000);
+            },
+            error => {
+              this.loading = false;
+              console.log(error);
+              this.onCancel();
+              this.snackbarService.error('Что-то пошло не так', 'OK');
+            });
+        }
+      });
     } else {
-      this.parkService.createUnit(this.unit).pipe(first(),
+      this.parkService.createUnit(this.data.unit).pipe(first(),
         untilDestroyed(this)).subscribe(() => {
           this.loading = false;
           if (localStorage.getItem('unitImages')) {
@@ -284,7 +290,7 @@ export class UnitCreateDialogComponent implements OnInit, AfterViewInit, OnDestr
         error => {
           this.loading = false;
           console.log(error);
-          this.dialogRef.close();
+          this.onCancel();
           this.snackbarService.error('Что-то пошло не так', 'OK');
         });
     }
@@ -313,20 +319,12 @@ export class UnitCreateDialogComponent implements OnInit, AfterViewInit, OnDestr
       .subscribe((imageResized?: File) => {
           const reader: FileReader = new FileReader();
           reader.addEventListener('load', (evnt: any) => {
-            console.log('unit.images.length: ' + this.unit.images.length);
-            this.unit.images.push({
-              filename: this.unit.images.length + 1 + imageResized.name.slice(
+            this.data.unit.images.push({
+              filename: this.data.unit.images.length + 1 + imageResized.name.slice(
                 imageResized.name.lastIndexOf('.')),
               filetype: imageResized.type,
               value: reader.result.toString().split(',')[1]
             });
-
-            this.galleryImages.forEach(i => {
-              console.log(i);
-            });
-            console.log('gallery size: ' + this.galleryImages.length);
-            console.log('this.unit.images.length: ' + this.unit.images.length);
-            console.log('data.unit.images: ' + this.data.unit.images.length);
 
             if (this.galleryImages.length < 4) {
               const f: File = evnt.target.result;
@@ -357,6 +355,6 @@ export class UnitCreateDialogComponent implements OnInit, AfterViewInit, OnDestr
 
   deleteImage(ind: number) {
     this.galleryImages.splice(ind, 1);
-    this.unit.images.splice(ind, 1);
+    this.data.unit.images.splice(ind, 1);
   }
 }

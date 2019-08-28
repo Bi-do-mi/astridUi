@@ -13,7 +13,7 @@ import {untilDestroyed} from 'ngx-take-until-destroy';
 })
 export class UnitInfoCardDialogComponent implements OnInit, OnDestroy {
   unit = new Unit();
-  image: NgxGalleryImage[] = [];
+  images: NgxGalleryImage[] = [];
   galleryOptions: NgxGalleryOptions[];
 
 
@@ -27,9 +27,9 @@ export class UnitInfoCardDialogComponent implements OnInit, OnDestroy {
     this.dialogRef.disableClose = true;
     this.unit = this.data.unit;
     if (this.data.unit.images.length > 0) {
-      this.image = this.data.image;
+      this.images = this.data.image;
     } else {
-      this.image.push({
+      this.images.push({
         small: 'assets/pics/unit_pic_spacer-600x400.png',
         medium: 'assets/pics/unit_pic_spacer-600x400.png',
         big: 'assets/pics/unit_pic_spacer-600x400.png'
@@ -73,7 +73,7 @@ export class UnitInfoCardDialogComponent implements OnInit, OnDestroy {
 
   onEdit() {
     if (this.data.unit.images.length > 0) {
-      localStorage.setItem('unitImages', JSON.stringify(this.image));
+      localStorage.setItem('unitImages', JSON.stringify(this.images));
     }
     this.dialogRef.close(this.unit);
   }

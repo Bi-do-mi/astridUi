@@ -61,6 +61,8 @@ export class DynamicFormComponent implements OnInit, OnDestroy {
         this.optionsForm = fg;
         this.cdr.detectChanges();
       });
+    // console.log('dynamic form ngIf - optionsForm: ' + JSON.stringify(this.optionsForm));
+    // console.log('dynamic form ngIf - selectExtraCtrl: ' + JSON.stringify(this.selectExtraCtrl));
   }
 
   addOption(val: string) {

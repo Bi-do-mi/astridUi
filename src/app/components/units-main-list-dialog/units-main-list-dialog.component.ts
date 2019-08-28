@@ -43,7 +43,8 @@ export class UnitsMainListDialogComponent implements OnInit, OnDestroy {
       });
     this.dataSource = new UnitDataSource(
       this.paginator, this.sort, this.userService);
-    this.userService.currentUserUnits.subscribe(units => {
+    this.userService.currentUserUnits.pipe(untilDestroyed(this))
+      .subscribe(units => {
       this.galleryImagesMap = new Map();
       units.forEach(u => {
         const galleryImages: NgxGalleryImage[] = [];
@@ -103,8 +104,8 @@ export class UnitsMainListDialogComponent implements OnInit, OnDestroy {
     this.mapServ.flyTo(unit.location);
   }
 
-  onCancel(): void {
-    this.dialogRef.close();
+  onCancel(unit?: Unit): void {
+    this.dialogRef.close(unit);
   }
 
   openUnitInfoCardDialog(unit: Unit) {
@@ -114,9 +115,9 @@ export class UnitsMainListDialogComponent implements OnInit, OnDestroy {
       backdropClass: 'leanerBack',
       data: {unit, image: this.galleryImagesMap.get(unit.id)}
     });
-    unitInfoDialogRef.afterClosed().pipe(untilDestroyed(this)).subscribe(result => {
-      if (result) {
-        this.openUnitCreateDialog(result);
+    unitInfoDialogRef.afterClosed().pipe(untilDestroyed(this)).subscribe(unit_ => {
+      if (unit_) {
+        this.onCancel(unit_);
       }
     });
   }

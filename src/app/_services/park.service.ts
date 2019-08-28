@@ -54,6 +54,7 @@ export class ParkService {
   }
 
   createUnit(unit: Unit) {
+    // console.log('createUnit unit: ' + JSON.stringify(unit));
     let notFinished = true;
     setTimeout(() => {
       if (notFinished) {
