@@ -52,16 +52,24 @@
             </g>
           </svg>
         </div>
-        <!--is active-->
+        <!--is visible-->
         <div fxLayout="column" fxLayoutAlign="center">
-          <svg class="ml-2" *ngIf="!unit.enabled" height="12" width="12"
-               matTooltip="не виден арендаторам" tabindex="-1" matTooltipPosition="above">
-            <circle cx="6" cy="6" r="6" fill="rgb(150,150,150)"></circle>
-          </svg>
-          <svg class="ml-2" *ngIf="unit.enabled" height="12" width="12"
-               matTooltip="виден арендаторам" tabindex="-1" matTooltipPosition="above">
-            <circle cx="6" cy="6" r="6" fill="rgb(50,205,50)"></circle>
-          </svg>
+          <!--<svg class="ml-2" *ngIf="!unit.enabled" height="12" width="12"-->
+               <!--matTooltip="не виден арендаторам" tabindex="-1" matTooltipPosition="above">-->
+            <!--<circle cx="6" cy="6" r="6" fill="rgb(150,150,150)"></circle>-->
+          <!--</svg>-->
+          <!--<svg class="ml-2" *ngIf="unit.enabled" height="12" width="12"-->
+               <!--matTooltip="виден арендаторам" tabindex="-1" matTooltipPosition="above">-->
+            <!--<circle cx="6" cy="6" r="6" fill="rgb(50,205,50)"></circle>-->
+          <!--</svg>-->
+          <mat-icon class="ml-2" *ngIf="!unit.enabled"
+                    matTooltip="не виден арендаторам" tabindex="-1"
+                    matTooltipPosition="above">visibility_off
+          </mat-icon>
+          <mat-icon class="ml-2" *ngIf="unit.enabled"
+                    matTooltip="виден арендаторам" tabindex="-1"
+                    matTooltipPosition="above">visibility
+          </mat-icon>
         </div>
         <!--location-->
         <div fxLayout="column" fxLayoutAlign="center">

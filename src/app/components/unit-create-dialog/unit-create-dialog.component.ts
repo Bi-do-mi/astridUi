@@ -267,6 +267,8 @@ export class UnitCreateDialogComponent implements OnInit, AfterViewInit, OnDestr
               this.dialogRef.close();
               this.snackbarService.success('Единица техники успешно обновлена',
                 'OK', 10000);
+              this.mapService.flyTo(this.data.unit.location);
+              this.mapService.markerIndication(this.data.unit);
             },
             error => {
               this.loading = false;
@@ -286,6 +288,8 @@ export class UnitCreateDialogComponent implements OnInit, AfterViewInit, OnDestr
           this.dialogRef.close();
           this.snackbarService.success('Единица техники успешно создана',
             'OK', 10000);
+          this.mapService.flyTo(this.data.unit.location);
+          this.mapService.markerIndication(this.data.unit);
         },
         error => {
           this.loading = false;
@@ -359,4 +363,11 @@ export class UnitCreateDialogComponent implements OnInit, AfterViewInit, OnDestr
     this.galleryImages.splice(ind, 1);
     this.data.unit.images.splice(ind, 1);
   }
+  onParkUnit () {
+  this.data.unit.location = this.currentUser.location;
+    this.mapService.getGeocodeByPoint(this.data.unit.location)
+      .subscribe((geoCode?: GeoCode) => {
+        this.unitGeoCode = geoCode;
+      });
+}
 }

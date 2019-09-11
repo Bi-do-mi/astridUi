@@ -9,9 +9,10 @@ import {SnackBarService} from './snack-bar.service';
 import {untilDestroyed} from 'ngx-take-until-destroy';
 import {FeatureCollection, GeoJson} from '../_model/MarkerSourceModel';
 import {UserService} from './user.service';
-import {first} from 'rxjs/operators';
+import {first, timeout} from 'rxjs/operators';
 import {GeoCode} from '../_model/GeoCode';
 import {SidenavService} from './sidenav.service';
+import {Unit} from '../_model/Unit';
 
 
 @Injectable({
@@ -102,7 +103,7 @@ export class MapService implements OnInit, OnDestroy {
           this.map.on('movestart', (event) => {
             if ((this.privateMarkers.length > 0 || this.userMarker) && this.isPopupOpened) {
               this.privateMarkers.forEach(m => {
-                if (m.getPopup().isOpen()) {
+                if (m.getPopup() && m.getPopup().isOpen()) {
                   m.togglePopup();
                 }
               });
@@ -159,15 +160,53 @@ export class MapService implements OnInit, OnDestroy {
                       innerCircle.className = 'private_unit_marker_in';
                       outerCircle.appendChild(innerCircle);
 
+                      // adding mouseenter listener
+                      let timer: any;
+                      outerCircle.addEventListener('mouseenter',
+                        () => {
+                          if (!unitMarker.getPopup()) {
+                            unitMarker.setPopup(popup.setHTML(
+                              '<div fxLayout="row" fxLayoutAlign="center center">\n' +
+                              '<img src=data:image/jpg;base64,' +
+                              (unit.images[0] ? unit.images[0].value : 'assets/pics/unit_pic_spacer-500x333.png')
+                              + ' width="80">\n' +
+                              '<p>' + unit.model + '</p>\n' +
+                              '</div>')
+                              .on('open', e => {
+                                this.isPopupOpened = true;
+                              }));
+                          }
+                          timer = setTimeout(() => {
+                            if (!unitMarker.getPopup().isOpen()) {
+                              unitMarker.togglePopup();
+                            }
+                          }, 500);
+                        });
+
+                      // adding mouseleave listener
+                      outerCircle.addEventListener('mouseleave',
+                        function () {
+                          if (!unitMarker.getPopup().isOpen()) {
+                            clearTimeout(timer);
+                          }
+                          if (unitMarker.getPopup().isOpen()) {
+                            setTimeout(() => {
+                              clearTimeout(timer);
+                              unitMarker.togglePopup();
+                            }, 500);
+                          }
+                        });
+
                       const unitMarker = new Marker(outerCircle);
                       unitMarker.setLngLat([
                         unit.location.geometry.coordinates[0],
                         unit.location.geometry.coordinates[1]
-                      ]).setPopup(popup.setText(unitMarker.getLngLat().lng
-                        + ', ' + unitMarker.getLngLat().lat));
-                      unitMarker.getPopup().on('open', e => {
-                        this.isPopupOpened = true;
-                      });
+                      ]);
+                      // .setPopup(
+                      // popup.setText(unitMarker.getLngLat().lng
+                      // + ', ' + unitMarker.getLngLat().lat)
+                      // );
+
                       this.privateMarkers.push(unitMarker);
                     });
                     this.hidePrivateUnits(false);
@@ -181,6 +220,10 @@ export class MapService implements OnInit, OnDestroy {
         }, 10);
       }
     });
+  }
+
+  prnt() {
+    console.log('ldklsbnlsb');
   }
 
   private navigatorCheck() {
@@ -333,6 +376,41 @@ export class MapService implements OnInit, OnDestroy {
       }
     });
     // this.drawLines();
+  }
+
+
+  markerIndication(unit: Unit) {
+    if (this.userMarker.getLngLat().lng === unit.location.geometry.coordinates[0]) {
+      if (this.userMarker.getLngLat().lat === unit.location.geometry.coordinates[1]) {
+        let pulsar = true;
+        const markerTimer = setInterval(() => {
+          this.userMarker.getElement().hidden = pulsar;
+          pulsar = !pulsar;
+        }, 500);
+        setTimeout(() => {
+          clearInterval(markerTimer);
+          this.userMarker.getElement().hidden = false;
+        }, 6000);
+
+      }
+    } else {
+      this.privateMarkers.forEach(marker => {
+        if (marker.getLngLat().lng === unit.location.geometry.coordinates[0]) {
+          if (marker.getLngLat().lat === unit.location.geometry.coordinates[1]) {
+            let pulsar = true;
+            const markerTimer = setInterval(() => {
+              marker.getElement().hidden = pulsar;
+              pulsar = !pulsar;
+            }, 500);
+            setTimeout(() => {
+              clearInterval(markerTimer);
+              marker.getElement().hidden = false;
+            }, 6000);
+
+          }
+        }
+      });
+    }
   }
 
   // drawLines() {

@@ -138,7 +138,7 @@ export class MainNavComponent implements OnInit, OnDestroy {
         unit ? ('Укажите на карте местоположение единицы техники' +
           (isHandset ? '' : ', или нажмите "Escape" для выхода.'))
           : ('Укажите на карте местоположение парка техники'
-          + (isHandset ? '' : ', или нажмите "Escape" для выхода.')), null, 100000);
+          + (isHandset ? '' : ', или нажмите "Escape" для выхода.')), null, 86400000);
     });
 
     this.mapService.clickedPoint.pipe(first(), finalize(() => {

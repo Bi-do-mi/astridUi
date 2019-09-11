@@ -76,7 +76,8 @@
         <div fxLayout="row" fxLayoutAlign="end">
           <button class="mr-3" mat-button matStepperPrevious [disabled]="loading">Назад</button>
           <button mat-raised-button color="accent" matStepperNext
-                  (click)="onSecondStep()" [disabled]="loading || optForm?.invalid">Далее</button>
+                  (click)="onSecondStep()" [disabled]="loading || optForm?.invalid">Далее
+          </button>
         </div>
       </div>
     </mat-step>
@@ -152,11 +153,25 @@
           </button>
           <p class="m-3">{{(unitGeoCode?.results[0]?.name) + ', ' +
             (unitGeoCode?.results[1]?.name)+'\n'+
-            (unitGeoCode?.results[unitGeoCode?.results.length-1]?.name)}}</p>
+            (unitGeoCode?.results[unitGeoCode?.results.length-1]?.name)}}
+          </p>
         </div>
-        <p class="m-3">Укажите на карте местоположение единицы техники, или пропустите этот шаг. В
+        <p class="m-3" *ngIf="data.unit.location === currentUser.location">
+          Укажите на карте местоположение единицы техники, или пропустите этот шаг. В
           этом
-          случае техника будет локализована в вашем парке.</p>
+          случае техника будет локализована в вашем парке.
+        </p>
+        <div fxLayout="row wrap" fxLayoutAlign="start center"
+             *ngIf="data.unit.location !== currentUser.location">
+          <button class="m-3" mat-fab matTooltip="отогнать в гараж" tabindex="-1"
+                  matTooltipPosition="above" aria-label="Toggle edit unit location to park"
+                  (click)="onParkUnit()">
+            <i class="material-icons">replay</i>
+          </button>
+          <p class="m-3">
+            Отогнать технику в парк.
+          </p>
+        </div>
       </div>
       <div fxLayout="row wrap" fxLayoutAlign="space-between center">
         <div>
