@@ -56,7 +56,7 @@ import {DynamicFormQuestionComponent} from './components/unit-create-dialog/dyna
 import {DynamicFormComponent} from './components/unit-create-dialog/dynamic-form/dynamic-form.component';
 import {UnitsMainListDialogComponent} from './components/units-main-list-dialog/units-main-list-dialog.component';
 import {UnitInfoCardDialogComponent} from './components/unit-info-card-dialog/unit-info-card-dialog.component';
-import { DeleteUnitDialogComponent } from './components/delete-unit-dialog/delete-unit-dialog.component';
+import {DeleteUnitDialogComponent} from './components/delete-unit-dialog/delete-unit-dialog.component';
 
 // import {registerLocaleData} from '@angular/common';
 // import localeRu from '@angular/common/locales/ru';

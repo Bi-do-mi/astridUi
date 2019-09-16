@@ -1,4 +1,4 @@
-import {Injectable, OnDestroy, OnInit} from '@angular/core';
+import {Injectable, OnDestroy, OnInit, Renderer2, RendererFactory2} from '@angular/core';
 import * as mapboxgl from 'mapbox-gl';
 import {LngLatBounds, Marker} from 'mapbox-gl';
 import {NGXLogger} from 'ngx-logger';
@@ -9,10 +9,11 @@ import {SnackBarService} from './snack-bar.service';
 import {untilDestroyed} from 'ngx-take-until-destroy';
 import {FeatureCollection, GeoJson} from '../_model/MarkerSourceModel';
 import {UserService} from './user.service';
-import {first, timeout} from 'rxjs/operators';
+import {first} from 'rxjs/operators';
 import {GeoCode} from '../_model/GeoCode';
 import {SidenavService} from './sidenav.service';
 import {Unit} from '../_model/Unit';
+import {OpenUnitInfoService} from './open-unit-info.service';
 
 
 @Injectable({
@@ -40,14 +41,18 @@ export class MapService implements OnInit, OnDestroy {
   userGeoCode: GeoCode;
   public _hidePrivateUnits = false;
   isPopupOpened = false;
+  renderer: Renderer2;
 
 
   constructor(private logger: NGXLogger,
               private userService: UserService,
               private snackBarService: SnackBarService,
               private http: HttpClient,
-              private sidenavService: SidenavService) {
+              private openUnitInfoService: OpenUnitInfoService,
+              private sidenavService: SidenavService,
+              private rendererFactory: RendererFactory2) {
     this.initializeMap();
+    this.renderer = this.rendererFactory.createRenderer(null, null);
   }
 
   ngOnInit() {
@@ -162,16 +167,40 @@ export class MapService implements OnInit, OnDestroy {
 
                       // adding mouseenter listener
                       let timer: any;
+                      let isMouseOnPopup = false;
                       outerCircle.addEventListener('mouseenter',
                         () => {
                           if (!unitMarker.getPopup()) {
-                            unitMarker.setPopup(popup.setHTML(
-                              '<div fxLayout="row" fxLayoutAlign="center center">\n' +
+                            // adding popups mouseenter listener
+                            const div = this.renderer.createElement('div');
+                            this.renderer.setStyle(div, 'cursor', 'pointer');
+                            div.addEventListener('mouseenter', () => isMouseOnPopup = true);
+
+                            // adding popups mouselive listener
+                            div.addEventListener('mouseleave', () => {
+                              isMouseOnPopup = false;
+                              if (unitMarker.getPopup().isOpen()) {
+                                unitMarker.togglePopup();
+                              }
+                            });
+                            // adding popups click listener
+                            div.addEventListener('click', () => {
+                              isMouseOnPopup = false;
+                              if (unitMarker.getPopup().isOpen()) {
+                                unitMarker.togglePopup();
+                              }
+                              this.openUnitInfoCardDialog(unit);
+                            });
+                            div.innerHTML =
+                              '<div fxLayout="row"><div>\n' +
                               '<img src=data:image/jpg;base64,' +
                               (unit.images[0] ? unit.images[0].value : 'assets/pics/unit_pic_spacer-500x333.png')
                               + ' width="80">\n' +
+                              '</div>\n' +
+                              '<div>\n' +
                               '<p>' + unit.model + '</p>\n' +
-                              '</div>')
+                              '</div></div>';
+                            unitMarker.setPopup(popup.setDOMContent(div)
                               .on('open', e => {
                                 this.isPopupOpened = true;
                               }));
@@ -185,14 +214,16 @@ export class MapService implements OnInit, OnDestroy {
 
                       // adding mouseleave listener
                       outerCircle.addEventListener('mouseleave',
-                        function () {
+                        () => {
                           if (!unitMarker.getPopup().isOpen()) {
                             clearTimeout(timer);
                           }
                           if (unitMarker.getPopup().isOpen()) {
                             setTimeout(() => {
                               clearTimeout(timer);
-                              unitMarker.togglePopup();
+                              if (!isMouseOnPopup) {
+                                unitMarker.togglePopup();
+                              }
                             }, 500);
                           }
                         });
@@ -222,9 +253,9 @@ export class MapService implements OnInit, OnDestroy {
     });
   }
 
-  prnt() {
-    console.log('ldklsbnlsb');
-  }
+  // prnt() {
+  //   console.log('ldklsbnlsb');
+  // }
 
   private navigatorCheck() {
     if (navigator.geolocation && this._isFirstLoading) {
@@ -413,27 +444,9 @@ export class MapService implements OnInit, OnDestroy {
     }
   }
 
-  // drawLines() {
-  //   const featureCollection = new FeatureCollection(new Array<GeoJson>());
-  //   const startPoint = this.currentUser.location.geometry.coordinates;
-  //   this.privateMarkers.forEach(marker => {
-  //     const line = new GeoJson([startPoint, marker.getLngLat().toArray()]);
-  //     line.type = 'LineString';
-  //     featureCollection.features.push(line);
-  //   });
-  //   // const source: AnySourceData = JSON.stringify(featureCollection);
-  //   this.map.addSource('lines_to_units', featureCollection);
-  //   this.map.addLayer({
-  //     'id': 'lines_to_units',
-  //     'type': 'line',
-  //
-  //     'source': {
-  //       'type': 'geojson',
-  //       'data': source
-  //     }
-  //   });
-  //   console.log(JSON.stringify(featureCollection));
-  // }
+  openUnitInfoCardDialog(unit: Unit) {
+    this.openUnitInfoService.open(unit);
+  }
 
   ngOnDestroy() {
   }

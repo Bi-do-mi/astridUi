@@ -18,6 +18,9 @@ import {UnitsListTableComponent} from '../units-list/units-list-table.component'
 import {Unit} from '../../_model/Unit';
 import {UnitsMainListDialogComponent} from '../units-main-list-dialog/units-main-list-dialog.component';
 import {SetLocationCallService} from '../../_services/set-location-call.service';
+import {OpenUnitInfoService} from '../../_services/open-unit-info.service';
+import {NgxGalleryImage} from 'ngx-gallery';
+import {UnitInfoCardDialogComponent} from '../unit-info-card-dialog/unit-info-card-dialog.component';
 
 @Component({
   selector: 'app-main-nav',
@@ -49,7 +52,9 @@ export class MainNavComponent implements OnInit, OnDestroy {
               private parkService: ParkService,
               private snackBarService: SnackBarService,
               private dialog: MatDialog,
-              private setLocationService: SetLocationCallService) {
+              private unitInfoDialog: MatDialog,
+              private setLocationService: SetLocationCallService,
+              private openUnitInfoService: OpenUnitInfoService) {
   }
 
   ngOnInit() {
@@ -83,10 +88,15 @@ export class MainNavComponent implements OnInit, OnDestroy {
       .subscribe((data: {
         openCreateUnitDialog?: boolean,
         unit?: Unit,
-        stepNum?: number }) => {
+        stepNum?: number
+      }) => {
         if (data) {
           this.setLocation(data.openCreateUnitDialog, data.unit, data.stepNum);
         }
+      });
+    this.openUnitInfoService.openUnitInfo.pipe(untilDestroyed(this), first())
+      .subscribe((data: {unit: Unit, gallery: NgxGalleryImage[]}) => {
+        this.openUnitInfoCardDialog(data.unit, data.gallery);
       });
   }
 
@@ -199,6 +209,20 @@ export class MainNavComponent implements OnInit, OnDestroy {
     dialogRef.afterClosed().pipe(untilDestroyed(this)).subscribe(unit_ => {
       if (unit_) {
         this.openUnitCreateDialog(unit_, 0);
+      }
+    });
+  }
+
+  openUnitInfoCardDialog(unit: Unit, gallery: NgxGalleryImage[]) {
+    const unitInfoDialogRef = this.unitInfoDialog.open(UnitInfoCardDialogComponent, {
+      maxHeight: '100vh',
+      maxWidth: '100vw',
+      backdropClass: 'leanerBack',
+      data: {unit: unit, image: gallery}
+    });
+    unitInfoDialogRef.afterClosed().pipe(untilDestroyed(this)).subscribe(unit_ => {
+      if (unit_) {
+        this.openUnitCreateDialog(unit_);
       }
     });
   }
