@@ -9,7 +9,7 @@
           <h6><b>{{unit.model}}</b></h6>
           <div>&bull;Id: {{unit.id}}</div>
           <div>&bull;Тип: {{unit.type}}</div>
-          <div>&bull;Виден арендаторам: {{unit.enabled}}</div>
+          <div>&bull;Виден другим пользователям: {{unit.enabled}}</div>
           <div>&bull;Оплачен: {{unit.paid ? 'да' : 'нет'}}</div>
           <div>&bull;Дата создания: {{(unit.createdOn !==null) ?
             (getDate(unit.createdOn) | date: 'dd-MM-yyyy'): '-'}}

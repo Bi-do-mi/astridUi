@@ -19,22 +19,26 @@
           <div fxLayout="column" fxLayoutAlign="start center">
             <img height="150px"
                  src="assets/pics/buldozer_.jpg" alt="Photo of a machins"/>
+            <div>
+              <span class="h6">{{currentUser.name}}</span>
+            </div>
             <div fxLayout="row" fxLayoutAlign="start">
-              <button #editParkLocation [disabled]="!mapService.userGeoCode"
-                      type="button" matTooltip="редактировать" tabindex="-1"
-                      matTooltipPosition="above" aria-label="Toggle edit park location"
-                      mat-icon-button (click)="setLocation()">
-                <mat-icon aria-label="Edit toggle icon">location_on</mat-icon>
-              </button>
               <span fxLayout="column" fxLayoutAlign="center stretch" *ngIf="currentUser?.location">
             {{mapService.userGeoCode?.results[0]?.name}}</span>
               <span fxLayout="column" fxLayoutAlign="center stretch" *ngIf="!currentUser?.location">
             не указано</span>
+              <button #editParkLocation [disabled]="!mapService.userGeoCode"
+                      type="button" matTooltip="редактировать местоположение" tabindex="-1"
+                      matTooltipPosition="above" aria-label="Toggle edit park location"
+                      mat-icon-button (click)="setLocation()">
+                <mat-icon aria-label="Edit toggle icon">location_on</mat-icon>
+              </button>
             </div>
           </div>
           <div fxLayout="row" fxLayoutAlign="center start">
             <button mat-raised-button="" tabindex="-1" (click)="openUnitCreateDialog()"
-                    color="accent">Добавить
+                    color="accent" matTooltip="добавить технику"
+                    matTooltipPosition="above">Добавить
             </button>
           </div>
         </div>

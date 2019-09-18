@@ -30,9 +30,18 @@ html, body {
   background-color: #212121;
   position: relative; }
 
-.private_unit_marker_in {
+.private_unit_marker_in_active {
   border-radius: 50%;
   background-color: #fbc02d;
+  top: 15%;
+  left: 15%;
+  width: 70%;
+  height: 70%;
+  position: relative; }
+
+.private_unit_marker_in_passive {
+  border-radius: 50%;
+  background-color: #c2c3c2;
   top: 15%;
   left: 15%;
   width: 70%;

@@ -14,6 +14,7 @@ import {GeoCode} from '../_model/GeoCode';
 import {SidenavService} from './sidenav.service';
 import {Unit} from '../_model/Unit';
 import {OpenUnitInfoService} from './open-unit-info.service';
+import * as turf from '@turf/turf';
 
 
 @Injectable({
@@ -28,8 +29,6 @@ export class MapService implements OnInit, OnDestroy {
     lat: number;
     zoom: number;
   };
-  markers: any;
-  features: any;
   private _isFirstLoading: boolean;
   private _mapTemplateId$ = new BehaviorSubject<string>('');
   currentMapId = this._mapTemplateId$.asObservable();
@@ -59,8 +58,6 @@ export class MapService implements OnInit, OnDestroy {
   }
 
   private initializeMap() {
-    this.markers = new Array<mapboxgl.Marker>();
-    this.features = this.getMarkers().pipe(untilDestroyed(this));
     this.buildMap();
   }
 
@@ -162,7 +159,9 @@ export class MapService implements OnInit, OnDestroy {
                       const outerCircle = document.createElement('div');
                       outerCircle.className = 'private_unit_marker_out';
                       const innerCircle = document.createElement('div');
-                      innerCircle.className = 'private_unit_marker_in';
+                      (unit.paid && unit.enabled) ?
+                        innerCircle.className = 'private_unit_marker_in_active' :
+                        innerCircle.className = 'private_unit_marker_in_passive';
                       outerCircle.appendChild(innerCircle);
 
                       // adding mouseenter listener
@@ -192,12 +191,12 @@ export class MapService implements OnInit, OnDestroy {
                               this.openUnitInfoCardDialog(unit);
                             });
                             div.innerHTML =
-                              '<div fxLayout="row"><div>\n' +
-                              '<img src=data:image/jpg;base64,' +
-                              (unit.images[0] ? unit.images[0].value : 'assets/pics/unit_pic_spacer-500x333.png')
-                              + ' width="80">\n' +
-                              '</div>\n' +
                               '<div>\n' +
+                              '<img src=' +
+                              (unit.images[0] ? 'data:image/jpg;base64,' + unit.images[0].value
+                                : 'assets/pics/unit_pic_spacer-500x333.png')
+                              + ' width="80">\n' +
+                              '<div style="display: inline-block">\n' +
                               '<p>' + unit.model + '</p>\n' +
                               '</div></div>';
                             unitMarker.setPopup(popup.setDOMContent(div)
@@ -333,11 +332,6 @@ export class MapService implements OnInit, OnDestroy {
     }
   }
 
-  getMarkers(): Observable<any> {
-    // this.logger.info('getMarkers triggered!');
-    return this.http.get<any>('rest/users/all');
-  }
-
   flyTo(data: GeoJson) {
     this.map.flyTo({
       center: [data.geometry.coordinates[0], data.geometry.coordinates[1]],
@@ -394,6 +388,7 @@ export class MapService implements OnInit, OnDestroy {
         bounds.setNorthEast([longitude, latitude]);
       }
     }
+    console.log(bounds);
     return bounds;
   }
 
