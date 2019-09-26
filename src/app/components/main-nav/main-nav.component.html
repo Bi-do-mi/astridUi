@@ -14,10 +14,12 @@
 
     <!--раздел парка техники-->
     <div fxLayout="column" *ngIf="parkContent && uService.authenticated">
-      <div class="ml-2 mr-2" fxLayout="row">
+      <div class="ml-1 mr-0" fxLayout="row">
         <div fxLayout="column" fxFlex>
           <div fxLayout="column" fxLayoutAlign="start center">
-            <img height="150px"
+            <img class="bordered-user-image mt-2" *ngIf="currentUser.image"
+                 [src]="'data:image/jpg;base64,' + currentUser.image?.value">
+            <img height="150px" *ngIf="!currentUser.image"
                  src="assets/pics/buldozer_.jpg" alt="Photo of a machins"/>
             <div>
               <span class="h6">{{currentUser.name}}</span>
@@ -42,20 +44,24 @@
             </button>
           </div>
         </div>
-        <div fxLayout="column" fxLayoutAlign="end none">
+        <div fxLayout="column" fxLayoutAlign="end end">
+          <mat-icon matTooltip="ркдактировать данные аккаунта" tabindex="-1"
+                    matTooltipPosition="above" (click)="openUserOptionsDialog()"
+                    class="mn-cursor-pointer">edit
+          </mat-icon>
           <mat-icon *ngIf="mapService?.privateMarkers.length > 0 && !mapService._hidePrivateUnits"
                     matTooltip="понорамировать свою технику на карте" tabindex="-1"
                     matTooltipPosition="above" (click)=" mapService.fitBounds(
                     mapService.getBoundingBox(mapService.privateMarkers,
-                    mapService.userMarker))">crop_free
+                    mapService.userMarker))" class="mn-cursor-pointer">crop_free
           </mat-icon>
           <mat-icon *ngIf="mapService?.privateMarkers.length > 0"
                     matTooltip="показать/скрыть свою технику на карте" tabindex="-1"
-                    matTooltipPosition="above" (click)="hideMyUnits()">
+                    matTooltipPosition="above" (click)="hideMyUnits()" class="mn-cursor-pointer">
             {{mapService._hidePrivateUnits ? 'visibility_off' : 'visibility'}}
           </mat-icon>
           <mat-icon *ngIf="mapService?.privateMarkers.length > 0"
-                    matTooltip="открыть список" tabindex="-1"
+                    matTooltip="открыть список" tabindex="-1" class="mn-cursor-pointer"
                     matTooltipPosition="above" (click)="openUnitsMainListDialog()">list
           </mat-icon>
         </div>

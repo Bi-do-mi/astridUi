@@ -317,7 +317,7 @@ export class UnitCreateDialogComponent implements OnInit, AfterViewInit, OnDestr
     }
     this.ngxPicaService.resizeImages(files, 1500, 1000,
       {aspectRatio: {keepAspectRatio: true, forceMinDimensions: true}})
-      .pipe(finalize(() => {
+      .pipe(first(), untilDestroyed(this), finalize(() => {
         this.loading = false;
       }))
       .subscribe((imageResized?: File) => {

@@ -83,15 +83,16 @@ export class UserService implements OnDestroy {
     }, 1000);
     return this.http.put<any>('rest/users/update_user', user)
       .pipe(finalize(() => {
+        // console.log(user.image);
         notFinished = false;
         this.spinner.hide();
       }), map(u => {
         if (u) {
           this.updateCurrentUser(u, true);
           this.authenticated = true;
-          // console.log(JSON.stringify(u));
+          // console.log(user);
+          return u;
         }
-        return;
       }));
   }
 

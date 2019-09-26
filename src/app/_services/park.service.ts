@@ -24,7 +24,7 @@ export class ParkService {
   public getJSONfromFile(fromFile?: boolean) {
     const localUrl = './assets/ParkList/list.json';
     const url = '/rest/units/get_unit_types_list';
-    return this.http.get(fromFile ? localUrl : url).pipe(
+    return this.http.get(fromFile ? localUrl : url).pipe(first(),
       map((data: UnitType[]) => {
         const allText: string = JSON.stringify(data);
         data = JSON.parse(allText);
@@ -62,7 +62,7 @@ export class ParkService {
       }
     }, 1000);
     return this.http.post<any>('rest/units/create_unit', unit)
-      .pipe(finalize(() => {
+      .pipe(first(), finalize(() => {
           notFinished = false;
           this.spinner.hide();
         })
@@ -83,7 +83,7 @@ export class ParkService {
       }
     }, 1000);
     return this.http.post<any>('rest/units/update_unit', unit)
-      .pipe(finalize(() => {
+      .pipe(first(), finalize(() => {
           notFinished = false;
           this.spinner.hide();
         })
@@ -104,7 +104,7 @@ export class ParkService {
       }
     }, 1000);
     return this.http.post<any>('rest/units/delete_unit', unit)
-      .pipe(finalize(() => {
+      .pipe(first(), finalize(() => {
           notFinished = false;
           this.spinner.hide();
         })
@@ -125,7 +125,7 @@ export class ParkService {
       }
     }, 1000);
     return this.http.post<any>('rest/units/create_unit_types_list', list)
-      .pipe(finalize(() => {
+      .pipe(first(), finalize(() => {
         notFinished = false;
         this.spinner.hide();
       }));

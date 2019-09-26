@@ -1,5 +1,4 @@
 import {GeoJson} from './MarkerSourceModel';
-import {User} from './User';
 import {UnitImage} from './UnitImage';
 import {ZonedDateTime} from 'js-joda';
 import {UnitOptionModel} from '../components/unit-create-dialog/UnitOptions/UnitOptionModel';

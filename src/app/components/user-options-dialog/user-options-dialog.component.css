@@ -6,4 +6,9 @@
   max-width: 500px;
   width: 100%; }
 
+.bordered {
+  max-height: 130px;
+  max-width: 170px;
+  border: 1px solid #212121; }
+
 /*# sourceMappingURL=user-options-dialog.component.css.map */

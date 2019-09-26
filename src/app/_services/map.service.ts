@@ -119,28 +119,16 @@ export class MapService implements OnInit, OnDestroy {
           // load listener
           this.map.on('load', (event) => {
 
-            // Adding popup, user's marker and user's geocode
             this.userService.currentUser.pipe(untilDestroyed(this))
               .subscribe(user => {
                 this.currentUser = user;
+                // Adding popup, user's marker and user's geocode
                 try {
                   if (this.userMarker) {
                     this.userMarker.remove();
                   }
                   if (user.location) {
-                    const popup = new mapboxgl.Popup({offset: 45});
-                    popup.on('open', e => {
-                      this.isPopupOpened = true;
-                    });
-                    const el = document.createElement('div');
-                    el.className = 'office_marker';
-                    this.userMarker = new Marker(el, {offset: [0, -23]});
-                    this.userMarker.setLngLat([
-                      this.currentUser.location.geometry.coordinates[0],
-                      this.currentUser.location.geometry.coordinates[1]])
-                      .setPopup(popup.setText(String(this.userMarker.getLngLat().lng)
-                        + ', ' + this.userMarker.getLngLat().lat))
-                      .addTo(this.map);
+                    this.createUserMarker(user);
                     this.getGeocodeByPoint(this.currentUser.location).pipe(first(),
                       untilDestroyed(this)).subscribe((geoCode: GeoCode) => {
                       this.userGeoCode = geoCode;
@@ -149,95 +137,14 @@ export class MapService implements OnInit, OnDestroy {
                 } catch (e) {
                   console.log(e);
                 }
+                // Adding popups to units
                 try {
                   this.hidePrivateUnits(true);
                   this.sidenavService.closeAll();
                   if (user.units && user.units.length > 0) {
                     this.privateMarkers.splice(0);
                     user.units.forEach(unit => {
-                      const popup = new mapboxgl.Popup({offset: 10});
-                      const outerCircle = document.createElement('div');
-                      outerCircle.className = 'private_unit_marker_out';
-                      const innerCircle = document.createElement('div');
-                      (unit.paid && unit.enabled) ?
-                        innerCircle.className = 'private_unit_marker_in_active' :
-                        innerCircle.className = 'private_unit_marker_in_passive';
-                      outerCircle.appendChild(innerCircle);
-
-                      // adding mouseenter listener
-                      let timer: any;
-                      let isMouseOnPopup = false;
-                      outerCircle.addEventListener('mouseenter',
-                        () => {
-                          if (!unitMarker.getPopup()) {
-                            // adding popups mouseenter listener
-                            const div = this.renderer.createElement('div');
-                            this.renderer.setStyle(div, 'cursor', 'pointer');
-                            div.addEventListener('mouseenter', () => isMouseOnPopup = true);
-
-                            // adding popups mouselive listener
-                            div.addEventListener('mouseleave', () => {
-                              isMouseOnPopup = false;
-                              if (unitMarker.getPopup().isOpen()) {
-                                unitMarker.togglePopup();
-                              }
-                            });
-                            // adding popups click listener
-                            div.addEventListener('click', () => {
-                              isMouseOnPopup = false;
-                              if (unitMarker.getPopup().isOpen()) {
-                                unitMarker.togglePopup();
-                              }
-                              this.openUnitInfoCardDialog(unit);
-                            });
-                            div.innerHTML =
-                              '<div>\n' +
-                              '<img src=' +
-                              (unit.images[0] ? 'data:image/jpg;base64,' + unit.images[0].value
-                                : 'assets/pics/unit_pic_spacer-500x333.png')
-                              + ' width="80">\n' +
-                              '<div style="display: inline-block">\n' +
-                              '<p>' + unit.model + '</p>\n' +
-                              '</div></div>';
-                            unitMarker.setPopup(popup.setDOMContent(div)
-                              .on('open', e => {
-                                this.isPopupOpened = true;
-                              }));
-                          }
-                          timer = setTimeout(() => {
-                            if (!unitMarker.getPopup().isOpen()) {
-                              unitMarker.togglePopup();
-                            }
-                          }, 500);
-                        });
-
-                      // adding mouseleave listener
-                      outerCircle.addEventListener('mouseleave',
-                        () => {
-                          if (!unitMarker.getPopup().isOpen()) {
-                            clearTimeout(timer);
-                          }
-                          if (unitMarker.getPopup().isOpen()) {
-                            setTimeout(() => {
-                              clearTimeout(timer);
-                              if (!isMouseOnPopup) {
-                                unitMarker.togglePopup();
-                              }
-                            }, 500);
-                          }
-                        });
-
-                      const unitMarker = new Marker(outerCircle);
-                      unitMarker.setLngLat([
-                        unit.location.geometry.coordinates[0],
-                        unit.location.geometry.coordinates[1]
-                      ]);
-                      // .setPopup(
-                      // popup.setText(unitMarker.getLngLat().lng
-                      // + ', ' + unitMarker.getLngLat().lat)
-                      // );
-
-                      this.privateMarkers.push(unitMarker);
+                      this.privateMarkers.push(this.createUnitMarker(unit));
                     });
                     this.hidePrivateUnits(false);
                   }
@@ -445,4 +352,100 @@ export class MapService implements OnInit, OnDestroy {
 
   ngOnDestroy() {
   }
+
+  createUnitMarker(unit: Unit) {
+    const popup = new mapboxgl.Popup({offset: 10});
+    const outerCircle = this.renderer.createElement('div');
+    const unitMarker = new Marker(outerCircle);
+    this.renderer.setAttribute(outerCircle, 'class', 'private_unit_marker_out');
+    const innerCircle = this.renderer.createElement('div');
+    (unit.paid && unit.enabled) ?
+      this.renderer.setAttribute(innerCircle, 'class', 'private_unit_marker_in_active') :
+      this.renderer.setAttribute(innerCircle, 'class', 'private_unit_marker_in_passive');
+    outerCircle.appendChild(innerCircle);
+
+    // adding mouseenter listener
+    let timer: any;
+    let isMouseOnPopup = false;
+    outerCircle.addEventListener('mouseenter', () => {
+      if (!unitMarker.getPopup()) {
+        // adding popups mouseenter listener
+        const div = this.renderer.createElement('div');
+        this.renderer.setStyle(div, 'cursor', 'pointer');
+        div.addEventListener('mouseenter', () => isMouseOnPopup = true);
+
+        // adding popups mouselive listener
+        div.addEventListener('mouseleave', () => {
+          isMouseOnPopup = false;
+          if (unitMarker.getPopup().isOpen()) {
+            unitMarker.togglePopup();
+          }
+        });
+        // adding popups click listener
+        div.addEventListener('click', () => {
+          isMouseOnPopup = false;
+          if (unitMarker.getPopup().isOpen()) {
+            unitMarker.togglePopup();
+          }
+          this.openUnitInfoCardDialog(unit);
+        });
+        div.innerHTML =
+          '<div>\n' +
+          '<img src=' +
+          (unit.images[0] ? 'data:image/jpg;base64,' + unit.images[0].value
+            : 'assets/pics/unit_pic_spacer-500x333.png')
+          + ' width="80">\n' +
+          '<div style="display: inline-block">\n' +
+          '<p>' + unit.model + '</p>\n' +
+          '</div></div>';
+        unitMarker.setPopup(popup.setDOMContent(div)
+          .on('open', e => {
+            this.isPopupOpened = true;
+          }));
+      }
+      timer = setTimeout(() => {
+        if (!unitMarker.getPopup().isOpen()) {
+          unitMarker.togglePopup();
+        }
+      }, 500);
+    });
+
+    // adding mouseleave listener
+    outerCircle.addEventListener('mouseleave',
+      () => {
+        if (!unitMarker.getPopup().isOpen()) {
+          clearTimeout(timer);
+        }
+        if (unitMarker.getPopup().isOpen()) {
+          setTimeout(() => {
+            clearTimeout(timer);
+            if (!isMouseOnPopup) {
+              unitMarker.togglePopup();
+            }
+          }, 500);
+        }
+      });
+    unitMarker.setLngLat([
+      unit.location.geometry.coordinates[0],
+      unit.location.geometry.coordinates[1]
+    ]);
+    return unitMarker;
+  }
+
+  createUserMarker(user: User) {
+    const popup = new mapboxgl.Popup({offset: 45});
+    popup.on('open', e => {
+      this.isPopupOpened = true;
+    });
+    const el = this.renderer.createElement('div');
+    this.renderer.setAttribute(el, 'class', 'office_marker');
+    this.userMarker = new Marker(el, {offset: [0, -23]});
+    this.userMarker.setLngLat([
+      this.currentUser.location.geometry.coordinates[0],
+      this.currentUser.location.geometry.coordinates[1]])
+      .setPopup(popup.setText(String(this.userMarker.getLngLat().lng)
+        + ', ' + this.userMarker.getLngLat().lat))
+      .addTo(this.map);
+  }
 }
+
