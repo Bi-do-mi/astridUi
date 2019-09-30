@@ -1,6 +1,6 @@
 import {Injectable, OnDestroy, OnInit, Renderer2, RendererFactory2} from '@angular/core';
 import * as mapboxgl from 'mapbox-gl';
-import {LngLatBounds, Marker} from 'mapbox-gl';
+import {LngLatBounds, Marker, Point} from 'mapbox-gl';
 import {NGXLogger} from 'ngx-logger';
 import {BehaviorSubject, Observable, Subject} from 'rxjs';
 import {HttpClient} from '@angular/common/http';
@@ -354,8 +354,26 @@ export class MapService implements OnInit, OnDestroy {
   }
 
   createUnitMarker(unit: Unit) {
-    const popup = new mapboxgl.Popup({offset: 10});
+    const markerHeight = 50, markerRadius = 10, linearOffset = 25;
+    const popupOffsets = {
+      'top': new Point(0, 40),
+      'top-left': new Point(0, 0),
+      'top-right': new Point(0, 0),
+      'bottom': new Point(0, 10),
+      'bottom-left': new Point(0, 0),
+      'bottom-right': new Point(0, 0),
+      'left': new Point(0, 0),
+      'right': new Point(0, 0)
+    };
+    const popup = new mapboxgl.Popup();
     const outerCircle = this.renderer.createElement('div');
+    // adding outerCircle click listener
+    outerCircle.addEventListener('click', () => {
+      if (unitMarker.getPopup().isOpen()) {
+        unitMarker.togglePopup();
+      }
+      this.openUnitInfoCardDialog(unit);
+    });
     const unitMarker = new Marker(outerCircle);
     this.renderer.setAttribute(outerCircle, 'class', 'private_unit_marker_out');
     const innerCircle = this.renderer.createElement('div');
@@ -439,6 +457,11 @@ export class MapService implements OnInit, OnDestroy {
     });
     const el = this.renderer.createElement('div');
     this.renderer.setAttribute(el, 'class', 'office_marker');
+    // el.addEventListener('click', () => {
+    //   if (this.userMarker.getPopup().isOpen()) {
+    //     this.userMarker.togglePopup();
+    //   }
+    // });
     this.userMarker = new Marker(el, {offset: [0, -23]});
     this.userMarker.setLngLat([
       this.currentUser.location.geometry.coordinates[0],

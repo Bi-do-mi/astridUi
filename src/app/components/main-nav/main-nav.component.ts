@@ -94,7 +94,7 @@ export class MainNavComponent implements OnInit, OnDestroy {
           this.setLocation(data.openCreateUnitDialog, data.unit, data.stepNum);
         }
       });
-    this.openUnitInfoService.openUnitInfo.pipe(untilDestroyed(this), first())
+    this.openUnitInfoService.openUnitInfo.pipe(untilDestroyed(this))
       .subscribe((data: {unit: Unit, gallery: NgxGalleryImage[]}) => {
         this.openUnitInfoCardDialog(data.unit, data.gallery);
       });

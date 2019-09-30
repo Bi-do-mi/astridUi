@@ -156,13 +156,13 @@
             (unitGeoCode?.results[unitGeoCode?.results.length-1]?.name)}}
           </p>
         </div>
-        <p class="m-3" *ngIf="data.unit.location === currentUser.location">
+        <p class="m-3" *ngIf="data.unit.location && data.unit.location === currentUser.location">
           Укажите на карте местоположение единицы техники, или пропустите этот шаг. В
           этом
           случае техника будет локализована в вашем парке.
         </p>
         <div fxLayout="row wrap" fxLayoutAlign="start center"
-             *ngIf="data.unit.location !== currentUser.location">
+             *ngIf="data.unit.location && data.unit.location !== currentUser.location">
           <button class="m-3" mat-fab matTooltip="отогнать в гараж" tabindex="-1"
                   matTooltipPosition="above" aria-label="Toggle edit unit location to park"
                   (click)="onParkUnit()">
