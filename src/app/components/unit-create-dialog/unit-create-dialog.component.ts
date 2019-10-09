@@ -38,7 +38,7 @@ export class UnitCreateDialogComponent implements OnInit, AfterViewInit, OnDestr
   filteredModels: string[];
   galleryOptions: NgxGalleryOptions[];
   galleryImages: NgxGalleryImage[] = [];
-  @ViewChild('stepper') stepper: MatStepper;
+  @ViewChild('stepper', {static: false}) stepper: MatStepper;
   linear = true;
   unitGeoCode: GeoCode;
   optForm: FormGroup;
@@ -66,7 +66,6 @@ export class UnitCreateDialogComponent implements OnInit, AfterViewInit, OnDestr
     setTimeout(() => {
       if (this.data.stepNum !== undefined) {
         this.stepper.selectedIndex = this.data.stepNum;
-        // console.log('Triggered if (this.data.stepNum)');
       }
     }, 1000);
     this.questionService.unitOptions.pipe(untilDestroyed(this))
@@ -363,11 +362,12 @@ export class UnitCreateDialogComponent implements OnInit, AfterViewInit, OnDestr
     this.galleryImages.splice(ind, 1);
     this.data.unit.images.splice(ind, 1);
   }
-  onParkUnit () {
-  this.data.unit.location = this.currentUser.location;
+
+  onParkUnit() {
+    this.data.unit.location = this.currentUser.location;
     this.mapService.getGeocodeByPoint(this.data.unit.location)
       .subscribe((geoCode?: GeoCode) => {
         this.unitGeoCode = geoCode;
       });
-}
+  }
 }

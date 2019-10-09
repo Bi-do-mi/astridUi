@@ -1,6 +1,6 @@
 import {Injectable, OnDestroy, OnInit, Renderer2, RendererFactory2} from '@angular/core';
 import * as mapboxgl from 'mapbox-gl';
-import {LngLatBounds, Marker, Point} from 'mapbox-gl';
+import {GeoJSONSource, LngLat, MapboxGeoJSONFeature, Marker} from 'mapbox-gl';
 import {NGXLogger} from 'ngx-logger';
 import {BehaviorSubject, Observable, Subject} from 'rxjs';
 import {HttpClient} from '@angular/common/http';
@@ -14,7 +14,7 @@ import {GeoCode} from '../_model/GeoCode';
 import {SidenavService} from './sidenav.service';
 import {Unit} from '../_model/Unit';
 import {OpenUnitInfoService} from './open-unit-info.service';
-import * as turf from '@turf/turf';
+import {Feature} from 'geojson';
 
 
 @Injectable({
@@ -41,6 +41,8 @@ export class MapService implements OnInit, OnDestroy {
   public _hidePrivateUnits = false;
   isPopupOpened = false;
   renderer: Renderer2;
+  private ownUnitsSource: any;
+  private colors = ['#212121', '#fbc02d', '#c2c3c2'];
 
 
   constructor(private logger: NGXLogger,
@@ -95,9 +97,9 @@ export class MapService implements OnInit, OnDestroy {
 
           // click listener
           this._map.on('click', (event) => {
-            const p = new GeoJson([
-              +event.lngLat.lng.toFixed(6),
-              +event.lngLat.lat.toFixed(6)]);
+            const p = new GeoJson(
+                [+event.lngLat.lng.toFixed(6),
+                +event.lngLat.lat.toFixed(6)]);
             this._clickedPoint$.next(p);
           });
 
@@ -119,9 +121,83 @@ export class MapService implements OnInit, OnDestroy {
           // load listener
           this.map.on('load', (event) => {
 
+            /// register sources
+            // this.addSource('ownUnitsSource');
+            this.map.addSource('ownUnitsSource', {
+              type: 'geojson',
+              data: {
+                type: 'FeatureCollection',
+                features: []
+              },
+              cluster: true,
+              clusterMaxZoom: 8, // Max zoom to cluster points on
+              clusterRadius: 50
+            });
+
+            /// get source
+            this.ownUnitsSource = this.map.getSource('ownUnitsSource');
+
+            /// create map layers with realtime data
+            this.map.addLayer({
+              id: 'ownUnitsLayer',
+              source: 'ownUnitsSource',
+              type: 'circle',
+              filter: ['!', ['has', 'point_count']],
+              paint: {
+                'circle-color': ['case',
+                  ['case',
+                    ['has', 'paid'], ['get', 'paid'],
+                    false], this.colors[1],
+                  this.colors[2]],
+                'circle-radius': 4,
+                'circle-stroke-width': 2,
+                'circle-stroke-color': this.colors[0]
+              }
+            });
+            this.map.addLayer({
+              id: 'ownUnitsLayerClusters',
+              type: 'circle',
+              source: 'ownUnitsSource',
+              filter: ['has', 'point_count'],
+              paint: {
+                'circle-color': [
+                  'step',
+                  ['get', 'point_count'],
+                  '#FBDC2E',
+                  100,
+                  '#FBC02D',
+                  750,
+                  '#FBAF30'
+                ],
+                'circle-radius': [
+                  'step',
+                  ['get', 'point_count'],
+                  20,
+                  100,
+                  30,
+                  750,
+                  40
+                ],
+                'circle-stroke-color': this.colors[0],
+                'circle-stroke-width': 3
+              }
+            });
+            this.map.addLayer({
+              id: 'ownUnitsLayerClusterCount',
+              type: 'symbol',
+              source: 'ownUnitsSource',
+              filter: ['has', 'point_count'],
+              layout: {
+                'text-field': '{point_count_abbreviated}',
+                'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
+                'text-size': 12
+              }
+            });
+
             this.userService.currentUser.pipe(untilDestroyed(this))
               .subscribe(user => {
                 this.currentUser = user;
+
                 // Adding popup, user's marker and user's geocode
                 try {
                   if (this.userMarker) {
@@ -137,31 +213,128 @@ export class MapService implements OnInit, OnDestroy {
                 } catch (e) {
                   console.log(e);
                 }
-                // Adding popups to units
-                try {
-                  this.hidePrivateUnits(true);
-                  this.sidenavService.closeAll();
-                  if (user.units && user.units.length > 0) {
-                    this.privateMarkers.splice(0);
-                    user.units.forEach(unit => {
-                      this.privateMarkers.push(this.createUnitMarker(unit));
-                    });
-                    this.hidePrivateUnits(false);
-                  }
-                } catch (e) {
-                  console.log(e);
+
+                if (user.units && user.units.length > 0) {
+                  const unitsLocArray = new Array<GeoJson>();
+                  user.units.forEach(unit => {
+                    unitsLocArray.push(new GeoJson(
+                      unit.location.geometry.coordinates,
+                      unit.id, {paid: unit.paid}));
+                  });
+                  const data = new FeatureCollection(unitsLocArray);
+                  // console.log(JSON.stringify(data));
+                  this.ownUnitsSource.setData(data);
                 }
               });
+
             this.navigatorCheck();
+          });
+
+          this.map.on('click', 'ownUnitsLayer', (e) => {
+            this.openUnitInfoCardDialog(this.currentUser.units
+              .filter((unit, i, arr) => {
+                if (unit.id === e.features[0].id) {
+                  return true;
+                }
+              })[0]);
+          });
+
+          let timer: any;
+          let isMouseOnPopup = false;
+          const popup = new mapboxgl.Popup({
+            closeButton: false, closeOnClick: false, offset: 10
+          });
+
+          this.map.on('mouseenter', 'ownUnitsLayer', (e) => {
+            this.map.getCanvas().style.cursor = 'pointer';
+            const unit = this.currentUser.units.filter((u, i, arr) => {
+              if (u.id === e.features[0].id) {
+                return true;
+              }
+            })[0];
+            if (unit) {
+              popup.setLngLat(e.lngLat);
+              // adding popups mouseenter listener
+              const div = this.renderer.createElement('div');
+              this.renderer.setStyle(div, 'cursor', 'pointer');
+              div.addEventListener('mouseenter', () => isMouseOnPopup = true);
+              // adding popups mouselive listener
+              div.addEventListener('mouseleave', () => {
+                isMouseOnPopup = false;
+                if (popup.isOpen()) {
+                  popup.remove();
+                }
+              });
+              // adding popups click listener
+              div.addEventListener('click', () => {
+                isMouseOnPopup = false;
+                if (popup.isOpen()) {
+                  popup.remove();
+                }
+                this.openUnitInfoCardDialog(unit);
+              });
+              div.innerHTML =
+                '<div>\n' +
+                '<img src=' +
+                (unit.images[0] ? 'data:image/jpg;base64,' + unit.images[0].value
+                  : 'assets/pics/unit_pic_spacer-500x333.png')
+                + ' width="80">\n' +
+                '<div style="display: inline-block">\n' +
+                '<p>' + unit.model + '</p>\n' +
+                '</div></div>';
+              popup.setDOMContent(div).on('open', () => {
+                this.isPopupOpened = true;
+              });
+              timer = setTimeout(() => {
+                if (!popup.isOpen()) {
+                  popup.addTo(this.map);
+                }
+              }, 500);
+            }
+          });
+
+          this.map.on('mouseleave', 'ownUnitsLayer', (e) => {
+            this.map.getCanvas().style.cursor = '';
+            if (!popup.isOpen()) {
+              clearTimeout(timer);
+            }
+            if (popup.isOpen()) {
+              setTimeout(() => {
+                clearTimeout(timer);
+                if (!isMouseOnPopup) {
+                  popup.remove();
+                }
+              }, 500);
+            }
+          });
+
+          // inspect a cluster on click
+          this.map.on('click', 'ownUnitsLayerClusters', (e) => {
+            const features = this.map.queryRenderedFeatures(e.point,
+              {layers: ['ownUnitsLayerClusters']}) as MapboxGeoJSONFeature[];
+            const clusterId = features[0].properties.cluster_id;
+            const source = this.map.getSource('ownUnitsSource') as GeoJSONSource;
+            source.getClusterExpansionZoom(clusterId, (err, zoom) => {
+              if (err) {
+                return;
+              }
+              this.map.easeTo({
+                center: JSON.parse(JSON.stringify(features[0].geometry)).coordinates,
+                zoom: zoom
+              });
+            });
+          });
+
+          this.map.on('mouseenter', 'ownUnitsLayerClusters', () => {
+            this.map.getCanvas().style.cursor = 'pointer';
+          });
+          this.map.on('mouseleave', 'ownUnitsLayerClusters', () => {
+            this.map.getCanvas().style.cursor = '';
           });
         }, 10);
       }
     });
   }
-
-  // prnt() {
-  //   console.log('ldklsbnlsb');
-  // }
 
   private navigatorCheck() {
     if (navigator.geolocation && this._isFirstLoading) {
@@ -247,102 +420,60 @@ export class MapService implements OnInit, OnDestroy {
   }
 
   hidePrivateUnits(hide?: boolean) {
+    this.sidenavService.closeAll();
     this._hidePrivateUnits = hide || !this._hidePrivateUnits;
-    if (this._hidePrivateUnits) {
-      this.privateMarkers.forEach(marker => {
-        marker.remove();
-      });
-    } else {
-      this.privateMarkers.forEach(marker => {
-        if (this.currentUser.location.geometry.coordinates[0]
-          !== marker.getLngLat().lng &&
-          this.currentUser.location.geometry.coordinates[1]
-          !== marker.getLngLat().lng) {
-          marker.addTo(this.map);
-        }
-      });
-    }
-  }
-
-  // get bbox of private units
-  getBoundingBox(data: Array<Marker>, parkPoint?: Marker): LngLatBounds {
-    const fs: FeatureCollection = new FeatureCollection(new Array<GeoJson>());
-    const bounds: LngLatBounds = new LngLatBounds();
-    let coords: number[];
-    let latitude: number;
-    let longitude: number;
-    data.forEach(marker => {
-      const feature = new GeoJson(marker.getLngLat().toArray());
-      fs.features.push(feature);
+    const layers = ['ownUnitsLayer', 'ownUnitsLayerClusters', 'ownUnitsLayerClusterCount'];
+    layers.forEach(layer => {
+      this.map.setLayoutProperty(layer, 'visibility',
+        this._hidePrivateUnits ? 'none' : 'visible');
     });
-    if (parkPoint) {
-      const feature = new GeoJson(parkPoint.getLngLat().toArray());
-      fs.features.push(feature);
-    }
-    for (let i = 0; i < fs.features.length; i++) {
-      coords = fs.features[i].geometry.coordinates;
-      longitude = coords[0];
-      latitude = coords[1];
-      if (bounds.getSouthWest()) {
-        const west = bounds.getWest() < longitude ? bounds.getWest() : longitude;
-        const east = bounds.getEast() > longitude ? bounds.getEast() : longitude;
-        const south = bounds.getSouth() < latitude ? bounds.getSouth() : latitude;
-        const north = bounds.getNorth() > latitude ? bounds.getNorth() : latitude;
-        bounds.setSouthWest([west, south]);
-        bounds.setNorthEast([east, north]);
-      } else {
-        bounds.setSouthWest([longitude, latitude]);
-        bounds.setNorthEast([longitude, latitude]);
-      }
-    }
-    console.log(bounds);
-    return bounds;
   }
 
   // панарамирование своей техники
-  fitBounds(bounds: LngLatBounds) {
+  fitBounds() {
     this.sidenavService.closeAll();
+    const bounds = new mapboxgl.LngLatBounds();
+    this.currentUser.units.forEach(unit => {
+      bounds.extend(new LngLat(unit.location.geometry.coordinates[0],
+        unit.location.geometry.coordinates[1]));
+    });
+    bounds.extend(this.userMarker.getLngLat());
     this.map.fitBounds(bounds, {
       padding: {
         top: 40, bottom: 40,
         left: 40, right: 40
       }
     });
-    // this.drawLines();
   }
 
 
   markerIndication(unit: Unit) {
-    if (this.userMarker.getLngLat().lng === unit.location.geometry.coordinates[0]) {
-      if (this.userMarker.getLngLat().lat === unit.location.geometry.coordinates[1]) {
-        let pulsar = true;
-        const markerTimer = setInterval(() => {
-          this.userMarker.getElement().hidden = pulsar;
-          pulsar = !pulsar;
-        }, 500);
-        setTimeout(() => {
-          clearInterval(markerTimer);
-          this.userMarker.getElement().hidden = false;
-        }, 6000);
-
-      }
-    } else {
-      this.privateMarkers.forEach(marker => {
-        if (marker.getLngLat().lng === unit.location.geometry.coordinates[0]) {
-          if (marker.getLngLat().lat === unit.location.geometry.coordinates[1]) {
-            let pulsar = true;
-            const markerTimer = setInterval(() => {
-              marker.getElement().hidden = pulsar;
-              pulsar = !pulsar;
-            }, 500);
-            setTimeout(() => {
-              clearInterval(markerTimer);
-              marker.getElement().hidden = false;
-            }, 6000);
-
-          }
-        }
-      });
+    if (false || this.userMarker.getLngLat() === new LngLat(
+      unit.location.geometry.coordinates[0], unit.location.geometry.coordinates[1])) {
+      let pulsar = true;
+      const markerTimer = setInterval(() => {
+        this.userMarker.getElement().hidden = pulsar;
+        pulsar = !pulsar;
+      }, 500);
+      setTimeout(() => {
+        clearInterval(markerTimer);
+        this.userMarker.getElement().hidden = false;
+      }, 6000);
+    // } else {
+    //   this.ownUnitsSource.forEach((feature: Feature) => {
+    //     if (feature.id === unit.id) {
+    //       console.log('Triggered!');
+    //       // let pulsar = true;
+    //       // const markerTimer = setInterval(() => {
+    //       //   feature.getElement().hidden = pulsar;
+    //       //   pulsar = !pulsar;
+    //       // }, 500);
+    //       // setTimeout(() => {
+    //       //   clearInterval(markerTimer);
+    //       //   feature.getElement().hidden = false;
+    //       // }, 6000);
+    //     }
+    //   });
     }
   }
 
@@ -353,116 +484,124 @@ export class MapService implements OnInit, OnDestroy {
   ngOnDestroy() {
   }
 
-  createUnitMarker(unit: Unit) {
-    const markerHeight = 50, markerRadius = 10, linearOffset = 25;
-    const popupOffsets = {
-      'top': new Point(0, 40),
-      'top-left': new Point(0, 0),
-      'top-right': new Point(0, 0),
-      'bottom': new Point(0, 10),
-      'bottom-left': new Point(0, 0),
-      'bottom-right': new Point(0, 0),
-      'left': new Point(0, 0),
-      'right': new Point(0, 0)
-    };
-    const popup = new mapboxgl.Popup();
-    const outerCircle = this.renderer.createElement('div');
-    // adding outerCircle click listener
-    outerCircle.addEventListener('click', () => {
-      if (unitMarker.getPopup().isOpen()) {
-        unitMarker.togglePopup();
-      }
-      this.openUnitInfoCardDialog(unit);
-    });
-    const unitMarker = new Marker(outerCircle);
-    this.renderer.setAttribute(outerCircle, 'class', 'private_unit_marker_out');
-    const innerCircle = this.renderer.createElement('div');
-    (unit.paid && unit.enabled) ?
-      this.renderer.setAttribute(innerCircle, 'class', 'private_unit_marker_in_active') :
-      this.renderer.setAttribute(innerCircle, 'class', 'private_unit_marker_in_passive');
-    outerCircle.appendChild(innerCircle);
-
-    // adding mouseenter listener
-    let timer: any;
-    let isMouseOnPopup = false;
-    outerCircle.addEventListener('mouseenter', () => {
-      if (!unitMarker.getPopup()) {
-        // adding popups mouseenter listener
-        const div = this.renderer.createElement('div');
-        this.renderer.setStyle(div, 'cursor', 'pointer');
-        div.addEventListener('mouseenter', () => isMouseOnPopup = true);
-
-        // adding popups mouselive listener
-        div.addEventListener('mouseleave', () => {
-          isMouseOnPopup = false;
-          if (unitMarker.getPopup().isOpen()) {
-            unitMarker.togglePopup();
-          }
-        });
-        // adding popups click listener
-        div.addEventListener('click', () => {
-          isMouseOnPopup = false;
-          if (unitMarker.getPopup().isOpen()) {
-            unitMarker.togglePopup();
-          }
-          this.openUnitInfoCardDialog(unit);
-        });
-        div.innerHTML =
-          '<div>\n' +
-          '<img src=' +
-          (unit.images[0] ? 'data:image/jpg;base64,' + unit.images[0].value
-            : 'assets/pics/unit_pic_spacer-500x333.png')
-          + ' width="80">\n' +
-          '<div style="display: inline-block">\n' +
-          '<p>' + unit.model + '</p>\n' +
-          '</div></div>';
-        unitMarker.setPopup(popup.setDOMContent(div)
-          .on('open', e => {
-            this.isPopupOpened = true;
-          }));
-      }
-      timer = setTimeout(() => {
-        if (!unitMarker.getPopup().isOpen()) {
-          unitMarker.togglePopup();
-        }
-      }, 500);
-    });
-
-    // adding mouseleave listener
-    outerCircle.addEventListener('mouseleave',
-      () => {
-        if (!unitMarker.getPopup().isOpen()) {
-          clearTimeout(timer);
-        }
-        if (unitMarker.getPopup().isOpen()) {
-          setTimeout(() => {
-            clearTimeout(timer);
-            if (!isMouseOnPopup) {
-              unitMarker.togglePopup();
-            }
-          }, 500);
-        }
-      });
-    unitMarker.setLngLat([
-      unit.location.geometry.coordinates[0],
-      unit.location.geometry.coordinates[1]
-    ]);
-    return unitMarker;
-  }
+  // createUnitMarker(unit: Unit) {
+  //   const markerHeight = 50, markerRadius = 10, linearOffset = 25;
+  //   const popupOffsets = {
+  //     'top': new Point(0, 40),
+  //     'top-left': new Point(0, 0),
+  //     'top-right': new Point(0, 0),
+  //     'bottom': new Point(0, 10),
+  //     'bottom-left': new Point(0, 0),
+  //     'bottom-right': new Point(0, 0),
+  //     'left': new Point(0, 0),
+  //     'right': new Point(0, 0)
+  //   };
+  //   const popup = new mapboxgl.Popup();
+  //   const outerCircle = this.renderer.createElement('div');
+  //   // adding outerCircle click listener
+  //   outerCircle.addEventListener('click', () => {
+  //     if (unitMarker.getPopup().isOpen()) {
+  //       unitMarker.togglePopup();
+  //     }
+  //     this.openUnitInfoCardDialog(unit);
+  //   });
+  //   const unitMarker = new Marker(outerCircle);
+  //   this.renderer.setAttribute(outerCircle, 'class', 'private_unit_marker_out');
+  //   const innerCircle = this.renderer.createElement('div');
+  //   (unit.paid && unit.enabled) ?
+  //     this.renderer.setAttribute(innerCircle, 'class', 'private_unit_marker_in_active') :
+  //     this.renderer.setAttribute(innerCircle, 'class', 'private_unit_marker_in_passive');
+  //   outerCircle.appendChild(innerCircle);
+  //
+  //   // adding mouseenter listener
+  //   let timer: any;
+  //   let isMouseOnPopup = false;
+  //   outerCircle.addEventListener('mouseenter', () => {
+  //     if (!unitMarker.getPopup()) {
+  //       // adding popups mouseenter listener
+  //       const div = this.renderer.createElement('div');
+  //       this.renderer.setStyle(div, 'cursor', 'pointer');
+  //       div.addEventListener('mouseenter', () => isMouseOnPopup = true);
+  //
+  //       // adding popups mouselive listener
+  //       div.addEventListener('mouseleave', () => {
+  //         isMouseOnPopup = false;
+  //         if (unitMarker.getPopup().isOpen()) {
+  //           unitMarker.togglePopup();
+  //         }
+  //       });
+  //       // adding popups click listener
+  //       div.addEventListener('click', () => {
+  //         isMouseOnPopup = false;
+  //         if (unitMarker.getPopup().isOpen()) {
+  //           unitMarker.togglePopup();
+  //         }
+  //         this.openUnitInfoCardDialog(unit);
+  //       });
+  //       div.innerHTML =
+  //         '<div>\n' +
+  //         '<img src=' +
+  //         (unit.images[0] ? 'data:image/jpg;base64,' + unit.images[0].value
+  //           : 'assets/pics/unit_pic_spacer-500x333.png')
+  //         + ' width="80">\n' +
+  //         '<div style="display: inline-block">\n' +
+  //         '<p>' + unit.model + '</p>\n' +
+  //         '</div></div>';
+  //       unitMarker.setPopup(popup.setDOMContent(div)
+  //         .on('open', e => {
+  //           this.isPopupOpened = true;
+  //         }));
+  //     }
+  //     timer = setTimeout(() => {
+  //       if (!unitMarker.getPopup().isOpen()) {
+  //         unitMarker.togglePopup();
+  //       }
+  //     }, 500);
+  //   });
+  //
+  //   // adding mouseleave listener
+  //   outerCircle.addEventListener('mouseleave',
+  //     () => {
+  //       if (!unitMarker.getPopup().isOpen()) {
+  //         clearTimeout(timer);
+  //       }
+  //       if (unitMarker.getPopup().isOpen()) {
+  //         setTimeout(() => {
+  //           clearTimeout(timer);
+  //           if (!isMouseOnPopup) {
+  //             unitMarker.togglePopup();
+  //           }
+  //         }, 500);
+  //       }
+  //     });
+  //   unitMarker.setLngLat([
+  //     unit.location.geometry.coordinates[0],
+  //     unit.location.geometry.coordinates[1]
+  //   ]);
+  //   return unitMarker;
+  // }
 
   createUserMarker(user: User) {
-    const popup = new mapboxgl.Popup({offset: 45});
+    const popup = new mapboxgl.Popup();
     popup.on('open', e => {
       this.isPopupOpened = true;
     });
     const el = this.renderer.createElement('div');
-    this.renderer.setAttribute(el, 'class', 'office_marker');
+    this.renderer.setAttribute(el, 'class', 'own_user_rectangle');
+    el.innerHTML = 'P';
+    const userLoc = this.currentUser.location.geometry.coordinates as number[];
+    this.currentUser.units.forEach(unit => {
+      const unitLoc = unit.location.geometry.coordinates as number[];
+      if (userLoc[0] === unitLoc[0] && userLoc[1] === unitLoc[1]) {
+        el.innerHTML = 'P+';
+      }
+    });
     // el.addEventListener('click', () => {
     //   if (this.userMarker.getPopup().isOpen()) {
     //     this.userMarker.togglePopup();
     //   }
     // });
-    this.userMarker = new Marker(el, {offset: [0, -23]});
+    this.userMarker = new Marker(el);
     this.userMarker.setLngLat([
       this.currentUser.location.geometry.coordinates[0],
       this.currentUser.location.geometry.coordinates[1]])

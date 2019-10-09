@@ -162,7 +162,10 @@
           случае техника будет локализована в вашем парке.
         </p>
         <div fxLayout="row wrap" fxLayoutAlign="start center"
-             *ngIf="data.unit.location && data.unit.location !== currentUser.location">
+             *ngIf="data.unit.location && data.unit.location.geometry.coordinates[0]
+              !== currentUser.location.geometry.coordinates[0]
+               && data.unit.location.geometry.coordinates[1]
+              !== currentUser.location.geometry.coordinates[1]">
           <button class="m-3" mat-fab matTooltip="отогнать в гараж" tabindex="-1"
                   matTooltipPosition="above" aria-label="Toggle edit unit location to park"
                   (click)="onParkUnit()">

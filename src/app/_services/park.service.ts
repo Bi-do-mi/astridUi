@@ -1,12 +1,10 @@
 import {Injectable} from '@angular/core';
-import {HttpClient, HttpRequest} from '@angular/common/http';
+import {HttpClient} from '@angular/common/http';
 import {finalize, first, map} from 'rxjs/operators';
 import {UnitAssignment, UnitBrand, UnitType} from '../_model/UnitTypesModel';
 import {Unit} from '../_model/Unit';
 import {NgxSpinnerService} from 'ngx-spinner';
 import {UserService} from './user.service';
-import {Body} from '@angular/http/src/body';
-import {untilDestroyed} from 'ngx-take-until-destroy';
 
 @Injectable({
   providedIn: 'root'

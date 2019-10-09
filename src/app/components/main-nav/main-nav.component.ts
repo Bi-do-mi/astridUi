@@ -28,9 +28,9 @@ import {UnitInfoCardDialogComponent} from '../unit-info-card-dialog/unit-info-ca
   styleUrls: ['./main-nav.component.scss']
 })
 export class MainNavComponent implements OnInit, OnDestroy {
-  @ViewChild('left_drawer')
+  @ViewChild('left_drawer', {static: false})
   leftDrawer: MatSidenav;
-  @ViewChild('right_drawer')
+  @ViewChild('right_drawer', {static: false})
   rightDrawer: MatSidenav;
   hasBackdrop: boolean;
   searchContent: boolean;
@@ -220,7 +220,8 @@ export class MainNavComponent implements OnInit, OnDestroy {
       backdropClass: 'leanerBack',
       data: {unit: unit, image: gallery}
     });
-    unitInfoDialogRef.afterClosed().pipe(untilDestroyed(this)).subscribe(unit_ => {
+    unitInfoDialogRef.afterClosed().pipe(untilDestroyed(this))
+      .subscribe((unit_: Unit) => {
       if (unit_) {
         this.openUnitCreateDialog(unit_);
       }
@@ -247,11 +248,6 @@ export class MainNavComponent implements OnInit, OnDestroy {
     this.sidenavService.closeRight();
     this.hasBackdrop = false;
     this.leftDrawer.toggle();
-  }
-
-  hideMyUnits() {
-    this.sidenavService.closeAll();
-    this.mapService.hidePrivateUnits();
   }
 
 }

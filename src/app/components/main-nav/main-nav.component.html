@@ -45,22 +45,21 @@
           </div>
         </div>
         <div fxLayout="column" fxLayoutAlign="end end">
-          <mat-icon matTooltip="ркдактировать данные аккаунта" tabindex="-1"
+          <mat-icon matTooltip="редактировать данные аккаунта" tabindex="-1"
                     matTooltipPosition="above" (click)="openUserOptionsDialog()"
                     class="mn-cursor-pointer">edit
           </mat-icon>
-          <mat-icon *ngIf="mapService?.privateMarkers.length > 0 && !mapService._hidePrivateUnits"
-                    matTooltip="понорамировать свою технику на карте" tabindex="-1"
-                    matTooltipPosition="above" (click)=" mapService.fitBounds(
-                    mapService.getBoundingBox(mapService.privateMarkers,
-                    mapService.userMarker))" class="mn-cursor-pointer">crop_free
+          <mat-icon *ngIf="currentUser?.units?.length > 0 && !mapService._hidePrivateUnits"
+                    matTooltip="панорамировать свою технику на карте" tabindex="-1"
+                    matTooltipPosition="above" (click)=" mapService.fitBounds()"
+                    class="mn-cursor-pointer">crop_free
           </mat-icon>
-          <mat-icon *ngIf="mapService?.privateMarkers.length > 0"
+          <mat-icon *ngIf="currentUser?.units?.length > 0"
                     matTooltip="показать/скрыть свою технику на карте" tabindex="-1"
-                    matTooltipPosition="above" (click)="hideMyUnits()" class="mn-cursor-pointer">
+                    matTooltipPosition="above" (click)="mapService.hidePrivateUnits()" class="mn-cursor-pointer">
             {{mapService._hidePrivateUnits ? 'visibility_off' : 'visibility'}}
           </mat-icon>
-          <mat-icon *ngIf="mapService?.privateMarkers.length > 0"
+          <mat-icon *ngIf="currentUser?.units?.length > 0"
                     matTooltip="открыть список" tabindex="-1" class="mn-cursor-pointer"
                     matTooltipPosition="above" (click)="openUnitsMainListDialog()">list
           </mat-icon>
