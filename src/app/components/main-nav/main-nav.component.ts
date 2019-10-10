@@ -28,9 +28,9 @@ import {UnitInfoCardDialogComponent} from '../unit-info-card-dialog/unit-info-ca
   styleUrls: ['./main-nav.component.scss']
 })
 export class MainNavComponent implements OnInit, OnDestroy {
-  @ViewChild('left_drawer', {static: false})
+  @ViewChild('left_drawer')
   leftDrawer: MatSidenav;
-  @ViewChild('right_drawer', {static: false})
+  @ViewChild('right_drawer')
   rightDrawer: MatSidenav;
   hasBackdrop: boolean;
   searchContent: boolean;

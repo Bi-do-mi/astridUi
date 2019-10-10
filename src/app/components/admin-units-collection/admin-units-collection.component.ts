@@ -34,8 +34,8 @@ export class AdminUnitsCollectionComponent implements OnInit, OnDestroy {
   downloadFromServer = new FormControl();
   // dataSource: UnitDataSourceInAdminComponent;
   displayedColumns: string[] = ['Старая база'];
-  @ViewChild(MatPaginator, {static: false}) paginator: MatPaginator;
-  @ViewChild(MatSort, {static: false}) sort: MatSort;
+  @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatSort) sort: MatSort;
   dataSourceNew: NewUnitDataSourceInAdminComponent;
   displayedColumnsNew: string[] = ['Новая база'];
   selectedRowNewTable = '';

@@ -38,7 +38,7 @@ export class UnitCreateDialogComponent implements OnInit, AfterViewInit, OnDestr
   filteredModels: string[];
   galleryOptions: NgxGalleryOptions[];
   galleryImages: NgxGalleryImage[] = [];
-  @ViewChild('stepper', {static: false}) stepper: MatStepper;
+  @ViewChild('stepper') stepper: MatStepper;
   linear = true;
   unitGeoCode: GeoCode;
   optForm: FormGroup;
