@@ -2377,6 +2377,9 @@ textarea.cdk-textarea-autosize-measuring {
   width: 100%;
   margin-top: 10px; }
 
+.cursor-pointer {
+  cursor: pointer; }
+
 .mn-cursor-pointer {
   cursor: pointer;
   margin: 1px; }

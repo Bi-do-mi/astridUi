@@ -14,7 +14,6 @@ import {GeoCode} from '../_model/GeoCode';
 import {SidenavService} from './sidenav.service';
 import {Unit} from '../_model/Unit';
 import {OpenUnitInfoService} from './open-unit-info.service';
-import {Feature} from 'geojson';
 
 
 @Injectable({
@@ -36,7 +35,7 @@ export class MapService implements OnInit, OnDestroy {
   private _clickedPoint = this._clickedPoint$.asObservable();
   currentUser: User;
   public userMarker: Marker;
-  public privateMarkers = new Array<Marker>();
+  public privateMarkers: Array<Marker> = [];
   userGeoCode: GeoCode;
   public _hidePrivateUnits = false;
   isPopupOpened = false;
@@ -98,20 +97,20 @@ export class MapService implements OnInit, OnDestroy {
           // click listener
           this._map.on('click', (event) => {
             const p = new GeoJson(
-                [+event.lngLat.lng.toFixed(6),
+              [+event.lngLat.lng.toFixed(6),
                 +event.lngLat.lat.toFixed(6)]);
             this._clickedPoint$.next(p);
           });
 
           // movestart listener
-          this.map.on('movestart', (event) => {
+          this.map.on('movestart', () => {
             if ((this.privateMarkers.length > 0 || this.userMarker) && this.isPopupOpened) {
               this.privateMarkers.forEach(m => {
                 if (m.getPopup() && m.getPopup().isOpen()) {
                   m.togglePopup();
                 }
               });
-              if (this.userMarker.getPopup().isOpen()) {
+              if (this.userMarker.getPopup() && this.userMarker.getPopup().isOpen()) {
                 this.userMarker.togglePopup();
               }
               this.isPopupOpened = false;
@@ -119,7 +118,7 @@ export class MapService implements OnInit, OnDestroy {
           });
 
           // load listener
-          this.map.on('load', (event) => {
+          this.map.on('load', () => {
 
             /// register sources
             // this.addSource('ownUnitsSource');
@@ -242,7 +241,7 @@ export class MapService implements OnInit, OnDestroy {
           let timer: any;
           let isMouseOnPopup = false;
           const popup = new mapboxgl.Popup({
-            closeButton: false, closeOnClick: false, offset: 10
+            closeButton: false, closeOnClick: false, offset: 10, maxWidth: '300'
           });
 
           this.map.on('mouseenter', 'ownUnitsLayer', (e) => {
@@ -279,7 +278,7 @@ export class MapService implements OnInit, OnDestroy {
                 (unit.images[0] ? 'data:image/jpg;base64,' + unit.images[0].value
                   : 'assets/pics/unit_pic_spacer-500x333.png')
                 + ' width="80">\n' +
-                '<div style="display: inline-block">\n' +
+                '<div  style="display: inline-block">\n' +
                 '<p>' + unit.model + '</p>\n' +
                 '</div></div>';
               popup.setDOMContent(div).on('open', () => {
@@ -459,21 +458,21 @@ export class MapService implements OnInit, OnDestroy {
         clearInterval(markerTimer);
         this.userMarker.getElement().hidden = false;
       }, 6000);
-    // } else {
-    //   this.ownUnitsSource.forEach((feature: Feature) => {
-    //     if (feature.id === unit.id) {
-    //       console.log('Triggered!');
-    //       // let pulsar = true;
-    //       // const markerTimer = setInterval(() => {
-    //       //   feature.getElement().hidden = pulsar;
-    //       //   pulsar = !pulsar;
-    //       // }, 500);
-    //       // setTimeout(() => {
-    //       //   clearInterval(markerTimer);
-    //       //   feature.getElement().hidden = false;
-    //       // }, 6000);
-    //     }
-    //   });
+      // } else {
+      //   this.ownUnitsSource.forEach((feature: Feature) => {
+      //     if (feature.id === unit.id) {
+      //       console.log('Triggered!');
+      //       // let pulsar = true;
+      //       // const markerTimer = setInterval(() => {
+      //       //   feature.getElement().hidden = pulsar;
+      //       //   pulsar = !pulsar;
+      //       // }, 500);
+      //       // setTimeout(() => {
+      //       //   clearInterval(markerTimer);
+      //       //   feature.getElement().hidden = false;
+      //       // }, 6000);
+      //     }
+      //   });
     }
   }
 
@@ -582,31 +581,96 @@ export class MapService implements OnInit, OnDestroy {
   // }
 
   createUserMarker(user: User) {
-    const popup = new mapboxgl.Popup();
+
+    const popup = new mapboxgl.Popup({closeButton: false, offset: 10});
     popup.on('open', e => {
       this.isPopupOpened = true;
     });
-    const el = this.renderer.createElement('div');
-    this.renderer.setAttribute(el, 'class', 'own_user_rectangle');
-    el.innerHTML = 'P';
+    const markerDiv = this.renderer.createElement('div');
+    this.renderer.setStyle(markerDiv, 'cursor', 'pointer');
+    this.renderer.setAttribute(markerDiv, 'class', 'own_user_rectangle');
+    markerDiv.innerHTML = 'P';
     const userLoc = this.currentUser.location.geometry.coordinates as number[];
     this.currentUser.units.forEach(unit => {
       const unitLoc = unit.location.geometry.coordinates as number[];
       if (userLoc[0] === unitLoc[0] && userLoc[1] === unitLoc[1]) {
-        el.innerHTML = 'P+';
+        markerDiv.innerHTML = 'P+';
       }
     });
+    this.userMarker = new Marker(markerDiv);
+
+    // adding mouseenter listener
+    let timer: any;
+    let isMouseOnPopup = false;
+    markerDiv.addEventListener('mouseenter', () => {
+      if (!this.userMarker.getPopup()) {
+        // adding popups mouseenter listener
+        const div = this.renderer.createElement('div');
+        this.renderer.setStyle(div, 'cursor', 'pointer');
+        div.addEventListener('mouseenter', () => isMouseOnPopup = true);
+
+        // adding popups mouselive listener
+        div.addEventListener('mouseleave', () => {
+          isMouseOnPopup = false;
+          if (this.userMarker.getPopup().isOpen()) {
+            this.userMarker.togglePopup();
+          }
+        });
+        // adding popups click listener
+        div.addEventListener('click', () => {
+          isMouseOnPopup = false;
+          if (this.userMarker.getPopup().isOpen()) {
+            this.userMarker.togglePopup();
+          }
+          // this.openUnitInfoCardDialog(user);
+        });
+        div.innerHTML =
+          '<div>\n' +
+          '<img src=' +
+          (user.image ? 'data:image/jpg;base64,' + user.image.value
+            : 'assets/pics/buldozer_.jpg')
+          + ' width="80">\n' +
+          '<div style="display: inline-block">\n' +
+          '<p>' + user.name + '</p>\n' +
+          '</div></div>';
+        this.userMarker.setPopup(popup.setDOMContent(div)
+          .on('open', e => {
+            this.isPopupOpened = true;
+          }));
+      }
+      timer = setTimeout(() => {
+        if (!this.userMarker.getPopup().isOpen()) {
+          this.userMarker.togglePopup();
+        }
+      }, 500);
+    });
+
+    // adding mouseleave listener
+    markerDiv.addEventListener('mouseleave',
+      () => {
+        if (!this.userMarker.getPopup().isOpen()) {
+          clearTimeout(timer);
+        }
+        if (this.userMarker.getPopup().isOpen()) {
+          setTimeout(() => {
+            clearTimeout(timer);
+            if (!isMouseOnPopup) {
+              this.userMarker.togglePopup();
+            }
+          }, 500);
+        }
+      });
+
+
     // el.addEventListener('click', () => {
     //   if (this.userMarker.getPopup().isOpen()) {
     //     this.userMarker.togglePopup();
     //   }
     // });
-    this.userMarker = new Marker(el);
+
     this.userMarker.setLngLat([
       this.currentUser.location.geometry.coordinates[0],
       this.currentUser.location.geometry.coordinates[1]])
-      .setPopup(popup.setText(String(this.userMarker.getLngLat().lng)
-        + ', ' + this.userMarker.getLngLat().lat))
       .addTo(this.map);
   }
 }

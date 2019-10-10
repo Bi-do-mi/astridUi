@@ -6,7 +6,8 @@
      'start-sidenav-phone':(isHandset$|async), 'mat-elevation-z4':true}"
                [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'">
     <!--тулбар левого сайдбара-->
-    <mat-toolbar color="accent" (click)="leftDrawer.toggle()">{{searchContent?'Поиск'
+    <mat-toolbar class="cursor-pointer" color="accent"
+                 (click)="leftDrawer.toggle()">{{searchContent?'Поиск'
       :parkContent?'Мой парк техники':''}}
       <div fxFlex></div>
       <mat-icon aria-label="Arrow back icon">arrow_back_ios</mat-icon>
@@ -89,7 +90,7 @@
     class="end-sidenav mat-elevation-z4"
     fixedInViewport="true"
     [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'">
-    <mat-toolbar color="primary"
+    <mat-toolbar color="primary" class="cursor-pointer"
                  (click)="toggleMenu()">{{currentUser?.username}}
       <a routerLink="/preload/login" *ngIf="! currentUser?.username">Войти</a>
     </mat-toolbar>
