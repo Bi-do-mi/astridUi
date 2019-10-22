@@ -17,7 +17,7 @@
         </div>
         <!--is paid-->
         <div fxLayout="column" fxLayoutAlign="center">
-          <svg class="ml-4" *ngIf="unit.paid" matTooltip="оплачен" tabindex="-1"
+          <svg class="ml-4" *ngIf="unit.paid" matTooltip="Оплачен" tabindex="-1"
                matTooltipPosition="above" version="1.1" xmlns="http://www.w3.org/2000/svg"
                xmlns:xlink="http://www.w3.org/1999/xlink" preserveAspectRatio="xMidYMid meet" viewBox="0 0 4 5.52"
                width="12" height="16.56">
@@ -34,7 +34,7 @@
               </g>
             </g>
           </svg>
-          <svg class="ml-4" *ngIf="!unit.paid" matTooltip="не оплачен" tabindex="-1"
+          <svg class="ml-4" *ngIf="!unit.paid" matTooltip="Не оплачен" tabindex="-1"
                matTooltipPosition="above" version="1.1" xmlns="http://www.w3.org/2000/svg"
                xmlns:xlink="http://www.w3.org/1999/xlink" preserveAspectRatio="xMidYMid meet" viewBox="0 0 4 5.52"
                width="12" height="16.56">
@@ -55,19 +55,19 @@
         <!--is visible-->
         <div fxLayout="column" fxLayoutAlign="center">
           <!--<svg class="ml-2" *ngIf="!unit.enabled" height="12" width="12"-->
-               <!--matTooltip="не виден арендаторам" tabindex="-1" matTooltipPosition="above">-->
+               <!--matTooltip="Не виден арендаторам" tabindex="-1" matTooltipPosition="above">-->
             <!--<circle cx="6" cy="6" r="6" fill="rgb(150,150,150)"></circle>-->
           <!--</svg>-->
           <!--<svg class="ml-2" *ngIf="unit.enabled" height="12" width="12"-->
-               <!--matTooltip="виден арендаторам" tabindex="-1" matTooltipPosition="above">-->
+               <!--matTooltip="Виден арендаторам" tabindex="-1" matTooltipPosition="above">-->
             <!--<circle cx="6" cy="6" r="6" fill="rgb(50,205,50)"></circle>-->
           <!--</svg>-->
           <mat-icon class="ml-2" *ngIf="!unit.enabled"
-                    matTooltip="не виден арендаторам" tabindex="-1"
+                    matTooltip="Не виден арендаторам" tabindex="-1"
                     matTooltipPosition="above">visibility_off
           </mat-icon>
           <mat-icon class="ml-2" *ngIf="unit.enabled"
-                    matTooltip="виден арендаторам" tabindex="-1"
+                    matTooltip="Виден арендаторам" tabindex="-1"
                     matTooltipPosition="above">visibility
           </mat-icon>
         </div>

@@ -14,6 +14,11 @@ import {GeoCode} from '../_model/GeoCode';
 import {SidenavService} from './sidenav.service';
 import {Unit} from '../_model/Unit';
 import {OpenUnitInfoService} from './open-unit-info.service';
+import {environment} from '../../environments/environment.prod';
+import * as turf from '@turf/turf';
+import {Feature, MultiPolygon, Polygon} from 'geojson';
+import {ParkService} from './park.service';
+import * as tHealpers from '@turf/helpers';
 
 
 @Injectable({
@@ -41,7 +46,9 @@ export class MapService implements OnInit, OnDestroy {
   isPopupOpened = false;
   renderer: Renderer2;
   private ownUnitsSource: any;
+  private viewportSource: any;
   private colors = ['#212121', '#fbc02d', '#c2c3c2'];
+  private viewportPolygon: tHealpers.Feature<Polygon>;
 
 
   constructor(private logger: NGXLogger,
@@ -50,7 +57,8 @@ export class MapService implements OnInit, OnDestroy {
               private http: HttpClient,
               private openUnitInfoService: OpenUnitInfoService,
               private sidenavService: SidenavService,
-              private rendererFactory: RendererFactory2) {
+              private rendererFactory: RendererFactory2,
+              private parkService: ParkService) {
     this.initializeMap();
     this.renderer = this.rendererFactory.createRenderer(null, null);
   }
@@ -117,6 +125,16 @@ export class MapService implements OnInit, OnDestroy {
             }
           });
 
+          // moveend listener
+          this.map.on('moveend', () => {
+            if (this.map.getZoom() >= 8) {
+              this.loadDataOnMoveend();
+            }
+            if (this.map.getZoom() < 8 && !this.snackBarService.isOpen()) {
+              this.snackBarService.success('Для загрузки данных приблизте карту.', 'OK', 10000);
+            }
+          });
+
           // load listener
           this.map.on('load', () => {
 
@@ -132,11 +150,33 @@ export class MapService implements OnInit, OnDestroy {
               clusterMaxZoom: 8, // Max zoom to cluster points on
               clusterRadius: 50
             });
+            this.map.addSource('viewportSource', {
+              type: 'geojson',
+              data: {
+                type: 'Feature',
+                geometry: {
+                  type: 'Polygon',
+                  coordinates: [[]]
+                },
+                properties: {}
+              }
+            });
 
             /// get source
             this.ownUnitsSource = this.map.getSource('ownUnitsSource');
+            this.viewportSource = this.map.getSource('viewportSource');
 
-            /// create map layers with realtime data
+            // create map layers with realtime data
+            this.map.addLayer({
+              id: 'viewportLayer',
+              source: 'viewportSource',
+              type: 'fill',
+              layout: {},
+              paint: {
+                'fill-color': '#088',
+                'fill-opacity': 0.8
+              }
+            });
             this.map.addLayer({
               id: 'ownUnitsLayer',
               source: 'ownUnitsSource',
@@ -196,6 +236,7 @@ export class MapService implements OnInit, OnDestroy {
             this.userService.currentUser.pipe(untilDestroyed(this))
               .subscribe(user => {
                 this.currentUser = user;
+                this.ownUnitsSource.setData(new FeatureCollection(new Array<GeoJson>()));
 
                 // Adding popup, user's marker and user's geocode
                 try {
@@ -218,7 +259,7 @@ export class MapService implements OnInit, OnDestroy {
                   user.units.forEach(unit => {
                     unitsLocArray.push(new GeoJson(
                       unit.location.geometry.coordinates,
-                      unit.id, {paid: unit.paid}));
+                      unit.id, {paid: environment.testing_paid ? true : unit.paid}));
                   });
                   const data = new FeatureCollection(unitsLocArray);
                   // console.log(JSON.stringify(data));
@@ -672,6 +713,38 @@ export class MapService implements OnInit, OnDestroy {
       this.currentUser.location.geometry.coordinates[0],
       this.currentUser.location.geometry.coordinates[1]])
       .addTo(this.map);
+  }
+
+  loadDataOnMoveend() {
+    const currentViewportFromMap = turf.polygon([[
+      this.map.getBounds().getNorthEast().toArray(),
+      this.map.getBounds().getSouthEast().toArray(),
+      this.map.getBounds().getSouthWest().toArray(),
+      this.map.getBounds().getNorthWest().toArray(),
+      this.map.getBounds().getNorthEast().toArray()]]);
+    if (!this.viewportPolygon ||
+      !turf.intersect(this.viewportPolygon, currentViewportFromMap)) {
+      this.viewportPolygon = currentViewportFromMap;
+    }
+    if (!turf.booleanContains(this.viewportPolygon, currentViewportFromMap) ||
+      this.viewportPolygon.geometry.coordinates ===
+      currentViewportFromMap.geometry.coordinates) {
+      const odlViewportPolygon = this.viewportPolygon;
+      this.viewportPolygon = currentViewportFromMap;
+      let queryPolygon: any;
+      (this.viewportPolygon.geometry.coordinates ===
+        currentViewportFromMap.geometry.coordinates)
+        ? queryPolygon = currentViewportFromMap :
+        queryPolygon = turf.difference(this.viewportPolygon, odlViewportPolygon);
+      this.parkService.loadDataOnMoveEnd(queryPolygon).subscribe(data => {
+        console.log(data);
+      });
+      this.viewportPolygon = <tHealpers.Feature<Polygon>>turf.union(odlViewportPolygon,
+        this.viewportPolygon);
+      // if (this.viewportSource) {
+      //   this.viewportSource.setData(this.viewportPolygon);
+      // }
+    }
   }
 }
 

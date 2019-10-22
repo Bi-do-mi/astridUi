@@ -5,6 +5,7 @@ import {UnitAssignment, UnitBrand, UnitType} from '../_model/UnitTypesModel';
 import {Unit} from '../_model/Unit';
 import {NgxSpinnerService} from 'ngx-spinner';
 import {UserService} from './user.service';
+import {Feature} from 'geojson';
 
 @Injectable({
   providedIn: 'root'
@@ -127,6 +128,11 @@ export class ParkService {
         notFinished = false;
         this.spinner.hide();
       }));
+  }
+
+  loadDataOnMoveEnd(polygon: Feature) {
+    return this.http.post<any>('rest/search/on_moveend', polygon)
+      .pipe(first());
   }
 
 }

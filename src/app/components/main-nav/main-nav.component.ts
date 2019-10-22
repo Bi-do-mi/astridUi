@@ -46,7 +46,7 @@ export class MainNavComponent implements OnInit, OnDestroy {
   constructor(private breakpointObserver: BreakpointObserver,
               private router: Router,
               private sidenavService: SidenavService,
-              private uService: UserService,
+              public uService: UserService,
               private logger: NGXLogger,
               public mapService: MapService,
               private parkService: ParkService,
@@ -95,7 +95,7 @@ export class MainNavComponent implements OnInit, OnDestroy {
         }
       });
     this.openUnitInfoService.openUnitInfo.pipe(untilDestroyed(this))
-      .subscribe((data: {unit: Unit, gallery: NgxGalleryImage[]}) => {
+      .subscribe((data: { unit: Unit, gallery: NgxGalleryImage[] }) => {
         this.openUnitInfoCardDialog(data.unit, data.gallery);
       });
   }
@@ -222,10 +222,10 @@ export class MainNavComponent implements OnInit, OnDestroy {
     });
     unitInfoDialogRef.afterClosed().pipe(untilDestroyed(this))
       .subscribe((unit_: Unit) => {
-      if (unit_) {
-        this.openUnitCreateDialog(unit_);
-      }
-    });
+        if (unit_) {
+          this.openUnitCreateDialog(unit_);
+        }
+      });
   }
 
   toggleMenu(hasBackdrop?: boolean) {

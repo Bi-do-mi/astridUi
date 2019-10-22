@@ -31,7 +31,7 @@
               <span fxLayout="column" fxLayoutAlign="center stretch" *ngIf="!currentUser?.location">
             не указано</span>
               <button #editParkLocation [disabled]="!mapService.userGeoCode"
-                      type="button" matTooltip="редактировать местоположение" tabindex="-1"
+                      type="button" matTooltip="Редактировать местоположение" tabindex="-1"
                       matTooltipPosition="above" aria-label="Toggle edit park location"
                       mat-icon-button (click)="setLocation()">
                 <mat-icon aria-label="Edit toggle icon">location_on</mat-icon>
@@ -40,28 +40,28 @@
           </div>
           <div fxLayout="row" fxLayoutAlign="center start">
             <button mat-raised-button="" tabindex="-1" (click)="openUnitCreateDialog()"
-                    color="accent" matTooltip="добавить технику"
+                    color="accent" matTooltip="Добавить технику"
                     matTooltipPosition="above">Добавить
             </button>
           </div>
         </div>
         <div fxLayout="column" fxLayoutAlign="end end">
-          <mat-icon matTooltip="редактировать данные аккаунта" tabindex="-1"
+          <mat-icon matTooltip="Редактировать данные аккаунта" tabindex="-1"
                     matTooltipPosition="above" (click)="openUserOptionsDialog()"
                     class="mn-cursor-pointer">edit
           </mat-icon>
           <mat-icon *ngIf="currentUser?.units?.length > 0 && !mapService._hidePrivateUnits"
-                    matTooltip="панорамировать свою технику на карте" tabindex="-1"
+                    matTooltip="Панорамировать свою технику на карте" tabindex="-1"
                     matTooltipPosition="above" (click)=" mapService.fitBounds()"
                     class="mn-cursor-pointer">crop_free
           </mat-icon>
           <mat-icon *ngIf="currentUser?.units?.length > 0"
-                    matTooltip="показать/скрыть свою технику на карте" tabindex="-1"
+                    matTooltip="Показать/скрыть свою технику на карте" tabindex="-1"
                     matTooltipPosition="above" (click)="mapService.hidePrivateUnits()" class="mn-cursor-pointer">
             {{mapService._hidePrivateUnits ? 'visibility_off' : 'visibility'}}
           </mat-icon>
           <mat-icon *ngIf="currentUser?.units?.length > 0"
-                    matTooltip="открыть список" tabindex="-1" class="mn-cursor-pointer"
+                    matTooltip="Открыть список" tabindex="-1" class="mn-cursor-pointer"
                     matTooltipPosition="above" (click)="openUnitsMainListDialog()">list
           </mat-icon>
         </div>
@@ -148,14 +148,14 @@
 
         <!--кнопка поиска-->
         <button
-          type="button" class="search-button" matTooltip="искать технику" tabindex="-1"
+          type="button" class="search-button" matTooltip="Искать технику" tabindex="-1"
           matTooltipPosition="above" *ngIf="!setPointMode && url == '/'" aria-label="Toggle start_sidenav"
           mat-icon-button (click)="toggleSearchBar()">
           <mat-icon aria-label="Search nav toggle icon">search</mat-icon>
         </button>
         <!--кнопка технопарка-->
         <button
-          type="button" class="park-button" matTooltip="мой технопарк" tabindex="-1"
+          type="button" class="park-button" matTooltip="Мой технопарк" tabindex="-1"
           matTooltipPosition="above" *ngIf="!setPointMode && url == '/'" aria-label="Toggle start_sidenav"
           mat-icon-button (click)="toggleParkBar()">
           <mat-icon aria-label="Park nav toggle icon">local_parking</mat-icon>

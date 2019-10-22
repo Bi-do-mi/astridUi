@@ -94,25 +94,25 @@
           <div>
             <div fxLayout="row" fxLayoutAlign="start start">
               <button fxFlex="25" tabindex="-1"
-                      type="button" class="search-button" matTooltip="удалить"
+                      type="button" class="search-button" matTooltip="Удалить"
                       matTooltipPosition="above" *ngIf="galleryImages[0]"
                       mat-icon-button (click)="deleteImage(0)">
                 <mat-icon color="warn" aria-label="Delete image icon">clear</mat-icon>
               </button>
               <button fxFlex="25" tabindex="-1"
-                      type="button" class="search-button" matTooltip="удалить"
+                      type="button" class="search-button" matTooltip="Удалить"
                       matTooltipPosition="above" *ngIf="galleryImages[1]"
                       mat-icon-button (click)="deleteImage(1)">
                 <mat-icon color="warn" aria-label="Delete image icon">clear</mat-icon>
               </button>
               <button fxFlex="25" tabindex="-1"
-                      type="button" class="search-button" matTooltip="удалить"
+                      type="button" class="search-button" matTooltip="Удалить"
                       matTooltipPosition="above" *ngIf="galleryImages[2]"
                       mat-icon-button (click)="deleteImage(2)">
                 <mat-icon color="warn" aria-label="Delete image icon">clear</mat-icon>
               </button>
               <button fxFlex="25" tabindex="-1"
-                      type="button" class="search-button" matTooltip="удалить"
+                      type="button" class="search-button" matTooltip="Удалить"
                       matTooltipPosition="above" *ngIf="galleryImages[3]"
                       mat-icon-button (click)="deleteImage(3)">
                 <mat-icon color="warn" aria-label="Delete image icon">clear</mat-icon>
@@ -146,7 +146,7 @@
     <mat-step label="Обозначьте местоположение на карте" state="location">
       <div class="m-3">
         <div fxLayout="row wrap" fxLayoutAlign="start center">
-          <button class="m-3" mat-fab matTooltip="указать на карте" tabindex="-1"
+          <button class="m-3" mat-fab matTooltip="Указать на карте" tabindex="-1"
                   matTooltipPosition="above" aria-label="Toggle edit unit location"
                   (click)="onSetPoint()">
             <i class="material-icons">location_on</i>
@@ -166,7 +166,7 @@
               !== currentUser.location.geometry.coordinates[0]
                && data.unit.location.geometry.coordinates[1]
               !== currentUser.location.geometry.coordinates[1]">
-          <button class="m-3" mat-fab matTooltip="отогнать в гараж" tabindex="-1"
+          <button class="m-3" mat-fab matTooltip="Отогнать в гараж" tabindex="-1"
                   matTooltipPosition="above" aria-label="Toggle edit unit location to park"
                   (click)="onParkUnit()">
             <i class="material-icons">replay</i>
