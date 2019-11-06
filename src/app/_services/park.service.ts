@@ -6,6 +6,7 @@ import {Unit} from '../_model/Unit';
 import {NgxSpinnerService} from 'ngx-spinner';
 import {UserService} from './user.service';
 import {Feature} from 'geojson';
+import * as turf from '@turf/helpers';
 
 @Injectable({
   providedIn: 'root'
@@ -130,7 +131,7 @@ export class ParkService {
       }));
   }
 
-  loadDataOnMoveEnd(polygon: Feature) {
+  loadDataOnMoveEnd(polygon: turf.Feature<turf.MultiPolygon>) {
     return this.http.post<any>('rest/search/on_moveend', polygon)
       .pipe(first());
   }

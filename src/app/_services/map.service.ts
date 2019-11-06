@@ -7,7 +7,8 @@ import {HttpClient} from '@angular/common/http';
 import {User} from '../_model/User';
 import {SnackBarService} from './snack-bar.service';
 import {untilDestroyed} from 'ngx-take-until-destroy';
-import {FeatureCollection, GeoJson} from '../_model/MarkerSourceModel';
+import {GeoJson} from '../_model/MarkerSourceModel';
+import * as FCollModel from '../_model/MarkerSourceModel';
 import {UserService} from './user.service';
 import {first} from 'rxjs/operators';
 import {GeoCode} from '../_model/GeoCode';
@@ -15,10 +16,13 @@ import {SidenavService} from './sidenav.service';
 import {Unit} from '../_model/Unit';
 import {OpenUnitInfoService} from './open-unit-info.service';
 import {environment} from '../../environments/environment.prod';
-import * as turf from '@turf/turf';
-import {Feature, MultiPolygon, Polygon} from 'geojson';
+// import {Feature, Polygon} from 'geojson';
 import {ParkService} from './park.service';
-import * as tHealpers from '@turf/helpers';
+import * as _helpers from '@turf/helpers';
+import {Feature, FeatureCollection, MultiPolygon, Polygon} from '@turf/helpers';
+import * as turf from '@turf/turf';
+
+// import * as _difference from '@turf/difference';
 
 
 @Injectable({
@@ -47,8 +51,10 @@ export class MapService implements OnInit, OnDestroy {
   renderer: Renderer2;
   private ownUnitsSource: any;
   private viewportSource: any;
+  private queryViewportSource: any;
   private colors = ['#212121', '#fbc02d', '#c2c3c2'];
-  private viewportPolygon: tHealpers.Feature<Polygon>;
+  private viewportMultiPolygons: Feature<MultiPolygon> = turf.multiPolygon([]);
+  private isViewportFirstLoading = true;
 
 
   constructor(private logger: NGXLogger,
@@ -155,8 +161,19 @@ export class MapService implements OnInit, OnDestroy {
               data: {
                 type: 'Feature',
                 geometry: {
-                  type: 'Polygon',
-                  coordinates: [[]]
+                  type: 'MultiPolygon',
+                  coordinates: [[[]]]
+                },
+                properties: {}
+              }
+            });
+            this.map.addSource('queryViewportSource', {
+              type: 'geojson',
+              data: {
+                type: 'Feature',
+                geometry: {
+                  type: 'MultiPolygon',
+                  coordinates: [[[]]]
                 },
                 properties: {}
               }
@@ -165,6 +182,7 @@ export class MapService implements OnInit, OnDestroy {
             /// get source
             this.ownUnitsSource = this.map.getSource('ownUnitsSource');
             this.viewportSource = this.map.getSource('viewportSource');
+            this.queryViewportSource = this.map.getSource('queryViewportSource');
 
             // create map layers with realtime data
             this.map.addLayer({
@@ -174,7 +192,17 @@ export class MapService implements OnInit, OnDestroy {
               layout: {},
               paint: {
                 'fill-color': '#088',
-                'fill-opacity': 0.8
+                'fill-opacity': 0.5
+              }
+            });
+            this.map.addLayer({
+              id: 'queryViewportLayer',
+              source: 'queryViewportSource',
+              type: 'fill',
+              layout: {},
+              paint: {
+                'fill-color': 'red',
+                'fill-opacity': 0.5
               }
             });
             this.map.addLayer({
@@ -236,7 +264,7 @@ export class MapService implements OnInit, OnDestroy {
             this.userService.currentUser.pipe(untilDestroyed(this))
               .subscribe(user => {
                 this.currentUser = user;
-                this.ownUnitsSource.setData(new FeatureCollection(new Array<GeoJson>()));
+                this.ownUnitsSource.setData(new FCollModel.FeatureCollection(new Array<GeoJson>()));
 
                 // Adding popup, user's marker and user's geocode
                 try {
@@ -261,7 +289,7 @@ export class MapService implements OnInit, OnDestroy {
                       unit.location.geometry.coordinates,
                       unit.id, {paid: environment.testing_paid ? true : unit.paid}));
                   });
-                  const data = new FeatureCollection(unitsLocArray);
+                  const data = new FCollModel.FeatureCollection(unitsLocArray);
                   // console.log(JSON.stringify(data));
                   this.ownUnitsSource.setData(data);
                 }
@@ -716,34 +744,97 @@ export class MapService implements OnInit, OnDestroy {
   }
 
   loadDataOnMoveend() {
-    const currentViewportFromMap = turf.polygon([[
+    const currentViewportFromMap = _helpers.polygon([[
       this.map.getBounds().getNorthEast().toArray(),
       this.map.getBounds().getSouthEast().toArray(),
       this.map.getBounds().getSouthWest().toArray(),
       this.map.getBounds().getNorthWest().toArray(),
       this.map.getBounds().getNorthEast().toArray()]]);
-    if (!this.viewportPolygon ||
-      !turf.intersect(this.viewportPolygon, currentViewportFromMap)) {
-      this.viewportPolygon = currentViewportFromMap;
+    const currentViewportFromMapMultiP = <Feature<MultiPolygon>> turf.multiPolygon(
+      [currentViewportFromMap.geometry.coordinates]);
+
+    // init viewportMultiPolygons
+    if (this.viewportMultiPolygons.geometry.coordinates.length === 0) {
+      this.viewportMultiPolygons.geometry.coordinates.push(
+        currentViewportFromMap.geometry.coordinates);
     }
-    if (!turf.booleanContains(this.viewportPolygon, currentViewportFromMap) ||
-      this.viewportPolygon.geometry.coordinates ===
-      currentViewportFromMap.geometry.coordinates) {
-      const odlViewportPolygon = this.viewportPolygon;
-      this.viewportPolygon = currentViewportFromMap;
-      let queryPolygon: any;
-      (this.viewportPolygon.geometry.coordinates ===
-        currentViewportFromMap.geometry.coordinates)
-        ? queryPolygon = currentViewportFromMap :
-        queryPolygon = turf.difference(this.viewportPolygon, odlViewportPolygon);
+
+    // add if not intersect
+    if (!turf.difference(currentViewportFromMapMultiP, this.viewportMultiPolygons)
+      && !turf.booleanEqual(currentViewportFromMapMultiP, this.viewportMultiPolygons)) {
+      currentViewportFromMapMultiP.geometry.coordinates.forEach(coord => {
+        this.viewportMultiPolygons.geometry.coordinates.push(coord);
+      });
+    }
+
+    // should do request?
+    // if equal, full outside or overlapsing
+    let isContain = false;
+    this.viewportMultiPolygons.geometry.coordinates.forEach(coord => {
+      const poly = turf.polygon(coord);
+      if (turf.booleanContains(poly, currentViewportFromMap)) {
+        isContain = true;
+      }
+    });
+    if (!isContain ||
+      (turf.booleanEqual(this.viewportMultiPolygons, currentViewportFromMapMultiP)
+        && this.isViewportFirstLoading)) {
+      const oldViewportMultiPolygon = turf.clone(this.viewportMultiPolygons);
+      if (!this.isViewportFirstLoading) {
+        this.viewportMultiPolygons.geometry.coordinates.push(currentViewportFromMap.geometry.coordinates);
+        this.viewportMultiPolygons = turf.clone(this.joinPolygons(this.viewportMultiPolygons));
+      }
+
+      // query
+      let queryPolygon: Feature<MultiPolygon>;
+      if (turf.booleanEqual(oldViewportMultiPolygon, this.viewportMultiPolygons)) {
+        queryPolygon = this.viewportMultiPolygons;
+      } else {
+        queryPolygon = <Feature<MultiPolygon>>turf.difference(this.viewportMultiPolygons,
+          oldViewportMultiPolygon);
+      }
+
       this.parkService.loadDataOnMoveEnd(queryPolygon).subscribe(data => {
         console.log(data);
       });
-      this.viewportPolygon = <tHealpers.Feature<Polygon>>turf.union(odlViewportPolygon,
-        this.viewportPolygon);
-      // if (this.viewportSource) {
-      //   this.viewportSource.setData(this.viewportPolygon);
-      // }
+
+      if (this.viewportSource) {
+        this.viewportSource.setData(this.viewportMultiPolygons);
+      }
+      if (this.queryViewportSource) {
+        this.queryViewportSource.setData(queryPolygon);
+      }
+      this.isViewportFirstLoading = false;
+    }
+  }
+
+  joinPolygons(mp: Feature<MultiPolygon>): Feature<MultiPolygon> {
+    // console.log('simplefyPoly inn: \n' + JSON.stringify(mp));
+    if (mp && mp.geometry.coordinates.length > 1) {
+      const seporatePolygonCollection = turf.multiPolygon([]);
+      let joinedPolygon = turf.polygon(mp.geometry.coordinates[0]);
+      let stop = true;
+      mp.geometry.coordinates.forEach((coord) => {
+        const poly = turf.polygon(coord);
+        if (!turf.booleanEqual(joinedPolygon, poly) &&
+          turf.intersect(joinedPolygon, poly)) {
+          joinedPolygon = turf.clone(<Feature<Polygon>>turf.union(joinedPolygon, <Feature<Polygon>>poly));
+          stop = false;
+        }
+        if (!turf.booleanEqual(joinedPolygon, poly) &&
+          !turf.intersect(joinedPolygon, poly)) {
+          seporatePolygonCollection.geometry.coordinates.push(coord);
+        }
+      });
+      seporatePolygonCollection.geometry.coordinates.push(joinedPolygon.geometry.coordinates);
+      if (!stop) {
+        return this.joinPolygons(seporatePolygonCollection);
+      }
+      // console.log('simplefyPoly out: \n' + JSON.stringify(seporatePolygonCollection));
+      return seporatePolygonCollection;
+    } else {
+      // console.log('simplefyPoly out mp.features.length <= 1: \n' + JSON.stringify(mp));
+      return mp;
     }
   }
 }
