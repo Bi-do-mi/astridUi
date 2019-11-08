@@ -7,8 +7,8 @@ import {HttpClient} from '@angular/common/http';
 import {User} from '../_model/User';
 import {SnackBarService} from './snack-bar.service';
 import {untilDestroyed} from 'ngx-take-until-destroy';
-import {GeoJson} from '../_model/MarkerSourceModel';
 import * as FCollModel from '../_model/MarkerSourceModel';
+import {GeoJson} from '../_model/MarkerSourceModel';
 import {UserService} from './user.service';
 import {first} from 'rxjs/operators';
 import {GeoCode} from '../_model/GeoCode';
@@ -50,6 +50,7 @@ export class MapService implements OnInit, OnDestroy {
   isPopupOpened = false;
   renderer: Renderer2;
   private ownUnitsSource: any;
+  private unitsSource: any;
   private viewportSource: any;
   private queryViewportSource: any;
   private colors = ['#212121', '#fbc02d', '#c2c3c2'];
@@ -156,6 +157,16 @@ export class MapService implements OnInit, OnDestroy {
               clusterMaxZoom: 8, // Max zoom to cluster points on
               clusterRadius: 50
             });
+            this.map.addSource('unitsSource', {
+              type: 'geojson',
+              data: {
+                type: 'FeatureCollection',
+                features: []
+              },
+              cluster: true,
+              clusterMaxZoom: 8, // Max zoom to cluster points on
+              clusterRadius: 50
+            });
             this.map.addSource('viewportSource', {
               type: 'geojson',
               data: {
@@ -181,6 +192,7 @@ export class MapService implements OnInit, OnDestroy {
 
             /// get source
             this.ownUnitsSource = this.map.getSource('ownUnitsSource');
+            this.unitsSource = this.map.getSource('unitsSource');
             this.viewportSource = this.map.getSource('viewportSource');
             this.queryViewportSource = this.map.getSource('queryViewportSource');
 
@@ -208,6 +220,22 @@ export class MapService implements OnInit, OnDestroy {
             this.map.addLayer({
               id: 'ownUnitsLayer',
               source: 'ownUnitsSource',
+              type: 'circle',
+              filter: ['!', ['has', 'point_count']],
+              paint: {
+                'circle-color': ['case',
+                  ['case',
+                    ['has', 'paid'], ['get', 'paid'],
+                    false], this.colors[1],
+                  this.colors[2]],
+                'circle-radius': 4,
+                'circle-stroke-width': 2,
+                'circle-stroke-color': this.colors[0]
+              }
+            });
+            this.map.addLayer({
+              id: 'unitsLayer',
+              source: 'unitsSource',
               type: 'circle',
               filter: ['!', ['has', 'point_count']],
               paint: {
@@ -253,6 +281,45 @@ export class MapService implements OnInit, OnDestroy {
               id: 'ownUnitsLayerClusterCount',
               type: 'symbol',
               source: 'ownUnitsSource',
+              filter: ['has', 'point_count'],
+              layout: {
+                'text-field': '{point_count_abbreviated}',
+                'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
+                'text-size': 12
+              }
+            });
+            this.map.addLayer({
+              id: 'unitsLayerClusters',
+              type: 'circle',
+              source: 'unitsSource',
+              filter: ['has', 'point_count'],
+              paint: {
+                'circle-color': [
+                  'step',
+                  ['get', 'point_count'],
+                  '#FBDC2E',
+                  100,
+                  '#FBC02D',
+                  750,
+                  '#FBAF30'
+                ],
+                'circle-radius': [
+                  'step',
+                  ['get', 'point_count'],
+                  20,
+                  100,
+                  30,
+                  750,
+                  40
+                ],
+                'circle-stroke-color': this.colors[0],
+                'circle-stroke-width': 3
+              }
+            });
+            this.map.addLayer({
+              id: 'unitsLayerClusterCount',
+              type: 'symbol',
+              source: 'unitsSource',
               filter: ['has', 'point_count'],
               layout: {
                 'text-field': '{point_count_abbreviated}',
@@ -759,30 +826,41 @@ export class MapService implements OnInit, OnDestroy {
         currentViewportFromMap.geometry.coordinates);
     }
 
+    // should do request?
+    // if equal, full outside or overlapsing
+    let isViewportMultiPolygonsContain = false;
+    this.viewportMultiPolygons.geometry.coordinates.forEach(coord => {
+      const poly = turf.polygon(coord);
+      if (turf.booleanContains(poly, currentViewportFromMap)) {
+        isViewportMultiPolygonsContain = true;
+      }
+    });
+    let isCurrentViewportContain = false;
+    if (!turf.difference(this.viewportMultiPolygons, currentViewportFromMapMultiP)
+      && turf.difference(currentViewportFromMapMultiP, this.viewportMultiPolygons)) {
+      isCurrentViewportContain = true;
+    }
+
     // add if not intersect
-    if (!turf.difference(currentViewportFromMapMultiP, this.viewportMultiPolygons)
-      && !turf.booleanEqual(currentViewportFromMapMultiP, this.viewportMultiPolygons)) {
+    if (!isCurrentViewportContain
+      && !turf.booleanEqual(currentViewportFromMapMultiP, this.viewportMultiPolygons)
+      && !turf.difference(this.viewportMultiPolygons, currentViewportFromMapMultiP)
+      && !turf.difference(currentViewportFromMapMultiP, this.viewportMultiPolygons)) {
       currentViewportFromMapMultiP.geometry.coordinates.forEach(coord => {
         this.viewportMultiPolygons.geometry.coordinates.push(coord);
       });
     }
 
-    // should do request?
-    // if equal, full outside or overlapsing
-    let isContain = false;
-    this.viewportMultiPolygons.geometry.coordinates.forEach(coord => {
-      const poly = turf.polygon(coord);
-      if (turf.booleanContains(poly, currentViewportFromMap)) {
-        isContain = true;
-      }
-    });
-    if (!isContain ||
+    if (!isViewportMultiPolygonsContain ||
       (turf.booleanEqual(this.viewportMultiPolygons, currentViewportFromMapMultiP)
         && this.isViewportFirstLoading)) {
       const oldViewportMultiPolygon = turf.clone(this.viewportMultiPolygons);
       if (!this.isViewportFirstLoading) {
-        this.viewportMultiPolygons.geometry.coordinates.push(currentViewportFromMap.geometry.coordinates);
-        this.viewportMultiPolygons = turf.clone(this.joinPolygons(this.viewportMultiPolygons));
+        this.viewportMultiPolygons.geometry.coordinates.push(
+          currentViewportFromMap.geometry.coordinates);
+        const result = this.joinPolygons(this.viewportMultiPolygons);
+        // console.log('result: \n' + JSON.stringify(result));
+        this.viewportMultiPolygons = turf.clone(result);
       }
 
       // query
@@ -790,8 +868,14 @@ export class MapService implements OnInit, OnDestroy {
       if (turf.booleanEqual(oldViewportMultiPolygon, this.viewportMultiPolygons)) {
         queryPolygon = this.viewportMultiPolygons;
       } else {
-        queryPolygon = <Feature<MultiPolygon>>turf.difference(this.viewportMultiPolygons,
-          oldViewportMultiPolygon);
+        if (turf.getType(turf.difference(this.viewportMultiPolygons,
+          oldViewportMultiPolygon)) === 'Polygon') {
+          queryPolygon = turf.multiPolygon([(<Feature<Polygon>>turf.difference(
+            this.viewportMultiPolygons, oldViewportMultiPolygon)).geometry.coordinates]);
+        } else {
+          queryPolygon = <Feature<MultiPolygon>>turf.difference(this.viewportMultiPolygons,
+            oldViewportMultiPolygon);
+        }
       }
 
       this.parkService.loadDataOnMoveEnd(queryPolygon).subscribe(data => {
@@ -809,31 +893,28 @@ export class MapService implements OnInit, OnDestroy {
   }
 
   joinPolygons(mp: Feature<MultiPolygon>): Feature<MultiPolygon> {
-    // console.log('simplefyPoly inn: \n' + JSON.stringify(mp));
     if (mp && mp.geometry.coordinates.length > 1) {
-      const seporatePolygonCollection = turf.multiPolygon([]);
-      let joinedPolygon = turf.polygon(mp.geometry.coordinates[0]);
-      let stop = true;
-      mp.geometry.coordinates.forEach((coord) => {
-        const poly = turf.polygon(coord);
-        if (!turf.booleanEqual(joinedPolygon, poly) &&
-          turf.intersect(joinedPolygon, poly)) {
-          joinedPolygon = turf.clone(<Feature<Polygon>>turf.union(joinedPolygon, <Feature<Polygon>>poly));
-          stop = false;
+      let resultMPoly = turf.clone(mp);
+      const mpLength = mp.geometry.coordinates.length;
+      for (let i = 0; i < mpLength; i++) {
+        const poly = turf.polygon(mp.geometry.coordinates[i]);
+        for (let k = 0; k < mpLength; k++) {
+          const poly2 = turf.polygon(mp.geometry.coordinates[k]);
+          if (i !== k && !turf.booleanEqual(poly, poly2) && turf.intersect(poly, poly2)) {
+            const joinedPoly = <Feature<Polygon>>turf.union(poly, poly2);
+            resultMPoly.geometry.coordinates = [];
+            resultMPoly.geometry.coordinates.push(joinedPoly.geometry.coordinates);
+            for (let j = 0; j < mpLength; j++) {
+              if (j !== i && j !== k) {
+                resultMPoly.geometry.coordinates.push(mp.geometry.coordinates[j]);
+              }
+            }
+            resultMPoly = this.joinPolygons(resultMPoly);
+          }
         }
-        if (!turf.booleanEqual(joinedPolygon, poly) &&
-          !turf.intersect(joinedPolygon, poly)) {
-          seporatePolygonCollection.geometry.coordinates.push(coord);
-        }
-      });
-      seporatePolygonCollection.geometry.coordinates.push(joinedPolygon.geometry.coordinates);
-      if (!stop) {
-        return this.joinPolygons(seporatePolygonCollection);
       }
-      // console.log('simplefyPoly out: \n' + JSON.stringify(seporatePolygonCollection));
-      return seporatePolygonCollection;
+      return resultMPoly;
     } else {
-      // console.log('simplefyPoly out mp.features.length <= 1: \n' + JSON.stringify(mp));
       return mp;
     }
   }
