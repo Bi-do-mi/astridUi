@@ -106,8 +106,9 @@
     <div id="a-canvas" fxLayout="column">
       <div fxLayout="row">
         <mat-toolbar color="primary" class="mat-elevation-z6" fxLayout="row">
-          <a tabindex="-1" [ngStyle]="{'text-decoration': 'none','color': 'white'}" href=""
-             [routerLink]="['/']">Астрид</a>
+          <a tabindex="-1" *ngIf="!setPointMode" [ngStyle]="{'text-decoration': 'none','color': 'white'}"
+             href="" [routerLink]="['/']">Астрид</a>
+          <span *ngIf="setPointMode">Астрид</span>
           <div fxFlex></div>
           <a mat-button (click)="routingToLoginPage()" *ngIf="currentUser&&
           !currentUser?.name && !(isHandset$ | async)

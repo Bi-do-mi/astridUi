@@ -20,4 +20,15 @@ export class User {
   location: GeoJson;
   units: Unit[];
   image: UserImage;
+
+  hasUnit(id: number): boolean {
+    if (this.units && this.units.length > 0) {
+      this.units.forEach((u: Unit) => {
+        if (u.id === id) {
+          return true;
+        }
+      });
+    }
+    return false;
+  }
 }

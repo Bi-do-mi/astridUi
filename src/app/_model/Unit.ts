@@ -5,7 +5,7 @@ import {UnitOptionModel} from '../components/unit-create-dialog/UnitOptions/Unit
 
 export class Unit {
   id: number;
-  ouner: number;
+  ownerId: number;
   type: string;
   brand: string;
   model: string;

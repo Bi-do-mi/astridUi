@@ -53,9 +53,11 @@ export class MapService implements OnInit, OnDestroy {
   private unitsSource: any;
   private viewportSource: any;
   private queryViewportSource: any;
-  private colors = ['#212121', '#fbc02d', '#c2c3c2'];
+  private colors = ['#212121', '#fbc02d', '#c2c3c2', '#0bc714'];
   private viewportMultiPolygons: Feature<MultiPolygon> = turf.multiPolygon([]);
+  private queryPolygon: Feature<MultiPolygon>;
   private isViewportFirstLoading = true;
+  private unitsCache_ = new Array<Unit>();
 
 
   constructor(private logger: NGXLogger,
@@ -109,7 +111,7 @@ export class MapService implements OnInit, OnDestroy {
           this._map.addControl(new mapboxgl.ScaleControl());
           this._map.addControl(new mapboxgl.FullscreenControl());
 
-          // click listener
+          // map click listener
           this._map.on('click', (event) => {
             const p = new GeoJson(
               [+event.lngLat.lng.toFixed(6),
@@ -117,7 +119,7 @@ export class MapService implements OnInit, OnDestroy {
             this._clickedPoint$.next(p);
           });
 
-          // movestart listener
+          // map movestart listener
           this.map.on('movestart', () => {
             if ((this.privateMarkers.length > 0 || this.userMarker) && this.isPopupOpened) {
               this.privateMarkers.forEach(m => {
@@ -132,13 +134,13 @@ export class MapService implements OnInit, OnDestroy {
             }
           });
 
-          // moveend listener
+          // map moveend listener
           this.map.on('moveend', () => {
             if (this.map.getZoom() >= 8) {
-              this.loadDataOnMoveend();
+              this.loadDataOnMoveEnd();
             }
             if (this.map.getZoom() < 8 && !this.snackBarService.isOpen()) {
-              this.snackBarService.success('Для загрузки данных приблизте карту.', 'OK', 10000);
+              this.snackBarService.success('Для загрузки данных приблизьте карту.', 'OK', 10000);
             }
           });
 
@@ -234,22 +236,6 @@ export class MapService implements OnInit, OnDestroy {
               }
             });
             this.map.addLayer({
-              id: 'unitsLayer',
-              source: 'unitsSource',
-              type: 'circle',
-              filter: ['!', ['has', 'point_count']],
-              paint: {
-                'circle-color': ['case',
-                  ['case',
-                    ['has', 'paid'], ['get', 'paid'],
-                    false], this.colors[1],
-                  this.colors[2]],
-                'circle-radius': 4,
-                'circle-stroke-width': 2,
-                'circle-stroke-color': this.colors[0]
-              }
-            });
-            this.map.addLayer({
               id: 'ownUnitsLayerClusters',
               type: 'circle',
               source: 'ownUnitsSource',
@@ -289,6 +275,22 @@ export class MapService implements OnInit, OnDestroy {
               }
             });
             this.map.addLayer({
+              id: 'unitsLayer',
+              source: 'unitsSource',
+              type: 'circle',
+              filter: ['!', ['has', 'point_count']],
+              paint: {
+                'circle-color': ['case',
+                  ['case',
+                    ['has', 'paid'], ['get', 'paid'],
+                    false], this.colors[3],
+                  this.colors[2]],
+                'circle-radius': 4,
+                'circle-stroke-width': 2,
+                'circle-stroke-color': this.colors[0]
+              }
+            });
+            this.map.addLayer({
               id: 'unitsLayerClusters',
               type: 'circle',
               source: 'unitsSource',
@@ -297,11 +299,11 @@ export class MapService implements OnInit, OnDestroy {
                 'circle-color': [
                   'step',
                   ['get', 'point_count'],
-                  '#FBDC2E',
+                  '#0dea18',
                   100,
-                  '#FBC02D',
+                  '#0bc714',
                   750,
-                  '#FBAF30'
+                  '#099f10'
                 ],
                 'circle-radius': [
                   'step',
@@ -332,7 +334,7 @@ export class MapService implements OnInit, OnDestroy {
               .subscribe(user => {
                 this.currentUser = user;
                 this.ownUnitsSource.setData(new FCollModel.FeatureCollection(new Array<GeoJson>()));
-
+                this.parkService.loadDataOnMoveEnd(this.viewportMultiPolygons);
                 // Adding popup, user's marker and user's geocode
                 try {
                   if (this.userMarker) {
@@ -360,6 +362,11 @@ export class MapService implements OnInit, OnDestroy {
                   // console.log(JSON.stringify(data));
                   this.ownUnitsSource.setData(data);
                 }
+              });
+            this.parkService.unitsCacheFiltered.pipe(untilDestroyed(this))
+              .subscribe((unitsCache: Array<Unit>) => {
+                this.unitsCache_ = unitsCache;
+                this.updateUnitsSource();
               });
 
             this.navigatorCheck();
@@ -810,7 +817,7 @@ export class MapService implements OnInit, OnDestroy {
       .addTo(this.map);
   }
 
-  loadDataOnMoveend() {
+  loadDataOnMoveEnd() {
     const currentViewportFromMap = _helpers.polygon([[
       this.map.getBounds().getNorthEast().toArray(),
       this.map.getBounds().getSouthEast().toArray(),
@@ -864,30 +871,27 @@ export class MapService implements OnInit, OnDestroy {
       }
 
       // query
-      let queryPolygon: Feature<MultiPolygon>;
       if (turf.booleanEqual(oldViewportMultiPolygon, this.viewportMultiPolygons)) {
-        queryPolygon = this.viewportMultiPolygons;
+        this.queryPolygon = this.viewportMultiPolygons;
       } else {
         if (turf.getType(turf.difference(this.viewportMultiPolygons,
           oldViewportMultiPolygon)) === 'Polygon') {
-          queryPolygon = turf.multiPolygon([(<Feature<Polygon>>turf.difference(
+          this.queryPolygon = turf.multiPolygon([(<Feature<Polygon>>turf.difference(
             this.viewportMultiPolygons, oldViewportMultiPolygon)).geometry.coordinates]);
         } else {
-          queryPolygon = <Feature<MultiPolygon>>turf.difference(this.viewportMultiPolygons,
+          this.queryPolygon = <Feature<MultiPolygon>>turf.difference(this.viewportMultiPolygons,
             oldViewportMultiPolygon);
         }
       }
 
-      this.parkService.loadDataOnMoveEnd(queryPolygon).subscribe(data => {
-        console.log(data);
-      });
+      this.parkService.loadDataOnMoveEnd(this.queryPolygon);
 
-      if (this.viewportSource) {
-        this.viewportSource.setData(this.viewportMultiPolygons);
-      }
-      if (this.queryViewportSource) {
-        this.queryViewportSource.setData(queryPolygon);
-      }
+      // if (this.viewportSource) {
+      //   this.viewportSource.setData(this.viewportMultiPolygons);
+      // }
+      // if (this.queryViewportSource) {
+      //   this.queryViewportSource.setData(queryPolygon);
+      // }
       this.isViewportFirstLoading = false;
     }
   }
@@ -917,6 +921,17 @@ export class MapService implements OnInit, OnDestroy {
     } else {
       return mp;
     }
+  }
+
+  updateUnitsSource() {
+    const tempArr = new Array<GeoJson>();
+    this.unitsCache_.forEach(un => {
+      tempArr.push(new GeoJson(
+        un.location.geometry.coordinates,
+        un.id, {paid: environment.testing_paid ? true : un.paid}));
+    });
+    // console.log('unitsCacheFiltered.length: \n' + this.unitsCache_.length);
+    this.unitsSource.setData(new FCollModel.FeatureCollection(tempArr));
   }
 }
 

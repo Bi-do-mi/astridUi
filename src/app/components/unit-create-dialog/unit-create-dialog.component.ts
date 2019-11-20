@@ -226,7 +226,7 @@ export class UnitCreateDialogComponent implements OnInit, AfterViewInit, OnDestr
       console.log('invalid selectForm. return');
       return;
     }
-    this.data.unit.ouner = this.currentUser.id;
+    this.data.unit.ownerId = this.currentUser.id;
     this.data.unit.type = this.selectForm.get('typeCtrl').value;
     this.data.unit.brand = this.selectForm.get('brandCtrl').value;
     this.data.unit.model = this.selectForm.get('modelCtrl').value;
