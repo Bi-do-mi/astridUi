@@ -21,6 +21,7 @@ import {ParkService} from './park.service';
 import * as _helpers from '@turf/helpers';
 import {Feature, FeatureCollection, MultiPolygon, Polygon} from '@turf/helpers';
 import * as turf from '@turf/turf';
+import {source} from 'openlayers';
 
 // import * as _difference from '@turf/difference';
 
@@ -50,6 +51,7 @@ export class MapService implements OnInit, OnDestroy {
   isPopupOpened = false;
   renderer: Renderer2;
   private ownUnitsSource: any;
+  private usersSource: any;
   private unitsSource: any;
   private viewportSource: any;
   private queryViewportSource: any;
@@ -57,6 +59,7 @@ export class MapService implements OnInit, OnDestroy {
   private viewportMultiPolygons: Feature<MultiPolygon> = turf.multiPolygon([]);
   private queryPolygon: Feature<MultiPolygon>;
   private isViewportFirstLoading = true;
+  private usersCache_ = new Array<User>();
   private unitsCache_ = new Array<Unit>();
 
 
@@ -159,6 +162,16 @@ export class MapService implements OnInit, OnDestroy {
               clusterMaxZoom: 8, // Max zoom to cluster points on
               clusterRadius: 50
             });
+            this.map.addSource('usersSource', {
+              type: 'geojson',
+              data: {
+                type: 'FeatureCollection',
+                features: []
+              },
+              cluster: true,
+              clusterMaxZoom: 8, // Max zoom to cluster points on
+              clusterRadius: 50
+            });
             this.map.addSource('unitsSource', {
               type: 'geojson',
               data: {
@@ -194,6 +207,7 @@ export class MapService implements OnInit, OnDestroy {
 
             /// get source
             this.ownUnitsSource = this.map.getSource('ownUnitsSource');
+            this.usersSource = this.map.getSource('usersSource');
             this.unitsSource = this.map.getSource('unitsSource');
             this.viewportSource = this.map.getSource('viewportSource');
             this.queryViewportSource = this.map.getSource('queryViewportSource');
@@ -329,6 +343,61 @@ export class MapService implements OnInit, OnDestroy {
                 'text-size': 12
               }
             });
+            this.map.addLayer({
+              id: 'usersLayer',
+              source: 'usersSource',
+              type: 'symbol',
+              filter: ['!', ['has', 'point_count']],
+              layout: {
+                'text-field': 'P',
+                'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
+                'text-size': 14
+              },
+              paint: {
+                'text-color': '#fbc02d',
+                'text-halo-color': '#212121',
+                'text-halo-width': 1
+              }
+            });
+            this.map.addLayer({
+              id: 'usersLayerClusters',
+              type: 'circle',
+              source: 'usersSource',
+              filter: ['has', 'point_count'],
+              paint: {
+                'circle-color': [
+                  'step',
+                  ['get', 'point_count'],
+                  '#0dea18',
+                  100,
+                  '#0bc714',
+                  750,
+                  '#099f10'
+                ],
+                'circle-radius': [
+                  'step',
+                  ['get', 'point_count'],
+                  20,
+                  100,
+                  30,
+                  750,
+                  40
+                ],
+                'circle-stroke-color': this.colors[0],
+                'circle-stroke-width': 3
+              }
+            });
+            this.map.addLayer({
+              id: 'usersLayerClusterCount',
+              type: 'symbol',
+              source: 'usersSource',
+              filter: ['has', 'point_count'],
+              layout: {
+                'text-field': '{point_count_abbreviated}',
+                'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
+                'text-size': 12
+              }
+            });
 
             this.userService.currentUser.pipe(untilDestroyed(this))
               .subscribe(user => {
@@ -363,6 +432,11 @@ export class MapService implements OnInit, OnDestroy {
                   this.ownUnitsSource.setData(data);
                 }
               });
+            this.parkService.usersCacheFiltered.pipe(untilDestroyed(this))
+              .subscribe((usersCache: Array<User>) => {
+                this.usersCache_ = usersCache;
+                this.updateUsersSource();
+              });
             this.parkService.unitsCacheFiltered.pipe(untilDestroyed(this))
               .subscribe((unitsCache: Array<Unit>) => {
                 this.unitsCache_ = unitsCache;
@@ -372,107 +446,10 @@ export class MapService implements OnInit, OnDestroy {
             this.navigatorCheck();
           });
 
-          this.map.on('click', 'ownUnitsLayer', (e) => {
-            this.openUnitInfoCardDialog(this.currentUser.units
-              .filter((unit, i, arr) => {
-                if (unit.id === e.features[0].id) {
-                  return true;
-                }
-              })[0]);
-          });
+          this.tunePopup('ownUnitsLayer', 'ownUnitsLayerClusters', 'ownUnitsSource');
+          this.tunePopup('unitsLayer', 'unitsLayerClusters', 'unitsSource');
 
-          let timer: any;
-          let isMouseOnPopup = false;
-          const popup = new mapboxgl.Popup({
-            closeButton: false, closeOnClick: false, offset: 10, maxWidth: '300'
-          });
-
-          this.map.on('mouseenter', 'ownUnitsLayer', (e) => {
-            this.map.getCanvas().style.cursor = 'pointer';
-            const unit = this.currentUser.units.filter((u, i, arr) => {
-              if (u.id === e.features[0].id) {
-                return true;
-              }
-            })[0];
-            if (unit) {
-              popup.setLngLat(e.lngLat);
-              // adding popups mouseenter listener
-              const div = this.renderer.createElement('div');
-              this.renderer.setStyle(div, 'cursor', 'pointer');
-              div.addEventListener('mouseenter', () => isMouseOnPopup = true);
-              // adding popups mouselive listener
-              div.addEventListener('mouseleave', () => {
-                isMouseOnPopup = false;
-                if (popup.isOpen()) {
-                  popup.remove();
-                }
-              });
-              // adding popups click listener
-              div.addEventListener('click', () => {
-                isMouseOnPopup = false;
-                if (popup.isOpen()) {
-                  popup.remove();
-                }
-                this.openUnitInfoCardDialog(unit);
-              });
-              div.innerHTML =
-                '<div>\n' +
-                '<img src=' +
-                (unit.images[0] ? 'data:image/jpg;base64,' + unit.images[0].value
-                  : 'assets/pics/unit_pic_spacer-500x333.png')
-                + ' width="80">\n' +
-                '<div  style="display: inline-block">\n' +
-                '<p>' + unit.model + '</p>\n' +
-                '</div></div>';
-              popup.setDOMContent(div).on('open', () => {
-                this.isPopupOpened = true;
-              });
-              timer = setTimeout(() => {
-                if (!popup.isOpen()) {
-                  popup.addTo(this.map);
-                }
-              }, 500);
-            }
-          });
-
-          this.map.on('mouseleave', 'ownUnitsLayer', (e) => {
-            this.map.getCanvas().style.cursor = '';
-            if (!popup.isOpen()) {
-              clearTimeout(timer);
-            }
-            if (popup.isOpen()) {
-              setTimeout(() => {
-                clearTimeout(timer);
-                if (!isMouseOnPopup) {
-                  popup.remove();
-                }
-              }, 500);
-            }
-          });
-
-          // inspect a cluster on click
-          this.map.on('click', 'ownUnitsLayerClusters', (e) => {
-            const features = this.map.queryRenderedFeatures(e.point,
-              {layers: ['ownUnitsLayerClusters']}) as MapboxGeoJSONFeature[];
-            const clusterId = features[0].properties.cluster_id;
-            const source = this.map.getSource('ownUnitsSource') as GeoJSONSource;
-            source.getClusterExpansionZoom(clusterId, (err, zoom) => {
-              if (err) {
-                return;
-              }
-              this.map.easeTo({
-                center: JSON.parse(JSON.stringify(features[0].geometry)).coordinates,
-                zoom: zoom
-              });
-            });
-          });
-
-          this.map.on('mouseenter', 'ownUnitsLayerClusters', () => {
-            this.map.getCanvas().style.cursor = 'pointer';
-          });
-          this.map.on('mouseleave', 'ownUnitsLayerClusters', () => {
-            this.map.getCanvas().style.cursor = '';
-          });
+          //  set unitsCache Popups
         }, 10);
       }
     });
@@ -923,6 +900,17 @@ export class MapService implements OnInit, OnDestroy {
     }
   }
 
+  updateUsersSource() {
+    const tempArr = new Array<GeoJson>();
+    this.usersCache_.forEach(us => {
+      tempArr.push(new GeoJson(
+        us.location.geometry.coordinates,
+        us.id, {enabled: environment.testing_paid ? true : us.enabled}));
+    });
+    // console.log('unitsCacheFiltered.length: \n' + this.unitsCache_.length);
+    this.usersSource.setData(new FCollModel.FeatureCollection(tempArr));
+  }
+
   updateUnitsSource() {
     const tempArr = new Array<GeoJson>();
     this.unitsCache_.forEach(un => {
@@ -932,6 +920,130 @@ export class MapService implements OnInit, OnDestroy {
     });
     // console.log('unitsCacheFiltered.length: \n' + this.unitsCache_.length);
     this.unitsSource.setData(new FCollModel.FeatureCollection(tempArr));
+  }
+
+  tunePopup(layer: string, clusterLayer?: string, source_?: any) {
+    let timer: any;
+    let isMouseOnPopup = false;
+    const popup = new mapboxgl.Popup({
+      closeButton: false, closeOnClick: false, offset: 10, maxWidth: '300'
+    });
+
+    this.map.on('click', layer, (e) => {
+      let unit: Unit;
+      if (layer === 'ownUnitsLayer') {
+        unit = this.currentUser.units.filter((u, i, arr) => {
+          if (u.id === e.features[0].id) {
+            return true;
+          }
+        })[0];
+      }
+      if (layer === 'unitsLayer') {
+        unit = this.unitsCache_.filter((u, i, arr) => {
+          if (u.id === e.features[0].id) {
+            return true;
+          }
+        })[0];
+      }
+      this.openUnitInfoCardDialog(unit);
+    });
+
+    this.map.on('mouseenter', layer, (e) => {
+      this.map.getCanvas().style.cursor = 'pointer';
+      let unit: Unit;
+      if (layer === 'ownUnitsLayer') {
+        unit = this.currentUser.units.filter((u, i, arr) => {
+          if (u.id === e.features[0].id) {
+            return true;
+          }
+        })[0];
+      }
+      if (layer === 'unitsLayer') {
+        unit = this.unitsCache_.filter((u, i, arr) => {
+          if (u.id === e.features[0].id) {
+            return true;
+          }
+        })[0];
+      }
+      if (unit) {
+        popup.setLngLat(e.lngLat);
+        // adding popups mouseenter listener
+        const div = this.renderer.createElement('div');
+        this.renderer.setStyle(div, 'cursor', 'pointer');
+        div.addEventListener('mouseenter', () => isMouseOnPopup = true);
+        // adding popups mouselive listener
+        div.addEventListener('mouseleave', () => {
+          isMouseOnPopup = false;
+          if (popup.isOpen()) {
+            popup.remove();
+          }
+        });
+        // adding popups click listener
+        div.addEventListener('click', () => {
+          isMouseOnPopup = false;
+          if (popup.isOpen()) {
+            popup.remove();
+          }
+          this.openUnitInfoCardDialog(unit);
+        });
+        div.innerHTML =
+          '<div>\n' +
+          '<img src=' +
+          (unit.images[0] ? 'data:image/jpg;base64,' + unit.images[0].value
+            : 'assets/pics/unit_pic_spacer-500x333.png')
+          + ' width="80">\n' +
+          '<div  style="display: inline-block">\n' +
+          '<p>' + unit.model + '</p>\n' +
+          '</div></div>';
+        popup.setDOMContent(div).on('open', () => {
+          this.isPopupOpened = true;
+        });
+        timer = setTimeout(() => {
+          if (!popup.isOpen()) {
+            popup.addTo(this.map);
+          }
+        }, 500);
+      }
+    });
+
+    this.map.on('mouseleave', layer, (e) => {
+      this.map.getCanvas().style.cursor = '';
+      if (!popup.isOpen()) {
+        clearTimeout(timer);
+      }
+      if (popup.isOpen()) {
+        setTimeout(() => {
+          clearTimeout(timer);
+          if (!isMouseOnPopup) {
+            popup.remove();
+          }
+        }, 500);
+      }
+    });
+
+    // inspect a cluster on click
+    this.map.on('click', clusterLayer, (e) => {
+      const features = this.map.queryRenderedFeatures(e.point,
+        {layers: [clusterLayer]}) as MapboxGeoJSONFeature[];
+      const clusterId = features[0].properties.cluster_id;
+      const _source = this.map.getSource(source_) as GeoJSONSource;
+      _source.getClusterExpansionZoom(clusterId, (err, zoom) => {
+        if (err) {
+          return;
+        }
+        this.map.easeTo({
+          center: JSON.parse(JSON.stringify(features[0].geometry)).coordinates,
+          zoom: zoom
+        });
+      });
+    });
+
+    this.map.on('mouseenter', clusterLayer, () => {
+      this.map.getCanvas().style.cursor = 'pointer';
+    });
+    this.map.on('mouseleave', clusterLayer, () => {
+      this.map.getCanvas().style.cursor = '';
+    });
   }
 }
 
