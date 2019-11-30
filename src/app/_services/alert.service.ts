@@ -13,7 +13,7 @@ export class AlertService implements OnDestroy {
   private keepAfterNavigationChange = false;
 
   constructor(private router: Router, private logger: NGXLogger) {
-    // clear alert message on route change
+    // clear alert unit on route change
     router.events.pipe(untilDestroyed(this)).subscribe(event => {
       if (event instanceof NavigationStart) {
         if (this.keepAfterNavigationChange) {

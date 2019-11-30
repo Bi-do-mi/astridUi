@@ -1,4 +1,4 @@
-import {Component, EventEmitter, HostListener, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
+import {Component, EventEmitter, HostListener, Injector, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
 import {BreakpointObserver, Breakpoints} from '@angular/cdk/layout';
 import {Observable} from 'rxjs';
 import {filter, finalize, first, map} from 'rxjs/operators';
@@ -21,6 +21,9 @@ import {SetLocationCallService} from '../../_services/set-location-call.service'
 import {OpenUnitInfoService} from '../../_services/open-unit-info.service';
 import {NgxGalleryImage} from 'ngx-gallery';
 import {UnitInfoCardDialogComponent} from '../unit-info-card-dialog/unit-info-card-dialog.component';
+import {createCustomElement} from '@angular/elements';
+import {UnitsPopupComponent} from '../units-popup/units-popup.component';
+import {UsersPopupComponent} from '../users-popup/users-popup.component';
 
 @Component({
   selector: 'app-main-nav',
@@ -28,9 +31,9 @@ import {UnitInfoCardDialogComponent} from '../unit-info-card-dialog/unit-info-ca
   styleUrls: ['./main-nav.component.scss']
 })
 export class MainNavComponent implements OnInit, OnDestroy {
-  @ViewChild('left_drawer')
+  @ViewChild('left_drawer', {static: true})
   leftDrawer: MatSidenav;
-  @ViewChild('right_drawer')
+  @ViewChild('right_drawer', {static: true})
   rightDrawer: MatSidenav;
   hasBackdrop: boolean;
   searchContent: boolean;
@@ -54,7 +57,14 @@ export class MainNavComponent implements OnInit, OnDestroy {
               private dialog: MatDialog,
               private unitInfoDialog: MatDialog,
               private setLocationService: SetLocationCallService,
-              private openUnitInfoService: OpenUnitInfoService) {
+              private openUnitInfoService: OpenUnitInfoService,
+              private injector: Injector) {
+    // Convert `PopupComponent` to a custom element.
+    const UnitsPopup = createCustomElement(UnitsPopupComponent, {injector});
+    const UsersPopup = createCustomElement(UsersPopupComponent, {injector});
+    // Register the custom element with the browser.
+    customElements.define('units-popup', UnitsPopup);
+    customElements.define('users-popup', UsersPopup);
   }
 
   ngOnInit() {

@@ -18,6 +18,9 @@ export class ParkService implements OnDestroy {
   private unitsCacheFiltered$ = new BehaviorSubject<Array<Unit>>(new Array<Unit>());
   unitsCacheFiltered = this.unitsCacheFiltered$.asObservable();
   private units = new Map<number, Unit>();
+  private usersCacheFiltered$ = new BehaviorSubject<Array<User>>(new Array<User>());
+  usersCacheFiltered = this.usersCacheFiltered$.asObservable();
+  private users = new Map<number, User>();
 
   constructor(
     private http: HttpClient,
@@ -141,38 +144,77 @@ export class ParkService implements OnDestroy {
       }));
   }
 
-  refreshUnits(polygon: turf.Feature<turf.MultiPolygon>) {
-    this.units = new Map(this.units);
-    this.loadDataOnMoveEnd(polygon);
-  }
-
   loadDataOnMoveEnd(polygon: turf.Feature<turf.MultiPolygon>) {
     this.http.post<any>('rest/search/on_moveend', polygon)
-      .pipe(first(), untilDestroyed(this)).subscribe((data: Array<Array<Unit>>) => {
-      if (data && data[1].length > 0) {
-        data[1].forEach((u: Unit) => {
-          if (!this.units.has(u.id)) {
-            this.units.set(u.id, u);
-          }
-        });
-        this.unitsCacheFiltered$.next(this.filterUnits());
+      .pipe(first(), untilDestroyed(this)).subscribe((data: Array<Array<any>>) => {
+      if (data) {
+        if (data[0].length > 0) {
+          data[0].forEach((us: User) => {
+            if (!this.users.has(us.id)) {
+              this.users.set(us.id, us);
+            }
+          });
+          this.usersCacheFiltered$.next(this.filterUsers());
+        }
+        if (data[1].length > 0) {
+          data[1].forEach((u: Unit) => {
+            if (!this.units.has(u.id)) {
+              this.units.set(u.id, u);
+            }
+          });
+          this.unitsCacheFiltered$.next(this.filterUnits());
+        }
       }
     });
+  }
+
+  filterUsers(): Array<User> {
+    const users_ = new Map(this.users);
+    this.userService.currentUser.pipe(first(), untilDestroyed(this)).subscribe(
+      (user: User) => {
+        if (this.users.size > 0 && user) {
+          if (users_.has(user.id)) {
+            users_.delete(user.id);
+          }
+        }
+      });
+    // console.log('filterUnits: \n' + units_.size);
+    return Array.from(users_.values());
   }
 
   filterUnits(): Array<Unit> {
     const units_ = new Map(this.units);
-    this.userService.currentUser.pipe(first(), untilDestroyed(this)).subscribe((user: User) => {
-      if (this.units.size > 0 && user.units && user.units.length > 0) {
-        user.units.forEach((u: Unit) => {
-          if (units_.has(u.id)) {
-            units_.delete(u.id);
-          }
-        });
-      }
-    });
+    this.userService.currentUser.pipe(first(), untilDestroyed(this)).subscribe(
+      (user: User) => {
+        if (this.units.size > 0 && user.units && user.units.length > 0) {
+          user.units.forEach((u: Unit) => {
+            if (units_.has(u.id)) {
+              units_.delete(u.id);
+            }
+          });
+        }
+      });
     // console.log('filterUnits: \n' + units_.size);
     return Array.from(units_.values());
   }
 
+  loadUnitImgFromServer(unit: Unit) {
+    return this.http.put<any>('/rest/units/get_units_images', unit)
+      .pipe(first(), untilDestroyed(this), map((data: Unit) => {
+        if (this.units.has(data.id)) {
+          this.units.set(data.id, data);
+        }
+        return data;
+      }));
+  }
+
+  loadUsersImgFromServer(user: User) {
+    return this.http.put<any>('/rest/users/get_users_image', user)
+      .pipe(first(), untilDestroyed(this), map((data: User) => {
+        if (this.users.has(data.id)) {
+          this.users.set(data.id, data);
+        }
+        return data;
+      }));
+  }
 }

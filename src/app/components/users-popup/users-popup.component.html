@@ -1,0 +1,13 @@
+<div class="cursor-style" fxLayout="row">
+  <div class="img-place" fxLayout="row" fxLayoutAlign="center center">
+    <img width=80 *ngIf="(user?.image && user?.image?.value)"
+         src="data:image/jpg;base64,{{user.image.value}}">
+    <img width=80 *ngIf="(!user?.image)"
+         src="assets/pics/buldozer_.jpg">
+    <mat-spinner class="mat-accent" [diameter]="20"
+                 *ngIf="(user?.image && !user?.image.value)"></mat-spinner>
+  </div>
+  <div fxLayout="row" fxLayoutAlign="center center">
+    {{user?.name}}
+  </div>
+</div>

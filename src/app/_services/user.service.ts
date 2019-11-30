@@ -30,7 +30,7 @@ export class UserService implements OnDestroy {
         return this.http.get<any>('/rest/users/check-auth')
           .pipe(map((u: User) => {
             this.updateCurrentUser(u, true);
-            // console.log('incoming string User: \n' + u.units[0].model);
+            // console.log('incoming string User: \n' + u.units);
             this.authenticated = true;
             this.checkAdmin();
           }), untilDestroyed(this));

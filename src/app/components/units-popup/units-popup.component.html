@@ -1,0 +1,13 @@
+<div class="cursor-style" fxLayout="row" fxLayoutAlign="center">
+  <div class="img-place" fxLayout="row" fxLayoutAlign="center center">
+    <img width=80 *ngIf="(unit.images[0] && unit.images[0].value)"
+         src="data:image/jpg;base64,{{unit.images[0].value}}">
+    <img width=80 *ngIf="!(unit.images[0])"
+         src="assets/pics/unit_pic_spacer-600x400.png">
+    <mat-spinner class="mat-accent" [diameter]="20"
+                 *ngIf="(unit.images[0] && !unit.images[0].value)"></mat-spinner>
+  </div>
+  <div fxLayout="row" fxLayoutAlign="center center">
+    {{unit.model}}
+  </div>
+</div>

@@ -14,6 +14,7 @@ export class OpenUnitInfoService {
   }
 
   open(unit: Unit) {
+    // console.log('!!!!');
     const gallery = this.getGallery(unit);
     this.openUnitInfo$.next({unit, gallery});
   }

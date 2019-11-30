@@ -5,6 +5,9 @@ import {NgxGalleryAnimation, NgxGalleryImage, NgxGalleryOptions} from 'ngx-galle
 import {DateTimeFormatter, TemporalField, Year, ZonedDateTime} from 'js-joda';
 import {DeleteUnitDialogComponent} from '../delete-unit-dialog/delete-unit-dialog.component';
 import {untilDestroyed} from 'ngx-take-until-destroy';
+import {UserService} from '../../_services/user.service';
+import {User} from '../../_model/User';
+import {first} from 'rxjs/operators';
 
 @Component({
   selector: 'app-unit-info-card-dialog',
@@ -15,18 +18,30 @@ export class UnitInfoCardDialogComponent implements OnInit, OnDestroy {
   unit = new Unit();
   images: NgxGalleryImage[] = [];
   galleryOptions: NgxGalleryOptions[];
+  private isPrivate = false;
 
 
   constructor(
     private dialogRef: MatDialogRef<UnitInfoCardDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: { unit: Unit, image?: NgxGalleryImage[] },
-    private dialog: MatDialog) {
+    private dialog: MatDialog,
+    private userService: UserService) {
   }
 
   ngOnInit() {
+    this.userService.currentUser.pipe(first(), untilDestroyed(this))
+      .subscribe((user: User) => {
+        if (user.units && user.units.length > 0) {
+          user.units.forEach((u: Unit) => {
+            if (u.id === this.data.unit.id) {
+              this.isPrivate = true;
+            }
+          });
+        }
+      });
     this.dialogRef.disableClose = true;
     this.unit = this.data.unit;
-    if (this.data.unit.images.length > 0) {
+    if (this.data.unit.images.length > 0 && this.data.unit.images[0].value) {
       this.images = this.data.image;
     } else {
       this.images.push({

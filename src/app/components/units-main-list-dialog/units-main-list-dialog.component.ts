@@ -20,8 +20,8 @@ import {UnitCreateDialogComponent} from '../unit-create-dialog/unit-create-dialo
   styleUrls: ['./units-main-list-dialog.component.scss']
 })
 export class UnitsMainListDialogComponent implements OnInit, OnDestroy {
-  @ViewChild(MatPaginator) paginator: MatPaginator;
-  @ViewChild(MatSort) sort: MatSort;
+  @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
+  @ViewChild(MatSort, { static: true }) sort: MatSort;
   dataSource: UnitDataSource;
   columnsToDisplay = ['model'];
   galleryOptions: NgxGalleryOptions[];
