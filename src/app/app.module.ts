@@ -59,6 +59,7 @@ import {UnitInfoCardDialogComponent} from './components/unit-info-card-dialog/un
 import {DeleteUnitDialogComponent} from './components/delete-unit-dialog/delete-unit-dialog.component';
 import { UnitsPopupComponent } from './components/units-popup/units-popup.component';
 import { UsersPopupComponent } from './components/users-popup/users-popup.component';
+import { UserInfoCardDialogComponent } from './components/user-info-card-dialog/user-info-card-dialog.component';
 
 // import {registerLocaleData} from '@angular/common';
 // import localeRu from '@angular/common/locales/ru';
@@ -88,7 +89,8 @@ export const httpInterceptorProviders = [
     UnitInfoCardDialogComponent,
     DeleteUnitDialogComponent,
     UnitsPopupComponent,
-    UsersPopupComponent
+    UsersPopupComponent,
+    UserInfoCardDialogComponent
   ],
   imports: [
     BrowserModule,

@@ -10,7 +10,7 @@
   font-family: Roboto, "Helvetica Neue", sans-serif; }
 
 .mat-badge-small .mat-badge-content {
-  font-size: 6px; }
+  font-size: 9px; }
 
 .mat-badge-large .mat-badge-content {
   font-size: 24px; }
@@ -32,11 +32,11 @@
   margin: 0 0 16px; }
 
 .mat-h5, .mat-typography h5 {
-  font: 400 11.62px/20px Roboto, "Helvetica Neue", sans-serif;
+  font: 400 calc(14px * 0.83)/20px Roboto, "Helvetica Neue", sans-serif;
   margin: 0 0 12px; }
 
 .mat-h6, .mat-typography h6 {
-  font: 400 9.38px/20px Roboto, "Helvetica Neue", sans-serif;
+  font: 400 calc(14px * 0.67)/20px Roboto, "Helvetica Neue", sans-serif;
   margin: 0 0 12px; }
 
 .mat-body-strong, .mat-body-2 {
@@ -52,18 +52,18 @@
 
 .mat-display-4, .mat-typography .mat-display-4 {
   font: 300 112px/112px Roboto, "Helvetica Neue", sans-serif;
-  margin: 0 0 56px;
-  letter-spacing: -0.05em; }
+  letter-spacing: -0.05em;
+  margin: 0 0 56px; }
 
 .mat-display-3, .mat-typography .mat-display-3 {
   font: 400 56px/56px Roboto, "Helvetica Neue", sans-serif;
-  margin: 0 0 64px;
-  letter-spacing: -0.02em; }
+  letter-spacing: -0.02em;
+  margin: 0 0 64px; }
 
 .mat-display-2, .mat-typography .mat-display-2 {
   font: 400 45px/48px Roboto, "Helvetica Neue", sans-serif;
-  margin: 0 0 64px;
-  letter-spacing: -0.005em; }
+  letter-spacing: -0.005em;
+  margin: 0 0 64px; }
 
 .mat-display-1, .mat-typography .mat-display-1 {
   font: 400 34px/40px Roboto, "Helvetica Neue", sans-serif;
@@ -580,15 +580,15 @@ textarea.cdk-textarea-autosize-measuring {
 .mat-pseudo-checkbox-disabled {
   color: #b0b0b0; }
 
+.mat-primary .mat-pseudo-checkbox-checked,
+.mat-primary .mat-pseudo-checkbox-indeterminate {
+  background: #212121; }
+
 .mat-pseudo-checkbox-checked,
 .mat-pseudo-checkbox-indeterminate,
 .mat-accent .mat-pseudo-checkbox-checked,
 .mat-accent .mat-pseudo-checkbox-indeterminate {
   background: #fbc02d; }
-
-.mat-primary .mat-pseudo-checkbox-checked,
-.mat-primary .mat-pseudo-checkbox-indeterminate {
-  background: #212121; }
 
 .mat-warn .mat-pseudo-checkbox-checked,
 .mat-warn .mat-pseudo-checkbox-indeterminate {
@@ -726,6 +726,10 @@ textarea.cdk-textarea-autosize-measuring {
   white-space: nowrap;
   text-overflow: ellipsis;
   pointer-events: none; }
+
+.ng-animate-disabled .mat-badge-content,
+.mat-badge-content._mat-animation-noopable {
+  transition: none; }
 
 .mat-badge-content.mat-badge-active {
   transform: none; }
@@ -989,12 +993,18 @@ textarea.cdk-textarea-autosize-measuring {
 @media (-ms-high-contrast: active) {
   .mat-checkbox-background {
     background: none; } }
-.mat-checkbox:not(.mat-checkbox-disabled).mat-primary .mat-checkbox-ripple .mat-ripple-element {
-  background-color: #212121; }
-.mat-checkbox:not(.mat-checkbox-disabled).mat-accent .mat-checkbox-ripple .mat-ripple-element {
-  background-color: #fbc02d; }
-.mat-checkbox:not(.mat-checkbox-disabled).mat-warn .mat-checkbox-ripple .mat-ripple-element {
-  background-color: #f44336; }
+.mat-checkbox .mat-ripple-element {
+  background-color: black; }
+
+.mat-checkbox-checked:not(.mat-checkbox-disabled).mat-primary .mat-ripple-element,
+.mat-checkbox:active:not(.mat-checkbox-disabled).mat-primary .mat-ripple-element {
+  background: #212121; }
+.mat-checkbox-checked:not(.mat-checkbox-disabled).mat-accent .mat-ripple-element,
+.mat-checkbox:active:not(.mat-checkbox-disabled).mat-accent .mat-ripple-element {
+  background: #fbc02d; }
+.mat-checkbox-checked:not(.mat-checkbox-disabled).mat-warn .mat-ripple-element,
+.mat-checkbox:active:not(.mat-checkbox-disabled).mat-warn .mat-ripple-element {
+  background: #f44336; }
 
 .mat-chip.mat-standard-chip {
   background-color: #e0e0e0;
@@ -1149,7 +1159,7 @@ th.mat-header-cell, td.mat-cell, td.mat-footer-cell {
 .mat-action-row {
   border-top-color: rgba(0, 0, 0, 0.12); }
 
-.mat-expansion-panel:not(.mat-expanded) .mat-expansion-panel-header:not([aria-disabled='true']).cdk-keyboard-focused, .mat-expansion-panel:not(.mat-expanded) .mat-expansion-panel-header:not([aria-disabled='true']).cdk-program-focused, .mat-expansion-panel:not(.mat-expanded) .mat-expansion-panel-header:not([aria-disabled='true']):hover {
+.mat-expansion-panel .mat-expansion-panel-header.cdk-keyboard-focused:not([aria-disabled='true']), .mat-expansion-panel .mat-expansion-panel-header.cdk-program-focused:not([aria-disabled='true']), .mat-expansion-panel:not(.mat-expanded) .mat-expansion-panel-header:hover:not([aria-disabled='true']) {
   background: rgba(0, 0, 0, 0.04); }
 
 @media (hover: none) {
@@ -1663,7 +1673,7 @@ th.mat-header-cell, td.mat-cell, td.mat-footer-cell {
 .mat-tab-nav-bar.mat-background-primary .mat-tab-link.cdk-keyboard-focused:not(.mat-tab-disabled),
 .mat-tab-nav-bar.mat-background-primary .mat-tab-link.cdk-program-focused:not(.mat-tab-disabled) {
   background-color: rgba(245, 245, 245, 0.3); }
-.mat-tab-group.mat-background-primary .mat-tab-header, .mat-tab-group.mat-background-primary .mat-tab-links, .mat-tab-nav-bar.mat-background-primary .mat-tab-header, .mat-tab-nav-bar.mat-background-primary .mat-tab-links {
+.mat-tab-group.mat-background-primary .mat-tab-header, .mat-tab-group.mat-background-primary .mat-tab-links, .mat-tab-group.mat-background-primary .mat-tab-header-pagination, .mat-tab-nav-bar.mat-background-primary .mat-tab-header, .mat-tab-nav-bar.mat-background-primary .mat-tab-links, .mat-tab-nav-bar.mat-background-primary .mat-tab-header-pagination {
   background-color: #212121; }
 .mat-tab-group.mat-background-primary .mat-tab-label, .mat-tab-group.mat-background-primary .mat-tab-link, .mat-tab-nav-bar.mat-background-primary .mat-tab-label, .mat-tab-nav-bar.mat-background-primary .mat-tab-link {
   color: white; }
@@ -1681,7 +1691,7 @@ th.mat-header-cell, td.mat-cell, td.mat-footer-cell {
 .mat-tab-nav-bar.mat-background-accent .mat-tab-link.cdk-keyboard-focused:not(.mat-tab-disabled),
 .mat-tab-nav-bar.mat-background-accent .mat-tab-link.cdk-program-focused:not(.mat-tab-disabled) {
   background-color: rgba(255, 249, 196, 0.3); }
-.mat-tab-group.mat-background-accent .mat-tab-header, .mat-tab-group.mat-background-accent .mat-tab-links, .mat-tab-nav-bar.mat-background-accent .mat-tab-header, .mat-tab-nav-bar.mat-background-accent .mat-tab-links {
+.mat-tab-group.mat-background-accent .mat-tab-header, .mat-tab-group.mat-background-accent .mat-tab-links, .mat-tab-group.mat-background-accent .mat-tab-header-pagination, .mat-tab-nav-bar.mat-background-accent .mat-tab-header, .mat-tab-nav-bar.mat-background-accent .mat-tab-links, .mat-tab-nav-bar.mat-background-accent .mat-tab-header-pagination {
   background-color: #fbc02d; }
 .mat-tab-group.mat-background-accent .mat-tab-label, .mat-tab-group.mat-background-accent .mat-tab-link, .mat-tab-nav-bar.mat-background-accent .mat-tab-label, .mat-tab-nav-bar.mat-background-accent .mat-tab-link {
   color: rgba(0, 0, 0, 0.87); }
@@ -1699,7 +1709,7 @@ th.mat-header-cell, td.mat-cell, td.mat-footer-cell {
 .mat-tab-nav-bar.mat-background-warn .mat-tab-link.cdk-keyboard-focused:not(.mat-tab-disabled),
 .mat-tab-nav-bar.mat-background-warn .mat-tab-link.cdk-program-focused:not(.mat-tab-disabled) {
   background-color: rgba(255, 205, 210, 0.3); }
-.mat-tab-group.mat-background-warn .mat-tab-header, .mat-tab-group.mat-background-warn .mat-tab-links, .mat-tab-nav-bar.mat-background-warn .mat-tab-header, .mat-tab-nav-bar.mat-background-warn .mat-tab-links {
+.mat-tab-group.mat-background-warn .mat-tab-header, .mat-tab-group.mat-background-warn .mat-tab-links, .mat-tab-group.mat-background-warn .mat-tab-header-pagination, .mat-tab-nav-bar.mat-background-warn .mat-tab-header, .mat-tab-nav-bar.mat-background-warn .mat-tab-links, .mat-tab-nav-bar.mat-background-warn .mat-tab-header-pagination {
   background-color: #f44336; }
 .mat-tab-group.mat-background-warn .mat-tab-label, .mat-tab-group.mat-background-warn .mat-tab-link, .mat-tab-nav-bar.mat-background-warn .mat-tab-label, .mat-tab-nav-bar.mat-background-warn .mat-tab-link {
   color: white; }
@@ -1779,10 +1789,16 @@ th.mat-header-cell, td.mat-cell, td.mat-footer-cell {
   .snack-bar-error .mat-simple-snackbar-action {
     color: #212121; }
 
-.leanerBack {
+.leanerBack1 {
   background: linear-gradient(-45deg, rgba(0, 0, 0, 0) 49.9%, rgba(251, 192, 45, 0.5) 49.9%, rgba(251, 192, 45, 0.5) 80%, rgba(0, 0, 0, 0) 60%), linear-gradient(-45deg, rgba(251, 192, 45, 0.5) 20%, rgba(0, 0, 0, 0) 10%);
   background-size: 2em 2em;
   background-color: #212121; }
+
+.leanerBack2 {
+  background-color: #212121;
+  background-image: linear-gradient(30deg, #6E581E 12%, transparent 12.5%, transparent 87%, #6E581E 87.5%, #6E581E), linear-gradient(150deg, #6E581E 12%, transparent 12.5%, transparent 87%, #6E581E 87.5%, #6E581E), linear-gradient(30deg, #6E581E 12%, transparent 12.5%, transparent 87%, #6E581E 87.5%, #6E581E), linear-gradient(150deg, #6E581E 12%, transparent 12.5%, transparent 87%, #6E581E 87.5%, #6E581E), linear-gradient(60deg, #8e7127 25%, transparent 25.5%, transparent 75%, #8e7127 75%, #8e7127), linear-gradient(60deg, #8e7127 25%, transparent 25.5%, transparent 75%, #8e7127 75%, #8e7127);
+  background-size: 40px 70px;
+  background-position: 0 0, 0 0, 20px 35px, 20px 35px, 0 0, 20px 35px; }
 
 .mat-sidenav-container, .mat-sidenav-content, .mat-tab-body-content {
   transform: none !important; }
@@ -1796,7 +1812,7 @@ th.mat-header-cell, td.mat-cell, td.mat-footer-cell {
   font-family: Roboto, "Helvetica Neue", sans-serif; }
 
 .mat-badge-small .mat-badge-content {
-  font-size: 6px; }
+  font-size: 9px; }
 
 .mat-badge-large .mat-badge-content {
   font-size: 24px; }
@@ -1818,11 +1834,11 @@ th.mat-header-cell, td.mat-cell, td.mat-footer-cell {
   margin: 0 0 16px; }
 
 .mat-h5, .mat-typography h5 {
-  font: 400 11.62px/20px Roboto, "Helvetica Neue", sans-serif;
+  font: 400 calc(14px * 0.83)/20px Roboto, "Helvetica Neue", sans-serif;
   margin: 0 0 12px; }
 
 .mat-h6, .mat-typography h6 {
-  font: 400 9.38px/20px Roboto, "Helvetica Neue", sans-serif;
+  font: 400 calc(14px * 0.67)/20px Roboto, "Helvetica Neue", sans-serif;
   margin: 0 0 12px; }
 
 .mat-body-strong, .mat-body-2 {
@@ -1838,18 +1854,18 @@ th.mat-header-cell, td.mat-cell, td.mat-footer-cell {
 
 .mat-display-4, .mat-typography .mat-display-4 {
   font: 300 112px/112px Roboto, "Helvetica Neue", sans-serif;
-  margin: 0 0 56px;
-  letter-spacing: -0.05em; }
+  letter-spacing: -0.05em;
+  margin: 0 0 56px; }
 
 .mat-display-3, .mat-typography .mat-display-3 {
   font: 400 56px/56px Roboto, "Helvetica Neue", sans-serif;
-  margin: 0 0 64px;
-  letter-spacing: -0.02em; }
+  letter-spacing: -0.02em;
+  margin: 0 0 64px; }
 
 .mat-display-2, .mat-typography .mat-display-2 {
   font: 400 45px/48px Roboto, "Helvetica Neue", sans-serif;
-  margin: 0 0 64px;
-  letter-spacing: -0.005em; }
+  letter-spacing: -0.005em;
+  margin: 0 0 64px; }
 
 .mat-display-1, .mat-typography .mat-display-1 {
   font: 400 34px/40px Roboto, "Helvetica Neue", sans-serif;

@@ -38,7 +38,7 @@ $astrid-theme: mat-light-theme($astrid-primary, $astrid-accent);
 
 $color: rgba(251, 192, 45, 0.5);
 $transparent: rgba(0, 0, 0, 0);
-.leanerBack {
+.leanerBack1 {
   background: linear-gradient(-45deg,
     $transparent 49.9%,
     $color 49.9%, $color 80%,
@@ -51,9 +51,27 @@ $transparent: rgba(0, 0, 0, 0);
   background-size: 2em 2em;
   background-color: rgba(33, 33, 33, 1);
 }
+
+$color2: #6E581E;
+$color3: #8e7127;
+$color1: rgba(33, 33, 33, 1);
+
+.leanerBack2 {
+  background-color: $color1;
+  background-image: linear-gradient(30deg, $color2 12%, transparent 12.5%, transparent 87%, $color2 87.5%, $color2),
+  linear-gradient(150deg, $color2 12%, transparent 12.5%, transparent 87%, $color2 87.5%, $color2),
+  linear-gradient(30deg, $color2 12%, transparent 12.5%, transparent 87%, $color2 87.5%, $color2),
+  linear-gradient(150deg, $color2 12%, transparent 12.5%, transparent 87%, $color2 87.5%, $color2),
+  linear-gradient(60deg, $color3 25%, transparent 25.5%, transparent 75%, $color3 75%, $color3),
+  linear-gradient(60deg, $color3 25%, transparent 25.5%, transparent 75%, $color3 75%, $color3);
+  background-size:40px 70px;
+  background-position: 0 0, 0 0, 20px 35px, 20px 35px, 0 0, 20px 35px;
+}
+
 .mat-sidenav-container, .mat-sidenav-content, .mat-tab-body-content {
   transform: none !important;
 }
-.mat-vertical-stepper-header{
+
+.mat-vertical-stepper-header {
   pointer-events: none !important;
 }

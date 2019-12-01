@@ -39,7 +39,7 @@ export class UnitInfoCardDialogComponent implements OnInit, OnDestroy {
           });
         }
       });
-    this.dialogRef.disableClose = true;
+    // this.dialogRef.disableClose = true;
     this.unit = this.data.unit;
     if (this.data.unit.images.length > 0 && this.data.unit.images[0].value) {
       this.images = this.data.image;
