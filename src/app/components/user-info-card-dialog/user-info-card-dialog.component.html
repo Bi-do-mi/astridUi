@@ -1,1 +1,29 @@
-<p>user-info-card-dialog works!</p>
+<mat-card>
+  <mat-card-content>
+    <div fxLayout="column">
+      <div fxLayout="row wrap">
+        <img class="bordered" *ngIf="user?.image?.value" [src]="'data:image/jpg;base64,' + user.image?.value">
+        <img class="bordered" *ngIf="!user?.image" src="assets/pics/buldozer_.jpg">
+        <div class="bordered" fxLayout="row" fxLayoutAlign="center center"
+             *ngIf="(user?.image && !user?.image?.value)">
+          <mat-spinner class="mat-accent" [diameter]="40"></mat-spinner>
+        </div>
+        <div class="m-3">
+          <h4>{{user.name}}</h4>
+          <h6><b>{{user.username}}</b></h6>
+          <div>тел.: {{user.phoneNumber}}</div>
+          <div>дата регистрации: {{user.registrationDate}}</div>
+          <div>был последний раз: {{user.lastVisit}}</div>
+        </div>
+      </div>
+
+      <div fxLayout="row wrap" fxLayoutAlign="space-between center">
+        <div fxLayout="row wrap" fxLayoutAlign="end center">
+          <button mat-raised-button="" class="m-2" (click)="onCancel()"
+                  color="accent" tabindex="-1">Закрыть
+          </button>
+        </div>
+      </div>
+    </div>
+  </mat-card-content>
+</mat-card>

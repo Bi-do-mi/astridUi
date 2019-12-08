@@ -1,4 +1,4 @@
-import {Component, EventEmitter, HostListener, Injector, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
+import {Component, HostListener, Injector, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {BreakpointObserver, Breakpoints} from '@angular/cdk/layout';
 import {Observable} from 'rxjs';
 import {filter, finalize, first, map} from 'rxjs/operators';
@@ -24,6 +24,8 @@ import {UnitInfoCardDialogComponent} from '../unit-info-card-dialog/unit-info-ca
 import {createCustomElement} from '@angular/elements';
 import {UnitsPopupComponent} from '../units-popup/units-popup.component';
 import {UsersPopupComponent} from '../users-popup/users-popup.component';
+import {OpenUserInfoService} from '../../_services/open-user-info.service';
+import {UserInfoCardDialogComponent} from '../user-info-card-dialog/user-info-card-dialog.component';
 
 @Component({
   selector: 'app-main-nav',
@@ -56,8 +58,10 @@ export class MainNavComponent implements OnInit, OnDestroy {
               private snackBarService: SnackBarService,
               private dialog: MatDialog,
               private unitInfoDialog: MatDialog,
+              private userInfoDialog: MatDialog,
               private setLocationService: SetLocationCallService,
               private openUnitInfoService: OpenUnitInfoService,
+              private openUserInfoService: OpenUserInfoService,
               private injector: Injector) {
     // Convert `PopupComponent` to a custom element.
     const UnitsPopup = createCustomElement(UnitsPopupComponent, {injector});
@@ -107,6 +111,10 @@ export class MainNavComponent implements OnInit, OnDestroy {
     this.openUnitInfoService.openUnitInfo.pipe(untilDestroyed(this))
       .subscribe((data: { unit: Unit, gallery: NgxGalleryImage[] }) => {
         this.openUnitInfoCardDialog(data.unit, data.gallery);
+      });
+    this.openUserInfoService.openUserInfo.pipe(untilDestroyed(this))
+      .subscribe((data: { user: User }) => {
+        this.openUserInfoCardDialog(data.user);
       });
   }
 
@@ -198,7 +206,7 @@ export class MainNavComponent implements OnInit, OnDestroy {
       const dialogRef = this.dialog.open(UnitCreateDialogComponent, {
         maxHeight: '100vh',
         maxWidth: '100vw',
-        backdropClass: 'leanerBack',
+        backdropClass: 'leanerBack1',
         data: {unit: unit, stepNum: stepNum}
       });
       dialogRef.afterClosed().pipe(untilDestroyed(this), first())
@@ -227,7 +235,7 @@ export class MainNavComponent implements OnInit, OnDestroy {
     const unitInfoDialogRef = this.unitInfoDialog.open(UnitInfoCardDialogComponent, {
       maxHeight: '100vh',
       maxWidth: '100vw',
-      backdropClass: 'leanerBack',
+      backdropClass: 'leanerBack1',
       data: {unit: unit, image: gallery}
     });
     unitInfoDialogRef.afterClosed().pipe(untilDestroyed(this))
@@ -236,6 +244,21 @@ export class MainNavComponent implements OnInit, OnDestroy {
           this.openUnitCreateDialog(unit_);
         }
       });
+  }
+
+  openUserInfoCardDialog(user: User) {
+    const userInfoDialogRef = this.userInfoDialog.open(UserInfoCardDialogComponent, {
+      maxHeight: '100vh',
+      maxWidth: '100vw',
+      backdropClass: 'leanerBack2',
+      data: {user}
+    });
+    // userInfoDialogRef.afterClosed().pipe(untilDestroyed(this))
+    //   .subscribe((unit_: Unit) => {
+    //     if (unit_) {
+    //       this.openUnitCreateDialog(unit_);
+    //     }
+    //   });
   }
 
   toggleMenu(hasBackdrop?: boolean) {

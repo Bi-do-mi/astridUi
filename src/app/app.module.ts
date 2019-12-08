@@ -149,7 +149,8 @@ export const httpInterceptorProviders = [
     UnitsMainListDialogComponent,
     UnitInfoCardDialogComponent,
     UnitsPopupComponent,
-    UsersPopupComponent
+    UsersPopupComponent,
+    UserInfoCardDialogComponent
   ],
   providers: [AuthGuard, httpInterceptorProviders,
     {

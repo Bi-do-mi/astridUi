@@ -16,6 +16,11 @@ import {Marker} from 'mapbox-gl';
 import {finalize, first} from 'rxjs/operators';
 import {olx} from 'openlayers';
 import layer = olx.layer;
+import {MatDialog} from '@angular/material';
+import {UnitInfoCardDialogComponent} from '../components/unit-info-card-dialog/unit-info-card-dialog.component';
+import {UserInfoCardDialogComponent} from '../components/user-info-card-dialog/user-info-card-dialog.component';
+import {OpenUserInfoService} from './open-user-info.service';
+import {NgxGalleryImage} from 'ngx-gallery';
 
 @Injectable({
   providedIn: 'root'
@@ -35,6 +40,7 @@ export class PopupService implements OnInit, OnDestroy {
   constructor(private userService: UserService,
               private parkService: ParkService,
               private openUnitInfoService: OpenUnitInfoService,
+              private openUserInfoService: OpenUserInfoService,
               private rendererFactory: RendererFactory2) {
     this.renderer = this.rendererFactory.createRenderer(null, null);
     this.userService.currentUser.pipe(untilDestroyed(this))
@@ -137,7 +143,7 @@ export class PopupService implements OnInit, OnDestroy {
           usersPopupEl.addEventListener('click', () => {
             this.isMouseOnPopup = false;
             this.removeUnitsPopup();
-            // this.openUnitInfoCardDialog(user);
+            this.openUserInfoCardDialog(user);
           });
           this.unitPopup.setDOMContent(usersPopupEl).on('open', () => {
             this.isPopupOpened = true;
@@ -155,29 +161,16 @@ export class PopupService implements OnInit, OnDestroy {
 
     map.on('click', layer_, () => {
       if (unit) {
-        if (unit.images.length > 0 && (!unit.images[0].value)) {
-          this.parkService.loadUnitImgFromServer(unit)
-            .pipe(first(), untilDestroyed(this), finalize(() => {
-              this.openUnitInfoCardDialog(unit);
-            }))
-            .subscribe((data: Unit) => {
-              unit = data;
-            });
-        } else {
-          this.openUnitInfoCardDialog(unit);
-        }
+       this.openUnitInfoCardDialog(unit);
       }
       if (user) {
+        this.openUserInfoCardDialog(user);
         if (user.image && (!user.image.value)) {
           this.parkService.loadUsersImgFromServer(user)
-            .pipe(first(), untilDestroyed(this), finalize(() => {
-              // this.openUnitInfoCardDialog(unit);
-            }))
+            .pipe(first(), untilDestroyed(this))
             .subscribe((data: User) => {
               user = data;
             });
-        } else {
-          // this.openUnitInfoCardDialog(unit);
         }
       }
     });
@@ -297,8 +290,25 @@ export class PopupService implements OnInit, OnDestroy {
   }
 
   public openUnitInfoCardDialog(unit: Unit) {
-    this.removeUnitsPopup();
-    this.openUnitInfoService.open(unit);
+    if (unit.images.length > 0 && (!unit.images[0].value)) {
+      let gallery: NgxGalleryImage[] = [];
+      this.openUnitInfoService.openWithLazyGallery(unit, gallery);
+      this.removeUnitsPopup();
+      this.parkService.loadUnitImgFromServer(unit)
+        .pipe(first(), untilDestroyed(this), finalize(() => {
+          gallery = this.openUnitInfoService.getGallery(unit);
+        }))
+        .subscribe((data: Unit) => {
+          unit = data;
+        });
+    } else {
+      this.openUnitInfoService.open(unit);
+    }
+  }
+
+  public openUserInfoCardDialog(user: User) {
+    // this.removeUnitsPopup();
+    this.openUserInfoService.open(user);
   }
 
   removeUnitsPopup() {

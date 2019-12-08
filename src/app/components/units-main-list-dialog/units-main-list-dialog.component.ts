@@ -112,7 +112,7 @@ export class UnitsMainListDialogComponent implements OnInit, OnDestroy {
     const unitInfoDialogRef = this.dialog.open(UnitInfoCardDialogComponent, {
       maxHeight: '100vh',
       maxWidth: '100vw',
-      backdropClass: 'leanerBack',
+      backdropClass: 'leanerBack1',
       data: {unit, image: this.galleryImagesMap.get(unit.id)}
     });
     unitInfoDialogRef.afterClosed().pipe(untilDestroyed(this)).subscribe(unit_ => {
@@ -126,7 +126,7 @@ export class UnitsMainListDialogComponent implements OnInit, OnDestroy {
     const dialogRef = this.dialog.open(UnitCreateDialogComponent, {
       maxHeight: '100vh',
       maxWidth: '100vw',
-      backdropClass: 'leanerBack',
+      backdropClass: 'leanerBack1',
       data: {unit: unit, stepNum: 0}
     });
     dialogRef.afterClosed().pipe(untilDestroyed(this)).subscribe(result => {

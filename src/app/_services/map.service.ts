@@ -14,7 +14,6 @@ import {first} from 'rxjs/operators';
 import {GeoCode} from '../_model/GeoCode';
 import {SidenavService} from './sidenav.service';
 import {Unit} from '../_model/Unit';
-import {OpenUnitInfoService} from './open-unit-info.service';
 import {environment} from '../../environments/environment.prod';
 import {NgElement, WithProperties} from '@angular/elements';
 import {ParkService} from './park.service';
@@ -69,7 +68,6 @@ export class MapService implements OnInit, OnDestroy {
               private userService: UserService,
               private snackBarService: SnackBarService,
               private http: HttpClient,
-              private openUnitInfoService: OpenUnitInfoService,
               private sidenavService: SidenavService,
               private rendererFactory: RendererFactory2,
               private parkService: ParkService,

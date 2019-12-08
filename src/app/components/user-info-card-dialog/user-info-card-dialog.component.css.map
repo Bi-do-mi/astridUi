@@ -1,7 +1,7 @@
 {
 "version": 3,
-"mappings": "",
-"sources": [],
+"mappings": "AAAA,SAAU;EACR,MAAM,EAAE,GAAG;EACX,MAAM,EAAE,KAAK;EACb,KAAK,EAAE,KAAK;EACZ,MAAM,EAAE,iBAAiB",
+"sources": ["user-info-card-dialog.component.scss"],
 "names": [],
 "file": "user-info-card-dialog.component.css"
 }

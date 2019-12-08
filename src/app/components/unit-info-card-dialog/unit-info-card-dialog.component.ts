@@ -79,6 +79,7 @@ export class UnitInfoCardDialogComponent implements OnInit, OnDestroy {
   }
 
   onCancel(): void {
+    // console.log('onClose: \n' + this.data.unit.images.length);
     this.dialogRef.close();
   }
 

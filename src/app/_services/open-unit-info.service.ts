@@ -19,6 +19,10 @@ export class OpenUnitInfoService {
     this.openUnitInfo$.next({unit, gallery});
   }
 
+  openWithLazyGallery(unit: Unit, gallery: NgxGalleryImage[]) {
+    this.openUnitInfo$.next({unit, gallery});
+  }
+
   getGallery(unit: Unit): NgxGalleryImage[] {
     const gallery: NgxGalleryImage[] = [];
     unit.images.forEach(i => {
