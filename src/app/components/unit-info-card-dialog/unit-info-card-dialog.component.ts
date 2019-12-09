@@ -8,6 +8,7 @@ import {untilDestroyed} from 'ngx-take-until-destroy';
 import {UserService} from '../../_services/user.service';
 import {User} from '../../_model/User';
 import {first} from 'rxjs/operators';
+import {OpenUnitInfoService} from '../../_services/open-unit-info.service';
 
 @Component({
   selector: 'app-unit-info-card-dialog',
@@ -23,9 +24,10 @@ export class UnitInfoCardDialogComponent implements OnInit, OnDestroy {
 
   constructor(
     private dialogRef: MatDialogRef<UnitInfoCardDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: { unit: Unit, image?: NgxGalleryImage[] },
+    @Inject(MAT_DIALOG_DATA) public data: { unit: Unit },
     private dialog: MatDialog,
-    private userService: UserService) {
+    private userService: UserService,
+    private openUnitInfoService: OpenUnitInfoService) {
   }
 
   ngOnInit() {
@@ -41,15 +43,7 @@ export class UnitInfoCardDialogComponent implements OnInit, OnDestroy {
       });
     // this.dialogRef.disableClose = true;
     this.unit = this.data.unit;
-    if (this.data.unit.images.length > 0 && this.data.unit.images[0].value) {
-      this.images = this.data.image;
-    } else {
-      this.images.push({
-        small: 'assets/pics/unit_pic_spacer-600x400.png',
-        medium: 'assets/pics/unit_pic_spacer-600x400.png',
-        big: 'assets/pics/unit_pic_spacer-600x400.png'
-      });
-    }
+    this.openUnitInfoService.getGallery(this.data.unit, this.images);
     this.galleryOptions = [
       {
         width: '390px',
@@ -88,9 +82,6 @@ export class UnitInfoCardDialogComponent implements OnInit, OnDestroy {
   }
 
   onEdit() {
-    if (this.data.unit.images.length > 0) {
-      localStorage.setItem('unitImages', JSON.stringify(this.images));
-    }
     this.dialogRef.close(this.unit);
   }
 

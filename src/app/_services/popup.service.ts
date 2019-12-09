@@ -290,20 +290,8 @@ export class PopupService implements OnInit, OnDestroy {
   }
 
   public openUnitInfoCardDialog(unit: Unit) {
-    if (unit.images.length > 0 && (!unit.images[0].value)) {
-      let gallery: NgxGalleryImage[] = [];
-      this.openUnitInfoService.openWithLazyGallery(unit, gallery);
       this.removeUnitsPopup();
-      this.parkService.loadUnitImgFromServer(unit)
-        .pipe(first(), untilDestroyed(this), finalize(() => {
-          gallery = this.openUnitInfoService.getGallery(unit);
-        }))
-        .subscribe((data: Unit) => {
-          unit = data;
-        });
-    } else {
       this.openUnitInfoService.open(unit);
-    }
   }
 
   public openUserInfoCardDialog(user: User) {

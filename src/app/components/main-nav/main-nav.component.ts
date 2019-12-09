@@ -94,9 +94,6 @@ export class MainNavComponent implements OnInit, OnDestroy {
 
     this.sidenavService.right_sidenav = this.rightDrawer;
     this.sidenavService.left_sidenav = this.leftDrawer;
-    if (localStorage.getItem('unitImages')) {
-      localStorage.removeItem('unitImages');
-    }
     this.setLocationService.setLocation
       .pipe(untilDestroyed(this))
       .subscribe((data: {
@@ -109,8 +106,8 @@ export class MainNavComponent implements OnInit, OnDestroy {
         }
       });
     this.openUnitInfoService.openUnitInfo.pipe(untilDestroyed(this))
-      .subscribe((data: { unit: Unit, gallery: NgxGalleryImage[] }) => {
-        this.openUnitInfoCardDialog(data.unit, data.gallery);
+      .subscribe((data: { unit: Unit }) => {
+        this.openUnitInfoCardDialog(data.unit);
       });
     this.openUserInfoService.openUserInfo.pipe(untilDestroyed(this))
       .subscribe((data: { user: User }) => {
@@ -231,12 +228,12 @@ export class MainNavComponent implements OnInit, OnDestroy {
     });
   }
 
-  openUnitInfoCardDialog(unit: Unit, gallery: NgxGalleryImage[]) {
+  openUnitInfoCardDialog(unit: Unit) {
     const unitInfoDialogRef = this.unitInfoDialog.open(UnitInfoCardDialogComponent, {
       maxHeight: '100vh',
       maxWidth: '100vw',
       backdropClass: 'leanerBack1',
-      data: {unit: unit, image: gallery}
+      data: {unit: unit}
     });
     unitInfoDialogRef.afterClosed().pipe(untilDestroyed(this))
       .subscribe((unit_: Unit) => {

@@ -1,6 +1,6 @@
 {
 "version": 3,
-"mappings": "AAAA,OAAO;EACL,MAAM,EAAE,iBAAiB",
+"mappings": "AAAA,OAAO;EACL,MAAM,EAAE,iBAAiB;EACzB,MAAM,EAAE,GAAG;EACX,UAAU,EAAE,KAAK;EACjB,SAAS,EAAE,KAAK",
 "sources": ["unit-info-card-dialog.component.scss"],
 "names": [],
 "file": "unit-info-card-dialog.component.css"

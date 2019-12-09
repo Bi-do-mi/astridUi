@@ -27,7 +27,6 @@ export class UsersPopupComponent implements OnInit {
     if (this._user.image && (!this._user.image.value)) {
       this.parkService.loadUsersImgFromServer(this._user).subscribe((data: User) => {
         this._user.image = data.image;
-        console.log('this._user.image: \n' + this._user.image);
       });
     }
   }

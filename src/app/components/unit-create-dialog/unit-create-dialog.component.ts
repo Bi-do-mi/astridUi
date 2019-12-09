@@ -18,6 +18,7 @@ import {UNIT_OPTIONS_CONSTANTS} from '../../constants/UnitOptionsConstants';
 import {QuestionControlService} from './question-control.service';
 import {QuestionService} from './question.service';
 import {DynamicFormComponent} from './dynamic-form/dynamic-form.component';
+import {OpenUnitInfoService} from '../../_services/open-unit-info.service';
 
 @Component({
   selector: 'app-unit-create',
@@ -38,7 +39,7 @@ export class UnitCreateDialogComponent implements OnInit, AfterViewInit, OnDestr
   filteredModels: string[];
   galleryOptions: NgxGalleryOptions[];
   galleryImages: NgxGalleryImage[] = [];
-  @ViewChild('stepper', {static: true}) stepper: MatStepper;
+  @ViewChild('stepper', {static: false}) stepper: MatStepper;
   linear = true;
   unitGeoCode: GeoCode;
   optForm: FormGroup;
@@ -58,7 +59,8 @@ export class UnitCreateDialogComponent implements OnInit, AfterViewInit, OnDestr
     private mapService: MapService,
     private questionCtrlService: QuestionControlService,
     private questionService: QuestionService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private openUnitInfoService: OpenUnitInfoService
   ) {
   }
 
@@ -99,12 +101,7 @@ export class UnitCreateDialogComponent implements OnInit, AfterViewInit, OnDestr
         if (this.data.stepNum !== undefined) {
           this.linear = false;
         }
-        if (localStorage.getItem('unitImages')) {
-          this.galleryImages = JSON.parse(localStorage.getItem('unitImages'));
-        }
-        // else {
-        //   this.galleryImages = [];
-        // }
+        this.openUnitInfoService.getGallery(this.data.unit, this.galleryImages);
         if (!this.data.unit.location) {
           this.data.unit.location = this.currentUser.location;
         }
@@ -169,14 +166,10 @@ export class UnitCreateDialogComponent implements OnInit, AfterViewInit, OnDestr
   }
 
   onSetPoint(): void {
-    localStorage.setItem('unitImages', JSON.stringify(this.galleryImages));
     this.dialogRef.close('setLocation');
   }
 
   onCancel(): void {
-    if (localStorage.getItem('unitImages')) {
-      localStorage.removeItem('unitImages');
-    }
     this.dialogRef.close();
   }
 
@@ -260,9 +253,6 @@ export class UnitCreateDialogComponent implements OnInit, AfterViewInit, OnDestr
           this.parkService.updateUnit(this.data.unit).pipe(first(),
             untilDestroyed(this)).subscribe(() => {
               this.loading = false;
-              if (localStorage.getItem('unitImages')) {
-                localStorage.removeItem('unitImages');
-              }
               this.dialogRef.close();
               this.snackbarService.success('Единица техники успешно обновлена',
                 'OK', 10000);
@@ -281,9 +271,6 @@ export class UnitCreateDialogComponent implements OnInit, AfterViewInit, OnDestr
       this.parkService.createUnit(this.data.unit).pipe(first(),
         untilDestroyed(this)).subscribe(() => {
           this.loading = false;
-          if (localStorage.getItem('unitImages')) {
-            localStorage.removeItem('unitImages');
-          }
           this.dialogRef.close();
           this.snackbarService.success('Единица техники успешно создана',
             'OK', 10000);

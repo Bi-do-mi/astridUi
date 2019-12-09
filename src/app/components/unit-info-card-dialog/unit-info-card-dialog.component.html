@@ -2,9 +2,16 @@
   <mat-card-content>
     <div fxLayout="column">
       <div fxLayout="row wrap">
-        <ngx-gallery class="border" [options]="galleryOptions"
-                     [images]="images">
-        </ngx-gallery>
+        <div class="border" fxLayout="row" fxLayoutAlign="center center">
+          <ngx-gallery [options]="galleryOptions"
+                       *ngIf="(images && images[0])"
+                       [images]="images">
+          </ngx-gallery>
+          <div>
+            <mat-spinner class="mat-accent" [diameter]="40"
+                         *ngIf="(images && !images[0])"></mat-spinner>
+          </div>
+        </div>
         <div class="m-3">
           <h6><b>{{unit.model}}</b></h6>
           <div>&bull;Id: {{unit.id}}</div>
@@ -28,11 +35,13 @@
       <div fxLayout="row wrap" fxLayoutAlign="space-between center">
         <div fxLayout="row" fxFlex fxLayoutAlign="end center">
           <button *ngIf="isPrivate" mat-raised-button="" class="m-2"
-                  (click)="onDeleteUnit()" tabindex="-1">Удалить</button>
+                  (click)="onDeleteUnit()" tabindex="-1">Удалить
+          </button>
         </div>
         <div fxLayout="row wrap" fxLayoutAlign="end center">
           <button *ngIf="isPrivate" mat-raised-button="" class="m-2" (click)="onEdit()"
-                  tabindex="-1">Редактировать</button>
+                  tabindex="-1">Редактировать
+          </button>
           <button mat-raised-button="" class="m-2" (click)="onCancel()"
                   color="accent" tabindex="-1">Закрыть
           </button>
