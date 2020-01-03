@@ -26,6 +26,8 @@ import {UnitsPopupComponent} from '../units-popup/units-popup.component';
 import {UsersPopupComponent} from '../users-popup/users-popup.component';
 import {OpenUserInfoService} from '../../_services/open-user-info.service';
 import {UserInfoCardDialogComponent} from '../user-info-card-dialog/user-info-card-dialog.component';
+import {SearchService} from '../../_services/search.service';
+import {SearchComponent} from '../search/search.component';
 
 @Component({
   selector: 'app-main-nav',
@@ -45,6 +47,7 @@ export class MainNavComponent implements OnInit, OnDestroy {
     Breakpoints.Handset).pipe(map(result => result.matches));
   url: string;
   UnitsListComponent = UnitsListTableComponent;
+  SearchComponent = SearchComponent;
   setPointMode = false;
 
 
@@ -181,7 +184,22 @@ export class MainNavComponent implements OnInit, OnDestroy {
           if (unit) {
             unit.location = point;
           } else {
+            let userLoc = new Array<number>();
+            if (this.currentUser.location) {
+              userLoc = this.currentUser.location.geometry.coordinates as number[];
+            }
             this.currentUser.location = point;
+
+            if (this.currentUser.units && this.currentUser.units.length > 0) {
+              this.currentUser.units.forEach((u: Unit, i, arr) => {
+                const unitLoc = u.location.geometry.coordinates as number[];
+                // console.log('!!!unitLoc: ' + unitLoc + '\n!!!userLoc: ' + userLoc);
+                if (userLoc[0] === unitLoc[0] && userLoc[1] === unitLoc[1]) {
+                  u.location = point;
+                }
+              });
+            }
+
             this.uService.updateUser(this.currentUser)
               .pipe(first(), untilDestroyed(this)).subscribe(u => {
             }, error1 => {

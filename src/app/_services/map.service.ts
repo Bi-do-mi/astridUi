@@ -421,9 +421,11 @@ export class MapService implements OnInit, OnDestroy {
                 if (user.units && user.units.length > 0) {
                   const unitsLocArray = new Array<GeoJson>();
                   user.units.forEach(unit => {
-                    unitsLocArray.push(new GeoJson(
-                      unit.location.geometry.coordinates,
-                      unit.id, {paid: environment.testing_paid ? true : unit.paid}));
+                    if (user.location.geometry.coordinates[0] !== unit.location.geometry.coordinates[0]) {
+                      unitsLocArray.push(new GeoJson(
+                        unit.location.geometry.coordinates,
+                        unit.id, {paid: environment.testing_paid ? true : unit.paid}));
+                    }
                   });
                   const data = new FCollModel.FeatureCollection(unitsLocArray);
                   // console.log(JSON.stringify(data));
@@ -527,6 +529,7 @@ export class MapService implements OnInit, OnDestroy {
   }
 
   flyTo(data: GeoJson) {
+    const pointer = new Marker();
     this.map.flyTo({
       center: [data.geometry.coordinates[0], data.geometry.coordinates[1]],
       zoom: 9
@@ -562,8 +565,10 @@ export class MapService implements OnInit, OnDestroy {
 
 
   markerIndication(unit: Unit) {
-    if (false || this.userMarker.getLngLat() === new LngLat(
-      unit.location.geometry.coordinates[0], unit.location.geometry.coordinates[1])) {
+    if (this.userMarker &&
+      (this.userMarker.getLngLat().lng === unit.location.geometry.coordinates[0]) &&
+      (this.userMarker.getLngLat().lat === unit.location.geometry.coordinates[1])
+    ) {
       let pulsar = true;
       const markerTimer = setInterval(() => {
         this.userMarker.getElement().hidden = pulsar;
@@ -573,21 +578,34 @@ export class MapService implements OnInit, OnDestroy {
         clearInterval(markerTimer);
         this.userMarker.getElement().hidden = false;
       }, 6000);
-      // } else {
-      //   this.ownUnitsSource.forEach((feature: Feature) => {
-      //     if (feature.id === unit.id) {
-      //       console.log('Triggered!');
-      //       // let pulsar = true;
-      //       // const markerTimer = setInterval(() => {
-      //       //   feature.getElement().hidden = pulsar;
-      //       //   pulsar = !pulsar;
-      //       // }, 500);
-      //       // setTimeout(() => {
-      //       //   clearInterval(markerTimer);
-      //       //   feature.getElement().hidden = false;
-      //       // }, 6000);
-      //     }
-      //   });
+    } else {
+      const markerDiv = this.renderer.createElement('pulsar');
+      // this.renderer.setAttribute(markerDiv, 'class', 'private_unit_marker_out');
+      this.renderer.setProperty(markerDiv, 'innerHTML',
+        '<svg class = "button" expanded = "true" height = "100px" width = "100px">\n' +
+        '            <circle class = "innerCircle" cx = "50%" cy = "50%" r = "25%" ' +
+        'fill = "none" stroke = "#212121" stroke-width = "5%">\n' +
+        '              <animate attributeType="SVG" attributeName="r" begin="0s" ' +
+        'dur="1.5s" repeatCount="3" from="5%" to="25%"/>\n' +
+        '              <animate attributeType="CSS" attributeName="stroke-width" begin="0s" ' +
+        ' dur="1.5s" repeatCount="3" from="3%" to="0%" />\n' +
+        '              <animate attributeType="CSS" attributeName="opacity" begin="0s" ' +
+        ' dur="1.5s" repeatCount="3" from="1" to="0"/>\n' +
+        '            </circle>\n' +
+        '        </svg>');
+      const pulsarPointer = new Marker(markerDiv);
+      pulsarPointer.setLngLat([unit.location.geometry.coordinates[0],
+        unit.location.geometry.coordinates[1]]);
+      setTimeout(() => {
+        pulsarPointer.addTo(this.map);
+        pulsarPointer.getElement().hidden = true;
+        setTimeout(() => {
+          pulsarPointer.getElement().hidden = false;
+          setTimeout(() => {
+            pulsarPointer.remove();
+          }, 3900);
+        }, 300);
+      }, 1000);
     }
   }
 

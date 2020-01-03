@@ -25,7 +25,7 @@ import {
   MatInputModule,
   MatListModule,
   MatPaginatorModule,
-  MatProgressSpinnerModule,
+  MatProgressSpinnerModule, MatRadioModule,
   MatSelectModule,
   MatSidenavModule,
   MatSlideToggleModule,
@@ -60,6 +60,8 @@ import {DeleteUnitDialogComponent} from './components/delete-unit-dialog/delete-
 import { UnitsPopupComponent } from './components/units-popup/units-popup.component';
 import { UsersPopupComponent } from './components/users-popup/users-popup.component';
 import { UserInfoCardDialogComponent } from './components/user-info-card-dialog/user-info-card-dialog.component';
+import { SearchComponent } from './components/search/search.component';
+import { FilteredUnitsListTableComponent } from './components/filtered-units-list-table/filtered-units-list-table.component';
 
 // import {registerLocaleData} from '@angular/common';
 // import localeRu from '@angular/common/locales/ru';
@@ -90,7 +92,9 @@ export const httpInterceptorProviders = [
     DeleteUnitDialogComponent,
     UnitsPopupComponent,
     UsersPopupComponent,
-    UserInfoCardDialogComponent
+    UserInfoCardDialogComponent,
+    SearchComponent,
+    FilteredUnitsListTableComponent
   ],
   imports: [
     BrowserModule,
@@ -115,6 +119,7 @@ export const httpInterceptorProviders = [
     MatCardModule,
     MatTabsModule,
     MatTableModule,
+    MatRadioModule,
     MatPaginatorModule,
     MatSortModule,
     MatStepperModule,
@@ -150,7 +155,9 @@ export const httpInterceptorProviders = [
     UnitInfoCardDialogComponent,
     UnitsPopupComponent,
     UsersPopupComponent,
-    UserInfoCardDialogComponent
+    UserInfoCardDialogComponent,
+    SearchComponent,
+    FilteredUnitsListTableComponent
   ],
   providers: [AuthGuard, httpInterceptorProviders,
     {

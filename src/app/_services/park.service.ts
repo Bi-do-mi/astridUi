@@ -100,8 +100,10 @@ export class ParkService implements OnDestroy {
           notFinished = false;
           this.spinner.hide();
         })
-        , map(user => {
+        , map((user: User) => {
           if (user) {
+            // console.log('this.userService.updateCurrentUser!!!'
+            //   + JSON.stringify(user.units[0].location));
             this.userService.updateCurrentUser(user, true);
           }
           return;

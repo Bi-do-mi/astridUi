@@ -3,7 +3,7 @@ import {MAT_DIALOG_DATA, MatDialogRef, MatStepper} from '@angular/material';
 import {untilDestroyed} from 'ngx-take-until-destroy';
 import {UnitBrand, UnitModel, UnitType} from '../../_model/UnitTypesModel';
 import {ParkService} from '../../_services/park.service';
-import {AbstractControl, FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {finalize, first} from 'rxjs/operators';
 import {Unit} from '../../_model/Unit';
 import {UserService} from '../../_services/user.service';
@@ -13,11 +13,9 @@ import {NgxPicaErrorInterface, NgxPicaService} from '@digitalascetic/ngx-pica';
 import {NgxGalleryAnimation, NgxGalleryImage, NgxGalleryOptions} from 'ngx-gallery';
 import {MapService} from '../../_services/map.service';
 import {GeoCode} from '../../_model/GeoCode';
-import {UnitOptionDropdown, UnitOptionModel, UnitOptionNumberbox, UnitOptionTextbox} from './UnitOptions/UnitOptionModel';
-import {UNIT_OPTIONS_CONSTANTS} from '../../constants/UnitOptionsConstants';
+import {UnitOptionModel} from './UnitOptions/UnitOptionModel';
 import {QuestionControlService} from './question-control.service';
 import {QuestionService} from './question.service';
-import {DynamicFormComponent} from './dynamic-form/dynamic-form.component';
 import {OpenUnitInfoService} from '../../_services/open-unit-info.service';
 
 @Component({
@@ -65,11 +63,6 @@ export class UnitCreateDialogComponent implements OnInit, AfterViewInit, OnDestr
   }
 
   ngAfterViewInit() {
-    setTimeout(() => {
-      if (this.data.stepNum !== undefined) {
-        this.stepper.selectedIndex = this.data.stepNum;
-      }
-    }, 1000);
     this.questionService.unitOptions.pipe(untilDestroyed(this))
       .subscribe(options => {
         this.unitOptions = options;
@@ -117,8 +110,8 @@ export class UnitCreateDialogComponent implements OnInit, AfterViewInit, OnDestr
       typeCtrl: [(this.data.unit.type ? this.data.unit.type : ''), Validators.required],
       brandCtrl: [(this.data.unit.brand ? this.data.unit.brand : ''),
         [Validators.pattern('^([а-яА-ЯA-Za-z0-9 ()-./,]*)$'), Validators.required]],
-      modelCtrl: [(this.data.unit.model ? this.data.unit.model : ''), [Validators.pattern('^([а-яА-ЯA-Za-z0-9 ()-./,]*)$'),
-        Validators.required]]
+      modelCtrl: [(this.data.unit.model ? this.data.unit.model : ''),
+        [Validators.pattern('^([а-яА-ЯA-Za-z0-9 ()-./,]*)$'), Validators.required]]
     });
     this.selectForm.get('typeCtrl').valueChanges.subscribe((value: string) => {
         this.filterBrandList(value);
@@ -251,13 +244,14 @@ export class UnitCreateDialogComponent implements OnInit, AfterViewInit, OnDestr
       this.currentUser.units.forEach(u => {
         if (u.id === this.data.unit.id) {
           this.parkService.updateUnit(this.data.unit).pipe(first(),
-            untilDestroyed(this)).subscribe(() => {
+            untilDestroyed(this), finalize(() => {
               this.loading = false;
               this.dialogRef.close();
               this.snackbarService.success('Единица техники успешно обновлена',
                 'OK', 10000);
               this.mapService.flyTo(this.data.unit.location);
               this.mapService.markerIndication(this.data.unit);
+            })).subscribe(() => {
             },
             error => {
               this.loading = false;

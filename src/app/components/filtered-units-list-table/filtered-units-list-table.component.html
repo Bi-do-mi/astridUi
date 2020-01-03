@@ -1,0 +1,37 @@
+<div class="mat-elevation-z6" >
+  <table class="filtered-units-list-in-sidebar" mat-table matSort [dataSource]="dataSource">
+
+    <ng-container matColumnDef="model">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Модель</th>
+      <td mat-cell *matCellDef="let unit" fxLayout="row" fxLayoutAlign="space-between stretch">
+        <div fxFlex="20%">
+          <img class="filtered-img-size" *ngIf="unit.images[0]" [src]="'data:image/jpg;base64,' + unit.images[0]?.value">
+          <img class="filtered-img-size" *ngIf="!unit.images[0]" src="assets/pics/unit_pic_spacer-500x333.png">
+        </div>
+
+        <div class="filtered-cursor-pointer" fxLayout="row" fxFlex fxLayoutAlign="start none"
+             (click)="openUnitInfoCardDialog(unit)">
+          <div fxLayout="column" fxLayoutAlign="center">{{unit.model}}</div>
+        </div>
+
+        <div fxLayout="column" fxLayoutAlign="center center">
+          <button type="button" matTooltip="Местоположение на карте" tabindex="-1"
+                  matTooltipPosition="above" aria-label="Toggle edit unit location"
+                  mat-icon-button (click)="flyToUnit(unit)">
+            <mat-icon aria-label="Edit toggle icon">gps_fixed</mat-icon>
+          </button>
+        </div>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+  <mat-paginator
+    [length]="dataSource.data.length"
+    [pageIndex]="0"
+    [pageSize]="10"
+    [pageSizeOptions]="[5, 10, 20, 50, 100]">
+  </mat-paginator>
+</div>
+

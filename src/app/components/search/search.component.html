@@ -1,0 +1,38 @@
+<div class="searchDiv" fxLayout="column">
+  <mat-radio-group aria-label="Select a search option"
+                   [(ngModel)]="searchService.searchUnits">
+    <mat-radio-button [value]="true"
+                      [checked]="searchService.searchUnits">Искать технику
+    </mat-radio-button>
+    <br>
+    <mat-radio-button [value]="false">Искать владельцев</mat-radio-button>
+  </mat-radio-group>
+  <div>
+    <form>
+      <!--поиск по модели-->
+      <mat-form-field fxFlex *ngIf="searchService.searchUnits">
+        <input type="text" placeholder="Искать по модели" aria-label="Model" matInput
+               [formControl]="modelCtrl" [matAutocomplete]="modelCmplt">
+        <mat-autocomplete autoActiveFirstOption #modelCmplt="matAutocomplete">
+          <mat-option *ngFor="let model of modelOptions" [value]="model.model">
+            {{model.model}}
+          </mat-option>
+        </mat-autocomplete>
+      </mat-form-field>
+      <!--поиск владельца-->
+      <mat-form-field fxFlex *ngIf="!searchService.searchUnits">
+        <input type="text" placeholder="Искать владельца" aria-label="Owner" matInput
+               [formControl]="userCtrl" [matAutocomplete]="userCmplt">
+        <mat-autocomplete autoActiveFirstOption #userCmplt="matAutocomplete">
+          <mat-option *ngFor="let user of searchService.filteredUsers | async" [value]="user.name">
+            {{user.name}}
+          </mat-option>
+        </mat-autocomplete>
+      </mat-form-field>
+    </form>
+  </div>
+  <div class="filtered-units-list-container" *ngIf="showFiltUnList &&
+   ((searchService?.filteredUnits | async)?.length>0)">
+    <ng-container *ngComponentOutlet="FilteredUnitsListTableComponent"></ng-container>
+  </div>
+</div>

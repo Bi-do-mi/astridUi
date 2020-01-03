@@ -33,6 +33,7 @@ export class QuestionControlService {
       group[question.key] = fc;
     });
     group['дополнительно'] = new FormControl('');
+    // console.log('toFormGroup: \n' + JSON.stringify(group));
     this.formGroup$.next(new FormGroup(group));
   }
 }

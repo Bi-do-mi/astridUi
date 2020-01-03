@@ -10,16 +10,16 @@ import {untilDestroyed} from 'ngx-take-until-destroy';
 import {map} from 'rxjs/operators';
 
 export class UnitDataSource extends DataSource<Unit> implements OnDestroy {
-  data: Unit[];
+  public data: Unit[];
   private subscription1: Subscription;
   private subscription2: Subscription;
 
   constructor(
+    private dataObservable: Observable<Unit[]>,
     private paginator: MatPaginator,
-    private sort: MatSort,
-    private userService: UserService) {
+    private sort: MatSort) {
     super();
-    this.subscription1 = this.userService.currentUserUnits
+    this.subscription1 = this.dataObservable
       .pipe(untilDestroyed(this)).subscribe(u => this.data = u);
   }
 
@@ -28,12 +28,12 @@ export class UnitDataSource extends DataSource<Unit> implements OnDestroy {
 
   connect(): Observable<Unit[]> {
     const dataMutations = [
-      this.userService.currentUserUnits,
+      this.dataObservable,
       this.paginator.page,
       this.sort.sortChange
     ];
-    this.subscription2 = this.userService.currentUserUnits.pipe(untilDestroyed(this))
-      .subscribe(u => {
+    this.subscription2 = this.dataObservable.pipe(untilDestroyed(this))
+      .subscribe((u: Array<any>) => {
         if (u) {
           this.paginator.length = this.data.length;
         }

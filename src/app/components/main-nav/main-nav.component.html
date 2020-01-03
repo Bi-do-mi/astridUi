@@ -13,6 +13,11 @@
       <mat-icon aria-label="Arrow back icon">arrow_back_ios</mat-icon>
     </mat-toolbar>
 
+    <!--раздел поиска-->
+    <div *ngIf="searchContent">
+      <ng-container *ngComponentOutlet="SearchComponent"></ng-container>
+    </div>
+
     <!--раздел парка техники-->
     <div fxLayout="column" *ngIf="parkContent && uService.authenticated">
       <div class="ml-1 mr-0" fxLayout="row">

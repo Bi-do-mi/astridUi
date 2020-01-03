@@ -42,7 +42,7 @@ export class UnitsMainListDialogComponent implements OnInit, OnDestroy {
         this.onCancel();
       });
     this.dataSource = new UnitDataSource(
-      this.paginator, this.sort, this.userService);
+      this.userService.currentUserUnits, this.paginator, this.sort);
     this.userService.currentUserUnits.pipe(untilDestroyed(this))
       .subscribe(units => {
       this.galleryImagesMap = new Map();

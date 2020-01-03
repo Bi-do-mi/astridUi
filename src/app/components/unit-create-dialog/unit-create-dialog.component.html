@@ -2,7 +2,7 @@
 <div *ngIf="unitsList.length > 0">
   <h5 *ngIf="!data.editing" class="form-group-size">Новая единица техники</h5>
   <h5 *ngIf="data.editing" class="form-group-size">Редактирование единицы техники</h5>
-  <mat-vertical-stepper [linear]="linear" #stepper>
+  <mat-vertical-stepper [linear]="linear" #stepper [selectedIndex]="data?.stepNum">
 
     <!--Step One-->
     <mat-step label="Укажите тип" state="assignment" [stepControl]="selectForm">

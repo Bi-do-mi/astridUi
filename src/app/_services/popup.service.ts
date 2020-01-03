@@ -161,7 +161,7 @@ export class PopupService implements OnInit, OnDestroy {
 
     map.on('click', layer_, () => {
       if (unit) {
-       this.openUnitInfoCardDialog(unit);
+        this.openUnitInfoCardDialog(unit);
       }
       if (user) {
         this.openUserInfoCardDialog(user);
@@ -230,6 +230,8 @@ export class PopupService implements OnInit, OnDestroy {
     const userLoc = this.currentUser.location.geometry.coordinates as number[];
     this.currentUser.units.forEach(unit => {
       const unitLoc = unit.location.geometry.coordinates as number[];
+      // console.log('unitLoc: ' + JSON.stringify(unitLoc));
+      // console.log('userLoc: ' + JSON.stringify(userLoc));
       if (userLoc[0] === unitLoc[0] && userLoc[1] === unitLoc[1]) {
         markerDiv.innerHTML = 'P+';
       }
@@ -249,13 +251,12 @@ export class PopupService implements OnInit, OnDestroy {
           popup.remove();
         }
       });
-      usersPopupEl.addEventListener('click', () => {
-        this.isMouseOnPopup = false;
-        if (popup.isOpen()) {
-          popup.remove();
-        }
-        // this.openUnitInfoCardDialog(user);
-      });
+      // usersPopupEl.addEventListener('click', () => {
+      //   if (popup.isOpen()) {
+      //     this.isMouseOnPopup = false;
+      //     popup.remove();
+      //   }
+      // });
       popup.setDOMContent(usersPopupEl).on('open', () => {
         this.isPopupOpened = true;
       });
@@ -290,8 +291,8 @@ export class PopupService implements OnInit, OnDestroy {
   }
 
   public openUnitInfoCardDialog(unit: Unit) {
-      this.removeUnitsPopup();
-      this.openUnitInfoService.open(unit);
+    this.removeUnitsPopup();
+    this.openUnitInfoService.open(unit);
   }
 
   public openUserInfoCardDialog(user: User) {
