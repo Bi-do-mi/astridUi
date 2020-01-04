@@ -564,10 +564,11 @@ export class MapService implements OnInit, OnDestroy {
   }
 
 
-  markerIndication(unit: Unit) {
+  markerIndication(location: GeoJson) {
+    // console.log('location: ' + JSON.stringify(location));
     if (this.userMarker &&
-      (this.userMarker.getLngLat().lng === unit.location.geometry.coordinates[0]) &&
-      (this.userMarker.getLngLat().lat === unit.location.geometry.coordinates[1])
+      (this.userMarker.getLngLat().lng === location.geometry.coordinates[0]) &&
+      (this.userMarker.getLngLat().lat === location.geometry.coordinates[1])
     ) {
       let pulsar = true;
       const markerTimer = setInterval(() => {
@@ -594,8 +595,8 @@ export class MapService implements OnInit, OnDestroy {
         '            </circle>\n' +
         '        </svg>');
       const pulsarPointer = new Marker(markerDiv);
-      pulsarPointer.setLngLat([unit.location.geometry.coordinates[0],
-        unit.location.geometry.coordinates[1]]);
+      pulsarPointer.setLngLat([location.geometry.coordinates[0],
+        location.geometry.coordinates[1]]);
       setTimeout(() => {
         pulsarPointer.addTo(this.map);
         pulsarPointer.getElement().hidden = true;

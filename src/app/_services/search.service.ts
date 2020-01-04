@@ -17,7 +17,8 @@ export class SearchService implements OnDestroy {
   public unitsCache = new Array<Unit>();
   public filteredUnits$ = new BehaviorSubject<Array<Unit>>(new Array<Unit>());
   public filteredUnits = this.filteredUnits$.asObservable();
-  public filteredUsers: Observable<Array<User>>;
+  public filteredUsers$ = new BehaviorSubject<Array<User>>(new Array<User>());
+  public filteredUsers = this.filteredUsers$.asObservable();
 
   constructor(
     private parkService: ParkService

@@ -1,0 +1,7 @@
+{
+"version": 3,
+"mappings": "AAAA,+BAA+B;EAC7B,KAAK,EAAE,IAAI;EACX,UAAU,EAAE,IAAI;;AAElB,kBAAkB;EAChB,SAAS,EAAE,IAAI;EACf,OAAO,EAAE,eAAe;;AAG1B,wBAAwB;EACtB,MAAM,EAAE,OAAO",
+"sources": ["filtered-users-list-table.component.scss"],
+"names": [],
+"file": "filtered-users-list-table.component.css"
+}

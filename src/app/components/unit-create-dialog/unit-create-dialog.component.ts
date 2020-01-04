@@ -250,7 +250,7 @@ export class UnitCreateDialogComponent implements OnInit, AfterViewInit, OnDestr
               this.snackbarService.success('Единица техники успешно обновлена',
                 'OK', 10000);
               this.mapService.flyTo(this.data.unit.location);
-              this.mapService.markerIndication(this.data.unit);
+              this.mapService.markerIndication(this.data.unit.location);
             })).subscribe(() => {
             },
             error => {
@@ -269,7 +269,7 @@ export class UnitCreateDialogComponent implements OnInit, AfterViewInit, OnDestr
           this.snackbarService.success('Единица техники успешно создана',
             'OK', 10000);
           this.mapService.flyTo(this.data.unit.location);
-          this.mapService.markerIndication(this.data.unit);
+          this.mapService.markerIndication(this.data.unit.location);
         },
         error => {
           this.loading = false;

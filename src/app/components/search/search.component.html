@@ -24,15 +24,19 @@
         <input type="text" placeholder="Искать владельца" aria-label="Owner" matInput
                [formControl]="userCtrl" [matAutocomplete]="userCmplt">
         <mat-autocomplete autoActiveFirstOption #userCmplt="matAutocomplete">
-          <mat-option *ngFor="let user of searchService.filteredUsers | async" [value]="user.name">
+          <mat-option *ngFor="let user of userOptions" [value]="user.name">
             {{user.name}}
           </mat-option>
         </mat-autocomplete>
       </mat-form-field>
     </form>
   </div>
-  <div class="filtered-units-list-container" *ngIf="showFiltUnList &&
+  <div class="filtered-units-list-container" *ngIf="showFiltUnList && searchService.searchUnits &&
    ((searchService?.filteredUnits | async)?.length>0)">
     <ng-container *ngComponentOutlet="FilteredUnitsListTableComponent"></ng-container>
+  </div>
+  <div class="filtered-users-list-container" *ngIf="showFiltUsList && !searchService.searchUnits &&
+   ((searchService?.filteredUsers | async)?.length>0)">
+    <ng-container *ngComponentOutlet="FilteredUsersListTableComponent"></ng-container>
   </div>
 </div>

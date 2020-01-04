@@ -41,7 +41,7 @@ export class UnitsListTableComponent implements OnInit, OnDestroy {
   flyToUnit(unit: Unit) {
     this.sidenavService.closeAll();
     this.mapServ.flyTo(unit.location);
-    this.mapServ.markerIndication(unit);
+    this.mapServ.markerIndication(unit.location);
   }
 
   openUnitInfoCardDialog(unit: Unit) {

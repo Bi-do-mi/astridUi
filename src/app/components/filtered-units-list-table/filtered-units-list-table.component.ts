@@ -41,7 +41,7 @@ export class FilteredUnitsListTableComponent implements OnInit, OnDestroy {
   flyToUnit(unit: Unit) {
     this.sidenavService.closeAll();
     this.mapServ.flyTo(unit.location);
-    this.mapServ.markerIndication(unit);
+    this.mapServ.markerIndication(unit.location);
   }
 
   openUnitInfoCardDialog(unit: Unit) {
@@ -59,24 +59,24 @@ export class FilteredUnitsListTableComponent implements OnInit, OnDestroy {
       backdropClass: 'leanerBack1',
       data: {unit: unit, image: gallery}
     });
-    unitInfoDialogRef.afterClosed().pipe(untilDestroyed(this)).subscribe(unit_ => {
-      if (unit_) {
-        this.openUnitCreateDialog(unit_);
-      }
-    });
+    // unitInfoDialogRef.afterClosed().pipe(untilDestroyed(this)).subscribe(unit_ => {
+    //   if (unit_) {
+    //     this.openUnitCreateDialog(unit_);
+    //   }
+    // });
   }
 
-  openUnitCreateDialog(unit?: Unit): void {
-    const dialogRef = this.dialog.open(UnitCreateDialogComponent, {
-      maxHeight: '100vh',
-      maxWidth: '100vw',
-      backdropClass: 'leanerBack1',
-      data: {unit: unit, stepNum: 0}
-    });
-    dialogRef.afterClosed().pipe(untilDestroyed(this)).subscribe((result?: string) => {
-      if (result === 'setLocation') {
-        this.setLocationService.set(true, unit, 3);
-      }
-    });
-  }
+  // openUnitCreateDialog(unit?: Unit): void {
+  //   const dialogRef = this.dialog.open(UnitCreateDialogComponent, {
+  //     maxHeight: '100vh',
+  //     maxWidth: '100vw',
+  //     backdropClass: 'leanerBack1',
+  //     data: {unit: unit, stepNum: 0}
+  //   });
+  //   dialogRef.afterClosed().pipe(untilDestroyed(this)).subscribe((result?: string) => {
+  //     if (result === 'setLocation') {
+  //       this.setLocationService.set(true, unit, 3);
+  //     }
+  //   });
+  // }
 }

@@ -62,6 +62,7 @@ import { UsersPopupComponent } from './components/users-popup/users-popup.compon
 import { UserInfoCardDialogComponent } from './components/user-info-card-dialog/user-info-card-dialog.component';
 import { SearchComponent } from './components/search/search.component';
 import { FilteredUnitsListTableComponent } from './components/filtered-units-list-table/filtered-units-list-table.component';
+import { FilteredUsersListTableComponent } from './components/filtered-users-list-table/filtered-users-list-table.component';
 
 // import {registerLocaleData} from '@angular/common';
 // import localeRu from '@angular/common/locales/ru';
@@ -94,7 +95,8 @@ export const httpInterceptorProviders = [
     UsersPopupComponent,
     UserInfoCardDialogComponent,
     SearchComponent,
-    FilteredUnitsListTableComponent
+    FilteredUnitsListTableComponent,
+    FilteredUsersListTableComponent
   ],
   imports: [
     BrowserModule,
@@ -157,7 +159,8 @@ export const httpInterceptorProviders = [
     UsersPopupComponent,
     UserInfoCardDialogComponent,
     SearchComponent,
-    FilteredUnitsListTableComponent
+    FilteredUnitsListTableComponent,
+    FilteredUsersListTableComponent
   ],
   providers: [AuthGuard, httpInterceptorProviders,
     {
