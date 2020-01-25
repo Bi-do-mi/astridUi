@@ -1,5 +1,5 @@
 import {Injectable, OnDestroy} from '@angular/core';
-import {BehaviorSubject, Observable, of, Subject} from 'rxjs';
+import {BehaviorSubject, Observable} from 'rxjs';
 import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import {User} from '../_model/User';
 import {NGXLogger} from 'ngx-logger';
@@ -57,7 +57,7 @@ export class UserService implements OnDestroy {
     const ahead = new HttpHeaders(credentials ? {
       Authorization: 'Basic ' + btoa(credentials.login + ':' + credentials.password)
     } : {});
-    return this.http.get<any>('/rest/users/sign_in?token=' + token, {headers: ahead})
+    return this.http.get<any>(+ '/rest/users/sign_in?token=' + token, {headers: ahead})
       .pipe(finalize(() => {
         notFinished = false;
         this.spinner.hide();
@@ -81,7 +81,7 @@ export class UserService implements OnDestroy {
         this.spinner.show();
       }
     }, 1000);
-    return this.http.put<any>('rest/users/update_user', user)
+    return this.http.put<any>('/rest/users/update_user', user)
       .pipe(finalize(() => {
         // console.log(user.image);
         notFinished = false;
@@ -104,7 +104,7 @@ export class UserService implements OnDestroy {
       }
     }, 1000);
     // remove user from local storage to log user out
-    this.http.get('logout', {}).pipe(finalize(() => {
+    this.http.post('logout', {}).pipe(finalize(() => {
       localStorage.removeItem('currentUser');
       // localStorage.removeItem('ahead');
       this.updateCurrentUser(new User(), false);
@@ -116,15 +116,15 @@ export class UserService implements OnDestroy {
   }
 
   getAll() {
-    return this.http.get<User[]>('rest/users/');
+    return this.http.get<User[]>('/rest/users/');
   }
 
   getById(id: number) {
-    return this.http.get('rest/users/' + id);
+    return this.http.get('/rest/users/' + id);
   }
 
   getByName(name: string) {
-    return this.http.get('rest/users/name_check?name=' + name, {'withCredentials': false, responseType: 'text'});
+    return this.http.get(+ '/rest/users/name_check?name=' + name, {'withCredentials': false, responseType: 'text'});
   }
 
   register(userCredentials) {
@@ -135,7 +135,7 @@ export class UserService implements OnDestroy {
       }
     }, 1000);
     userCredentials.password = btoa(userCredentials.password);
-    return this.http.post('rest/users/sign_up', userCredentials)
+    return this.http.post('/rest/users/sign_up', userCredentials)
       .pipe(finalize(() => {
         notFinished = false;
         this.spinner.hide();
@@ -149,7 +149,7 @@ export class UserService implements OnDestroy {
         this.spinner.show();
       }
     }, 1000);
-    return this.http.delete('rest/users/deleteUser?id=' + user.id)
+    return this.http.delete('/rest/users/deleteUser?id=' + user.id)
       .pipe(finalize(() => {
         notFinished = false;
         this.spinner.hide();
@@ -168,7 +168,7 @@ export class UserService implements OnDestroy {
         this.spinner.show();
       }
     }, 1000);
-    return this.http.get('rest/users/enable_user?token=' + token,
+    return this.http.get('/rest/users/enable_user?token=' + token,
       {'withCredentials': false, responseType: 'text'})
       .pipe(finalize(() => {
         notFinished = false;
@@ -183,7 +183,7 @@ export class UserService implements OnDestroy {
         this.spinner.show();
       }
     }, 1000);
-    return this.http.get('rest/users/set_user_token?login=' + login,
+    return this.http.get('/rest/users/set_user_token?login=' + login,
       {'withCredentials': false, responseType: 'text'})
       .pipe(finalize(() => {
         notFinished = false;

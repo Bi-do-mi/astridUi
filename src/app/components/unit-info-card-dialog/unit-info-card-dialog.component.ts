@@ -19,7 +19,7 @@ export class UnitInfoCardDialogComponent implements OnInit, OnDestroy {
   unit = new Unit();
   images: NgxGalleryImage[] = [];
   galleryOptions: NgxGalleryOptions[];
-  private isPrivate = false;
+  public isPrivate = false;
 
 
   constructor(

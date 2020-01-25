@@ -27,7 +27,8 @@ export class RequestInterceptor implements HttpInterceptor {
       // console.log('from interceptor ' + event.type);
 
     }, (err: any) => {
-      if (err instanceof HttpErrorResponse && err.status === 401) {
+      if (err instanceof HttpErrorResponse && err.status === 401
+      && !err.url.includes('/rest/search/on_moveen')) {
         localStorage.removeItem('currentUser');
         this.logger.error('From requestInterceptor: error - ', err.message);
         this.router.navigate(['/preload/login']);

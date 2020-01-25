@@ -8,7 +8,7 @@ import {User} from '../../_model/User';
   styleUrls: ['./user-info-card-dialog.component.scss']
 })
 export class UserInfoCardDialogComponent implements OnInit {
-  private user: User;
+  public user: User;
 
   constructor(
     private dialogRef: MatDialogRef<UserInfoCardDialogComponent>,

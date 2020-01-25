@@ -83,7 +83,7 @@ export class LoginComponent implements OnInit, OnDestroy {
       return;
     }
     this.loading = true;
-    this.credentials.login = this.f.login.value;
+    this.credentials.login = this.f.login.value.replace(/\s+/g, '_').toLowerCase();
     this.credentials.password = this.f.password.value || this.f.newPassword.value;
     this.credentials.newPassword = this.f.newPassword.value;
     if (this.route.snapshot.queryParamMap.get('target') === 'new_password') {

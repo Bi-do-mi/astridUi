@@ -17,6 +17,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
+//            "outputPath": "../astrid/src/main/resources/static/",
             "outputPath": "dist/",
             "index": "src/index.html",
             "main": "src/main.ts",
