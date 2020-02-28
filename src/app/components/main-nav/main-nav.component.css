@@ -2371,13 +2371,20 @@ textarea.cdk-textarea-autosize-measuring {
 .map-row {
   position: relative; }
 
-.search-button {
-  position: absolute;
-  margin-top: 50px; }
+.tools-bar {
+  position: fixed;
+  left: 50%;
+  bottom: 0px;
+  transform: translate(-50%, -50%);
+  margin: 0 auto;
+  background: #212121;
+  border-radius: 23px; }
 
-.park-button {
-  position: absolute;
-  margin-top: 90px; }
+.tool-button {
+  background: #fbc02d; }
+
+.button-div {
+  padding: 3px; }
 
 .title {
   min-height: 100%; }

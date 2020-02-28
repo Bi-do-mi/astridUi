@@ -1,6 +1,7 @@
 import {Component, Inject, OnInit} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from '@angular/material';
 import {User} from '../../_model/User';
+import {ZonedDateTime} from '@js-joda/core';
 
 @Component({
   selector: 'app-user-info-card-dialog',
@@ -18,9 +19,11 @@ export class UserInfoCardDialogComponent implements OnInit {
 
   ngOnInit() {
     this.user = this.data.user;
+    // console.log(this.data.user.registrationDate.toJSON());
   }
 
   onCancel(): void {
     this.dialogRef.close();
   }
+
 }

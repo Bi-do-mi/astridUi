@@ -7,6 +7,7 @@ import {finalize, first, map} from 'rxjs/operators';
 import {untilDestroyed} from 'ngx-take-until-destroy';
 import {NgxSpinnerService} from 'ngx-spinner';
 import {Unit} from '../_model/Unit';
+import {DateDeserializerService} from './date-deserializer.service';
 
 @Injectable({
   providedIn: 'root'
@@ -23,14 +24,15 @@ export class UserService implements OnDestroy {
 
   constructor(private http: HttpClient,
               private spinner: NgxSpinnerService,
-              private logger: NGXLogger) {
+              private logger: NGXLogger,
+              private dateDeserializer: DateDeserializerService) {
   }
   checkAuth(): Observable<any> {
       try {
         return this.http.get<any>('/rest/users/check-auth')
           .pipe(map((u: User) => {
+            this.dateDeserializer.date(u);
             this.updateCurrentUser(u, true);
-            // console.log('incoming string User: \n' + u.units);
             this.authenticated = true;
             this.checkAdmin();
           }), untilDestroyed(this));
@@ -54,18 +56,20 @@ export class UserService implements OnDestroy {
         this.spinner.show();
       }
     }, 1000);
+    // console.log('LOGIN(): \n' + JSON.stringify(credentials) +
+    // JSON.stringify(token));
     const ahead = new HttpHeaders(credentials ? {
-      Authorization: 'Basic ' + btoa(credentials.login + ':' + credentials.password)
+      Authorization: 'Basic ' + btoa(credentials.login
+        + ':' + credentials.password)
     } : {});
-    return this.http.get<any>(+ '/rest/users/sign_in?token=' + token, {headers: ahead})
+    return this.http.get<any>('/rest/users/sign_in?token='
+      + token, {headers: ahead})
       .pipe(finalize(() => {
         notFinished = false;
         this.spinner.hide();
-      }), map(user => {
-        // this.logger.info('From UserService:\n', user);
+      }), map((user: User) => {
         if (user) {
-          // this.logger.info('getTimezoneOffset=' + new Date(user.lastVisit)
-          //   + (user.lastVisit as Date) + JSON.stringify(user));
+          this.dateDeserializer.date(user);
           this.updateCurrentUser(user, true);
           this.authenticated = true;
           this.checkAdmin();
@@ -86,8 +90,9 @@ export class UserService implements OnDestroy {
         // console.log(user.image);
         notFinished = false;
         this.spinner.hide();
-      }), map(u => {
+      }), map((u: User) => {
         if (u) {
+          this.dateDeserializer.date(u);
           this.updateCurrentUser(u, true);
           this.authenticated = true;
           // console.log(user);
@@ -104,7 +109,7 @@ export class UserService implements OnDestroy {
       }
     }, 1000);
     // remove user from local storage to log user out
-    this.http.post('logout', {}).pipe(finalize(() => {
+    this.http.post('/logout', {}).pipe(finalize(() => {
       localStorage.removeItem('currentUser');
       // localStorage.removeItem('ahead');
       this.updateCurrentUser(new User(), false);
@@ -124,7 +129,7 @@ export class UserService implements OnDestroy {
   }
 
   getByName(name: string) {
-    return this.http.get(+ '/rest/users/name_check?name=' + name, {'withCredentials': false, responseType: 'text'});
+    return this.http.get('/rest/users/name_check?name=' + name, {'withCredentials': false, responseType: 'text'});
   }
 
   register(userCredentials) {
@@ -242,6 +247,7 @@ export class UserService implements OnDestroy {
         notFinished = false;
         this.spinner.hide();
       }), map((u: User) => {
+        this.dateDeserializer.date(u);
         if (u) {
           if (u.username === this.currentUser$.getValue().username) {
             this.updateCurrentUser(u, true);
@@ -264,7 +270,8 @@ export class UserService implements OnDestroy {
       .pipe(finalize(() => {
         notFinished = false;
         this.spinner.hide();
-      }), map(u => {
+      }), map((u: User) => {
+        this.dateDeserializer.date(u);
         if (u) {
           if (u.username === this.currentUser$.getValue().username) {
             this.updateCurrentUser(u, true);

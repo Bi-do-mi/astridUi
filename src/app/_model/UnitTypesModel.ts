@@ -1,4 +1,5 @@
-import {ZonedDateTime, ZoneId} from 'js-joda';
+import {ZonedDateTime, ZoneId} from '@js-joda/core';
+
 
 export class UnitModel {
   modelname = '';

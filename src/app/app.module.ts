@@ -25,7 +25,8 @@ import {
   MatInputModule,
   MatListModule,
   MatPaginatorModule,
-  MatProgressSpinnerModule, MatRadioModule,
+  MatProgressSpinnerModule,
+  MatRadioModule,
   MatSelectModule,
   MatSidenavModule,
   MatSlideToggleModule,
@@ -57,12 +58,15 @@ import {DynamicFormComponent} from './components/unit-create-dialog/dynamic-form
 import {UnitsMainListDialogComponent} from './components/units-main-list-dialog/units-main-list-dialog.component';
 import {UnitInfoCardDialogComponent} from './components/unit-info-card-dialog/unit-info-card-dialog.component';
 import {DeleteUnitDialogComponent} from './components/delete-unit-dialog/delete-unit-dialog.component';
-import { UnitsPopupComponent } from './components/units-popup/units-popup.component';
-import { UsersPopupComponent } from './components/users-popup/users-popup.component';
-import { UserInfoCardDialogComponent } from './components/user-info-card-dialog/user-info-card-dialog.component';
-import { SearchComponent } from './components/search/search.component';
-import { FilteredUnitsListTableComponent } from './components/filtered-units-list-table/filtered-units-list-table.component';
-import { FilteredUsersListTableComponent } from './components/filtered-users-list-table/filtered-users-list-table.component';
+import {UnitsPopupComponent} from './components/units-popup/units-popup.component';
+import {UsersPopupComponent} from './components/users-popup/users-popup.component';
+import {UserInfoCardDialogComponent} from './components/user-info-card-dialog/user-info-card-dialog.component';
+import {SearchComponent} from './components/search/search.component';
+import {FilteredUnitsListTableComponent} from './components/filtered-units-list-table/filtered-units-list-table.component';
+import {FilteredUsersListTableComponent} from './components/filtered-users-list-table/filtered-users-list-table.component';
+import {LoadUnitImagePipe} from './pipes/load-unit-image.pipe';
+import {LoadUserImagePipe} from './pipes/load-user-image.pipe';
+import { DateToLocalStringPipe } from './pipes/date-to-local-string.pipe';
 
 // import {registerLocaleData} from '@angular/common';
 // import localeRu from '@angular/common/locales/ru';
@@ -88,6 +92,8 @@ export const httpInterceptorProviders = [
     UnitsListTableComponent,
     DynamicFormQuestionComponent,
     DynamicFormComponent,
+    LoadUnitImagePipe,
+    LoadUserImagePipe,
     UnitsMainListDialogComponent,
     UnitInfoCardDialogComponent,
     DeleteUnitDialogComponent,
@@ -96,7 +102,8 @@ export const httpInterceptorProviders = [
     UserInfoCardDialogComponent,
     SearchComponent,
     FilteredUnitsListTableComponent,
-    FilteredUsersListTableComponent
+    FilteredUsersListTableComponent,
+    DateToLocalStringPipe
   ],
   imports: [
     BrowserModule,
@@ -162,7 +169,7 @@ export const httpInterceptorProviders = [
     FilteredUnitsListTableComponent,
     FilteredUsersListTableComponent
   ],
-  providers: [AuthGuard, httpInterceptorProviders,
+  providers: [AuthGuard, httpInterceptorProviders, LoadUnitImagePipe,
     {
       provide: STEPPER_GLOBAL_OPTIONS,
       useValue: { displayDefaultIndicatorType: false }

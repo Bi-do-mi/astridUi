@@ -5,12 +5,11 @@ import {UnitAssignment, UnitBrand, UnitType} from '../_model/UnitTypesModel';
 import {Unit} from '../_model/Unit';
 import {NgxSpinnerService} from 'ngx-spinner';
 import {UserService} from './user.service';
-import {Feature} from 'geojson';
 import * as turf from '@turf/helpers';
 import {BehaviorSubject} from 'rxjs';
 import {User} from '../_model/User';
 import {untilDestroyed} from 'ngx-take-until-destroy';
-import {environment} from '../../environments/environment';
+import {DateDeserializerService} from './date-deserializer.service';
 
 @Injectable({
   providedIn: 'root'
@@ -27,6 +26,7 @@ export class ParkService implements OnDestroy {
     private http: HttpClient,
     private userService: UserService,
     private spinner: NgxSpinnerService,
+    private dateDeserializer: DateDeserializerService
   ) {
     this.getJSONfromFile();
   }
@@ -36,7 +36,7 @@ export class ParkService implements OnDestroy {
 
   public getJSONfromFile(fromFile?: boolean) {
     const localUrl = './assets/ParkList/list.json';
-    const url = + '/rest/units/get_unit_types_list';
+    const url = '/rest/units/get_unit_types_list';
     return this.http.get(fromFile ? localUrl : url).pipe(first(),
       map((data: UnitType[]) => {
         const allText: string = JSON.stringify(data);
@@ -75,13 +75,14 @@ export class ParkService implements OnDestroy {
       }
     }, 1000);
     // console.log('createUnit: \n' + JSON.stringify(unit));
-    return this.http.post<any>(+ '/rest/units/create_unit', unit)
+    return this.http.post<any>('/rest/units/create_unit', unit)
       .pipe(first(), finalize(() => {
           notFinished = false;
           this.spinner.hide();
         })
-        , map(user => {
+        , map((user: User) => {
           if (user) {
+            this.dateDeserializer.date(user);
             this.userService.updateCurrentUser(user, true);
           }
           return;
@@ -96,15 +97,14 @@ export class ParkService implements OnDestroy {
         this.spinner.show();
       }
     }, 1000);
-    return this.http.post<any>(+ '/rest/units/update_unit', unit)
+    return this.http.post<any>('/rest/units/update_unit', unit)
       .pipe(first(), finalize(() => {
           notFinished = false;
           this.spinner.hide();
         })
         , map((user: User) => {
           if (user) {
-            // console.log('this.userService.updateCurrentUser!!!'
-            //   + JSON.stringify(user.units[0].location));
+            this.dateDeserializer.date(user);
             this.userService.updateCurrentUser(user, true);
           }
           return;
@@ -119,12 +119,13 @@ export class ParkService implements OnDestroy {
         this.spinner.show();
       }
     }, 1000);
-    return this.http.post<any>(+ '/rest/units/delete_unit', unit)
+    return this.http.post<any>('/rest/units/delete_unit', unit)
       .pipe(first(), finalize(() => {
           notFinished = false;
           this.spinner.hide();
         })
-        , map(user => {
+        , map((user: User) => {
+          this.dateDeserializer.date(user);
           if (user) {
             this.userService.updateCurrentUser(user, true);
           }
@@ -140,7 +141,7 @@ export class ParkService implements OnDestroy {
         this.spinner.show();
       }
     }, 1000);
-    return this.http.post<any>(+ '/rest/units/create_unit_types_list', list)
+    return this.http.post<any>('/rest/units/create_unit_types_list', list)
       .pipe(first(), untilDestroyed(this), finalize(() => {
         notFinished = false;
         this.spinner.hide();
@@ -148,30 +149,45 @@ export class ParkService implements OnDestroy {
   }
 
   loadDataOnMoveEnd(polygon: turf.Feature<turf.MultiPolygon>) {
-    // todo при перемещении парка и выходе отобразится метка парка на старом месте. Починить.
-    // todo удалить пробелы и большие буквы в адресе авторизации
-    // console.log('loadDataOnMoveEnd^ \n' + JSON.stringify(polygon));
-    this.http.post<any>(+ '/rest/search/on_moveend', polygon)
+    if (document.cookie.indexOf('XSRF-TOKEN') === -1) {
+      this.http.get<any>('/rest/users/hello')
+        .pipe(first(), untilDestroyed(this), finalize(() => {
+          this.users.clear();
+          this.units.clear();
+          this.onMoveEndRequest(polygon);
+        })).subscribe(() => {
+      }, error1 => {
+        // console.log('Error resived!');
+      });
+    } else {
+      this.onMoveEndRequest(polygon);
+    }
+  }
+
+  onMoveEndRequest(polygon: turf.Feature<turf.MultiPolygon>) {
+    this.http.post<any>('/rest/search/on_moveend', polygon)
       .pipe(first(), untilDestroyed(this)).subscribe((data: Array<Array<any>>) => {
-      if (data) {
-        if (data[0].length > 0) {
-          data[0].forEach((us: User) => {
-            if (!this.users.has(us.id)) {
-              this.users.set(us.id, us);
-            }
-          });
-          this.usersCacheFiltered$.next(this.filterUsers());
+        if (data) {
+          if (data[0].length > 0) {
+            data[0].forEach((us: User) => {
+              if (!this.users.has(us.id)) {
+                this.dateDeserializer.date(us);
+                this.users.set(us.id, us);
+              }
+            });
+            this.usersCacheFiltered$.next(this.filterUsers());
+          }
+          if (data[1].length > 0) {
+            data[1].forEach((u: Unit) => {
+              if (!this.units.has(u.id)) {
+                this.dateDeserializer.date(u);
+                this.units.set(u.id, u);
+              }
+            });
+            this.unitsCacheFiltered$.next(this.filterUnits());
+          }
         }
-        if (data[1].length > 0) {
-          data[1].forEach((u: Unit) => {
-            if (!this.units.has(u.id)) {
-              this.units.set(u.id, u);
-            }
-          });
-          this.unitsCacheFiltered$.next(this.filterUnits());
-        }
-      }
-    },
+      },
       error1 => {
         // console.log('loadDataOnMoveEnd ERROR: \n' + JSON.stringify(error1) + 'poly: \n'
         //   + JSON.stringify(polygon));
@@ -209,8 +225,9 @@ export class ParkService implements OnDestroy {
   }
 
   loadUnitImgFromServer(unit: Unit) {
-    return this.http.put<any>(+ '/rest/units/get_units_images', unit)
+    return this.http.put<any>('/rest/units/get_units_images', unit)
       .pipe(first(), untilDestroyed(this), map((data: Unit) => {
+        this.dateDeserializer.date(data);
         if (this.units.has(data.id)) {
           this.units.set(data.id, data);
         }
@@ -219,8 +236,9 @@ export class ParkService implements OnDestroy {
   }
 
   loadUsersImgFromServer(user: User) {
-    return this.http.put<any>(+ '/rest/users/get_users_image', user)
+    return this.http.put<any>('/rest/users/get_users_image', user)
       .pipe(first(), untilDestroyed(this), map((data: User) => {
+        this.dateDeserializer.date(user);
         if (this.users.has(data.id)) {
           this.users.set(data.id, data);
         }

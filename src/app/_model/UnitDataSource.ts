@@ -1,13 +1,11 @@
-
 //  Data Source Class    //////////////////////////////////////////////////////////////////////
 import {DataSource} from '@angular/cdk/table';
 import {Unit} from './Unit';
 import {OnDestroy} from '@angular/core';
 import {merge, Observable, Subscription} from 'rxjs';
 import {MatPaginator, MatSort} from '@angular/material';
-import {UserService} from '../_services/user.service';
 import {untilDestroyed} from 'ngx-take-until-destroy';
-import {map} from 'rxjs/operators';
+import {first, map} from 'rxjs/operators';
 
 export class UnitDataSource extends DataSource<Unit> implements OnDestroy {
   public data: Unit[];
@@ -50,6 +48,7 @@ export class UnitDataSource extends DataSource<Unit> implements OnDestroy {
     this.subscription2.unsubscribe();
   }
 
+  // возвращает порцию юнитов из массива
   private getPagedData(data: Unit[]) {
     const startIndex = this.paginator.pageIndex * this.paginator.pageSize;
     return data.splice(startIndex, this.paginator.pageSize);

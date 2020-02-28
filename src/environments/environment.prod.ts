@@ -4,5 +4,7 @@ export const environment = {
     accessToken: 'VRgdrAzvUsWnu6iigRja',
     geocoderAccessToken: 'hg1h55E0Z3ft5je5zeKI'
   },
-  testing_paid: true
+  testing_paid: true,
+  unitPicSpacer: './assets/pics/unit_pic_spacer-500x333.png',
+  userPicSpacer: './assets/pics/buldozer_.jpg'
 };

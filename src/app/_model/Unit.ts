@@ -1,7 +1,7 @@
 import {GeoJson} from './MarkerSourceModel';
 import {UnitImage} from './UnitImage';
-import {ZonedDateTime} from 'js-joda';
 import {UnitOptionModel} from '../components/unit-create-dialog/UnitOptions/UnitOptionModel';
+import {ZonedDateTime} from '@js-joda/core';
 
 export class Unit {
   id: number;

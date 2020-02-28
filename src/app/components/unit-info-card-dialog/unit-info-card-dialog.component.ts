@@ -2,13 +2,13 @@ import {Component, Inject, OnDestroy, OnInit} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from '@angular/material';
 import {Unit} from '../../_model/Unit';
 import {NgxGalleryAnimation, NgxGalleryImage, NgxGalleryOptions} from 'ngx-gallery';
-import {DateTimeFormatter, TemporalField, Year, ZonedDateTime} from 'js-joda';
 import {DeleteUnitDialogComponent} from '../delete-unit-dialog/delete-unit-dialog.component';
 import {untilDestroyed} from 'ngx-take-until-destroy';
 import {UserService} from '../../_services/user.service';
 import {User} from '../../_model/User';
 import {first} from 'rxjs/operators';
 import {OpenUnitInfoService} from '../../_services/open-unit-info.service';
+import {ZonedDateTime} from '@js-joda/core';
 
 @Component({
   selector: 'app-unit-info-card-dialog',

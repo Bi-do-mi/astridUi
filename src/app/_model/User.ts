@@ -1,8 +1,8 @@
 import {Role} from './Role';
 import {GeoJson} from './MarkerSourceModel';
-import {ZonedDateTime} from 'js-joda';
 import {Unit} from './Unit';
 import {UserImage} from './UserImage';
+import {ZonedDateTime} from '@js-joda/core';
 
 export class User {
   id: number;

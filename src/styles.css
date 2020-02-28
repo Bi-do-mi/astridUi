@@ -58,4 +58,8 @@ html, body {
   border-radius: 20%;
   background-color: #212121; }
 
+button:focus, button:active:focus, button.active:focus {
+  outline: none !important;
+  outline-style: none !important; }
+
 /*# sourceMappingURL=styles.css.map */

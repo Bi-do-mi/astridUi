@@ -15,19 +15,17 @@
         <div class="m-3">
           <h6><b>{{unit.model}}</b></h6>
           <div>&bull;Id: {{unit.id}}</div>
-          <div>&bull;Тип: {{unit.type}}</div>
-          <div>&bull;Виден другим пользователям: {{unit.enabled}}</div>
-          <div>&bull;Оплачен: {{unit.paid ? 'да' : 'нет'}}</div>
-          <div>&bull;Дата создания: {{(unit.createdOn !==null) ?
-            (getDate(unit.createdOn) | date: 'dd-MM-yyyy'): '-'}}
-          </div>
-          <div>&bull;Дата последнего редактирования: {{(unit.lastUpdate !==null) ?
-            (getDate(unit.lastUpdate) | date: 'dd-MM-yyyy'): '-'}}
-          </div>
-          <div>&bull;Оплачен до: {{(unit.paidUntil !==null) ?
-            (getDate(unit.paidUntil) | date: 'dd-MM-yyyy'): '-'}}
-          </div>
           <div>&bull;Владелец: {{unit.ownerId}}</div>
+          <div>&bull;Тип: {{unit.type}}</div>
+          <div>&bull;Оплачен: {{unit.paid ? 'да' : 'нет'}}</div>
+          <div *ngIf="unit.paid">&bull;Оплачен до: {{unit.paidUntil !==null ?
+            (unit.paidUntil  | dateToLocaleString | async): '-'}}
+          </div>
+          <div>&bull;Виден другим пользователям: {{unit.enabled}}</div>
+          <div>&bull;Дата создания: {{unit.createdOn  | dateToLocaleString | async}}
+          </div>
+          <div>&bull;Дата последнего редактирования: {{unit.lastUpdate  | dateToLocaleString | async}}
+          </div>
           <div>&bull;Количество опций: {{unit.options.length}}</div>
         </div>
       </div>

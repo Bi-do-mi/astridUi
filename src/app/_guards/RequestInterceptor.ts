@@ -27,8 +27,8 @@ export class RequestInterceptor implements HttpInterceptor {
       // console.log('from interceptor ' + event.type);
 
     }, (err: any) => {
-      if (err instanceof HttpErrorResponse && err.status === 401
-      && !err.url.includes('/rest/search/on_moveen')) {
+      if (err instanceof HttpErrorResponse && (err.status === 401 || err.status === 500)
+      && !err.url.includes('/rest/search/on_moveend')) {
         localStorage.removeItem('currentUser');
         this.logger.error('From requestInterceptor: error - ', err.message);
         this.router.navigate(['/preload/login']);
@@ -39,9 +39,9 @@ export class RequestInterceptor implements HttpInterceptor {
       if (err instanceof HttpErrorResponse && err.status === 504) {
         this.snackBarService.error('Сервер временно недоступен', 'OK');
       }
-      if (err instanceof HttpErrorResponse && err.status === 500) {
-        this.snackBarService.error('Ошибка сервера', 'OK');
-      }
+      // if (err instanceof HttpErrorResponse && err.status === 500) {
+      //   this.snackBarService.error('Ошибка сервера', 'OK');
+      // }
     }));
   }
 }
