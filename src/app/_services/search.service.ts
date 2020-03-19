@@ -37,8 +37,4 @@ export class SearchService implements OnDestroy {
 
   ngOnDestroy() {
   }
-
-  prnt(data: any) {
-    console.log('prnt: \n' + data);
-  }
 }

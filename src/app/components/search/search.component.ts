@@ -42,13 +42,6 @@ export class SearchComponent implements OnInit, OnDestroy {
       this.searchService.filteredUnits$.next(units);
     });
     // фильтрация имен юзеров по поисковой строке
-    // this.searchService.filteredUsers = this.userCtrl.valueChanges
-    //   .pipe(
-    //     map((state: string) => state ?
-    //       this.simplifyUsersArr(this._filterUsers(state))
-    //       : this.simplifyUsersArr(this.searchService.usersCache.slice()))
-    //   );
-
     this.userCtrl.valueChanges.pipe(debounceTime(500), untilDestroyed(this),
       map((state: string) => {
         const userNames: Array<User> = (this._filterUsers(state));
@@ -65,9 +58,6 @@ export class SearchComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    // this.searchService.filteredUnits.subscribe((units: Array<Unit>) => {
-    //   this.showFiltUnList = !!units.length;
-    // });
   }
 
   ngOnDestroy() {

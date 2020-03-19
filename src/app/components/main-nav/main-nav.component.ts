@@ -283,19 +283,47 @@ export class MainNavComponent implements OnInit, OnDestroy {
   }
 
   toggleSearchBar(hasBackdrop?: boolean) {
-    this.searchContent = true;
-    this.parkContent = false;
-    this.sidenavService.closeRight();
-    this.hasBackdrop = false;
-    this.leftDrawer.toggle();
+    if (this.searchContent) {
+      this.leftDrawer.close();
+      this.searchContent = false;
+    } else {
+      if (!this.parkContent && !this.searchContent) {
+        this.searchContent = true;
+        this.sidenavService.closeRight();
+        this.hasBackdrop = false;
+        this.leftDrawer.open();
+      } else {
+        this.leftDrawer.close().then(v => {
+          this.searchContent = true;
+          this.parkContent = false;
+          this.sidenavService.closeRight();
+          this.hasBackdrop = false;
+          this.leftDrawer.open();
+        });
+      }
+    }
   }
 
   toggleParkBar(hasBackdrop?: boolean) {
-    this.searchContent = false;
-    this.parkContent = true;
-    this.sidenavService.closeRight();
-    this.hasBackdrop = false;
-    this.leftDrawer.toggle();
+    if (this.parkContent) {
+      this.leftDrawer.close();
+      this.parkContent = false;
+    } else {
+      if (!this.parkContent && !this.searchContent) {
+        this.parkContent = true;
+        this.sidenavService.closeRight();
+        this.hasBackdrop = false;
+        this.leftDrawer.open();
+      } else {
+        this.leftDrawer.close().then(v => {
+          this.searchContent = false;
+          this.parkContent = true;
+          this.sidenavService.closeRight();
+          this.hasBackdrop = false;
+          this.leftDrawer.open();
+        });
+      }
+    }
   }
 
 }
