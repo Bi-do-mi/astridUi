@@ -50,6 +50,7 @@ export class MapService implements OnInit, OnDestroy {
   public userMarker: Marker;
   userGeoCode: GeoCode;
   public _hidePrivateUnits = false;
+  public _hideOtherUnits = false;
   renderer: Renderer2;
   private ownUnitsSource: any;
   private usersSource: any;
@@ -140,12 +141,13 @@ export class MapService implements OnInit, OnDestroy {
 
           // map moveend listener
           this.map.on('moveend', () => {
-            if (this.map.getZoom() >= 8) {
-              this.loadDataOnMoveEnd();
-            }
-            if (this.map.getZoom() < 8 && !this.snackBarService.isOpen()) {
-              this.snackBarService.success('Для загрузки данных приблизьте карту.', 'OK', 10000);
-            }
+            this.loadDataOnMoveEnd();
+            // if (this.map.getZoom() >= 8) {
+            //   this.loadDataOnMoveEnd();
+            // }
+            // if (this.map.getZoom() < 8 && !this.snackBarService.isOpen()) {
+            //   this.snackBarService.success('Для загрузки данных приблизьте карту.', 'OK', 10000);
+            // }
           });
 
           // load listener
@@ -546,6 +548,17 @@ export class MapService implements OnInit, OnDestroy {
     });
   }
 
+  hideOtherUnits(hide?: boolean) {
+    this.sidenavService.closeAll();
+    this._hideOtherUnits = hide || !this._hideOtherUnits;
+    const layers = ['unitsLayer', 'unitsLayerClusters', 'unitsLayerClusterCount',
+      'usersLayer', 'usersLayerClusters', 'usersLayerClusterCount'];
+    layers.forEach(layer => {
+      this.map.setLayoutProperty(layer, 'visibility',
+        this._hideOtherUnits ? 'none' : 'visible');
+    });
+  }
+
   // панарамирование своей техники
   fitBounds() {
     this.sidenavService.closeAll();
@@ -613,13 +626,17 @@ export class MapService implements OnInit, OnDestroy {
   ngOnDestroy() {
   }
 
-  loadDataOnMoveEnd() {
-    const currentViewportFromMap = _helpers.polygon([[
+  getCurrentViewportFromMap() {
+    return _helpers.polygon([[
       this.map.getBounds().getNorthEast().toArray(),
       this.map.getBounds().getSouthEast().toArray(),
       this.map.getBounds().getSouthWest().toArray(),
       this.map.getBounds().getNorthWest().toArray(),
       this.map.getBounds().getNorthEast().toArray()]]);
+  }
+
+  loadDataOnMoveEnd() {
+    const currentViewportFromMap = this.getCurrentViewportFromMap();
     const currentViewportFromMapMultiP = <Feature<MultiPolygon>> turf.multiPolygon(
       [currentViewportFromMap.geometry.coordinates]);
 
@@ -739,6 +756,12 @@ export class MapService implements OnInit, OnDestroy {
     });
     this.unitsSource.setData(new FCollModel.FeatureCollection(tempArr));
     // console.log('unitsSource: \n' + JSON.stringify(this.unitsSource));
+  }
+
+  refreshData() {
+    if (this.viewportMultiPolygons) {
+      this.parkService.loadDataOnMoveEnd(this.viewportMultiPolygons, true);
+    }
   }
 }
 

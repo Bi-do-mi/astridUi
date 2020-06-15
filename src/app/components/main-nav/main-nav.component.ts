@@ -40,8 +40,8 @@ export class MainNavComponent implements OnInit, OnDestroy {
   @ViewChild('right_drawer', {static: true})
   rightDrawer: MatSidenav;
   hasBackdrop: boolean;
-  searchContent: boolean;
-  parkContent: boolean;
+  // searchContent: boolean;
+  // parkContent: boolean;
   currentUser: User;
   isHandset$: Observable<boolean> = this.breakpointObserver.observe(
     Breakpoints.Handset).pipe(map(result => result.matches));
@@ -277,25 +277,25 @@ export class MainNavComponent implements OnInit, OnDestroy {
   }
 
   toggleMenu(hasBackdrop?: boolean) {
-    this.sidenavService.closeLeft();
+    this.sidenavService.closeAll();
     this.hasBackdrop = true;
     this.rightDrawer.toggle();
   }
 
   toggleSearchBar(hasBackdrop?: boolean) {
-    if (this.searchContent) {
+    if (this.sidenavService.searchContent) {
       this.leftDrawer.close();
-      this.searchContent = false;
+      this.sidenavService.searchContent = false;
     } else {
-      if (!this.parkContent && !this.searchContent) {
-        this.searchContent = true;
+      if (!this.sidenavService.parkContent && !this.sidenavService.searchContent) {
+        this.sidenavService.searchContent = true;
         this.sidenavService.closeRight();
         this.hasBackdrop = false;
         this.leftDrawer.open();
       } else {
         this.leftDrawer.close().then(v => {
-          this.searchContent = true;
-          this.parkContent = false;
+          this.sidenavService.searchContent = true;
+          this.sidenavService.parkContent = false;
           this.sidenavService.closeRight();
           this.hasBackdrop = false;
           this.leftDrawer.open();
@@ -305,19 +305,19 @@ export class MainNavComponent implements OnInit, OnDestroy {
   }
 
   toggleParkBar(hasBackdrop?: boolean) {
-    if (this.parkContent) {
+    if (this.sidenavService.parkContent) {
       this.leftDrawer.close();
-      this.parkContent = false;
+      this.sidenavService.parkContent = false;
     } else {
-      if (!this.parkContent && !this.searchContent) {
-        this.parkContent = true;
+      if (!this.sidenavService.parkContent && !this.sidenavService.searchContent) {
+        this.sidenavService.parkContent = true;
         this.sidenavService.closeRight();
         this.hasBackdrop = false;
         this.leftDrawer.open();
       } else {
         this.leftDrawer.close().then(v => {
-          this.searchContent = false;
-          this.parkContent = true;
+          this.sidenavService.searchContent = false;
+          this.sidenavService.parkContent = true;
           this.sidenavService.closeRight();
           this.hasBackdrop = false;
           this.leftDrawer.open();

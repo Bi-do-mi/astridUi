@@ -11,8 +11,16 @@
     <form>
       <!--поиск по модели-->
       <mat-form-field fxFlex *ngIf="searchService.searchUnits">
-        <input type="text" placeholder="Искать по модели" aria-label="Model" matInput
-               [formControl]="modelCtrl" [matAutocomplete]="modelCmplt">
+        <div fxLayout="row" fxLayoutAlign="space-between end">
+          <input type="text" placeholder="Искать по модели" aria-label="Model"
+                 matInput [formControl]="modelCtrl" [matAutocomplete]="modelCmplt">
+          <!--<button class="button-color"-->
+            <!--type="button" matTooltip="Искать" tabindex="-1"-->
+            <!--matTooltipPosition="above"-->
+            <!--mat-icon-button (click)="searchForUnits(modelCtrl.value)">-->
+            <!--<mat-icon aria-label="Search icon">search</mat-icon>-->
+          <!--</button>-->
+        </div>
         <mat-autocomplete autoActiveFirstOption #modelCmplt="matAutocomplete">
           <mat-option *ngFor="let model of modelOptions" [value]="model.model">
             {{model.model}}

@@ -10,6 +10,7 @@ import {BehaviorSubject} from 'rxjs';
 import {User} from '../_model/User';
 import {untilDestroyed} from 'ngx-take-until-destroy';
 import {DateDeserializerService} from './date-deserializer.service';
+import {SnackBarService} from './snack-bar.service';
 
 @Injectable({
   providedIn: 'root'
@@ -26,7 +27,8 @@ export class ParkService implements OnDestroy {
     private http: HttpClient,
     private userService: UserService,
     private spinner: NgxSpinnerService,
-    private dateDeserializer: DateDeserializerService
+    private dateDeserializer: DateDeserializerService,
+    private snackbarService: SnackBarService
   ) {
     this.getJSONfromFile();
   }
@@ -51,20 +53,20 @@ export class ParkService implements OnDestroy {
       }));
   }
 
-  sortAssignment(a: UnitAssignment, b: UnitAssignment) {
-    return (a.assignmentname > b.assignmentname) ? 1 :
-      (a.assignmentname < b.assignmentname ? -1 : 0);
-  }
-
-  sortType(a: UnitType, b: UnitType) {
-    return (a.typename > b.typename) ? 1 :
-      (a.typename < b.typename ? -1 : 0);
-  }
-
-  sortBrand(a: UnitBrand, b: UnitBrand) {
-    return (a.brandname > b.brandname) ? 1 :
-      (a.brandname < b.brandname ? -1 : 0);
-  }
+  // sortAssignment(a: UnitAssignment, b: UnitAssignment) {
+  //   return (a.assignmentname > b.assignmentname) ? 1 :
+  //     (a.assignmentname < b.assignmentname ? -1 : 0);
+  // }
+  //
+  // sortType(a: UnitType, b: UnitType) {
+  //   return (a.typename > b.typename) ? 1 :
+  //     (a.typename < b.typename ? -1 : 0);
+  // }
+  //
+  // sortBrand(a: UnitBrand, b: UnitBrand) {
+  //   return (a.brandname > b.brandname) ? 1 :
+  //     (a.brandname < b.brandname ? -1 : 0);
+  // }
 
   createUnit(unit: Unit) {
     // console.log('createUnit unit: ' + JSON.stringify(unit));
@@ -148,7 +150,7 @@ export class ParkService implements OnDestroy {
       }));
   }
 
-  loadDataOnMoveEnd(polygon: turf.Feature<turf.MultiPolygon>) {
+  loadDataOnMoveEnd(polygon: turf.Feature<turf.MultiPolygon>, full?: boolean) {
     if (document.cookie.indexOf('XSRF-TOKEN') === -1) {
       this.http.get<any>('/rest/users/hello')
         .pipe(first(), untilDestroyed(this), finalize(() => {
@@ -160,17 +162,17 @@ export class ParkService implements OnDestroy {
         // console.log('Error resived!');
       });
     } else {
-      this.onMoveEndRequest(polygon);
+      this.onMoveEndRequest(polygon, full);
     }
   }
 
-  onMoveEndRequest(polygon: turf.Feature<turf.MultiPolygon>) {
+  onMoveEndRequest(polygon: turf.Feature<turf.MultiPolygon>, full?: boolean) {
     this.http.post<any>('/rest/search/on_moveend', polygon)
       .pipe(first(), untilDestroyed(this)).subscribe((data: Array<Array<any>>) => {
         if (data) {
           if (data[0].length > 0) {
             data[0].forEach((us: User) => {
-              if (!this.users.has(us.id)) {
+              if (!this.users.has(us.id) || full) {
                 this.dateDeserializer.date(us);
                 this.users.set(us.id, us);
               }
@@ -179,12 +181,15 @@ export class ParkService implements OnDestroy {
           }
           if (data[1].length > 0) {
             data[1].forEach((u: Unit) => {
-              if (!this.units.has(u.id)) {
+              if (!this.units.has(u.id) || full) {
                 this.dateDeserializer.date(u);
                 this.units.set(u.id, u);
               }
             });
             this.unitsCacheFiltered$.next(this.filterUnits());
+          }
+          if (full) {
+            this.snackbarService.success('Данные карты обновлены', 'Ok', 5000);
           }
         }
       },

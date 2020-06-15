@@ -25,8 +25,10 @@ export class SearchComponent implements OnInit, OnDestroy {
   showFiltUnList = false;
   showFiltUsList = false;
 
+  // todo применить поиск в текущем окне
   constructor(
     public searchService: SearchService) {
+
     // фильтрация имен юнитов по поисковой строке
     // применить бихейвер
     this.modelCtrl.valueChanges.pipe(debounceTime(500), untilDestroyed(this),
@@ -35,12 +37,14 @@ export class SearchComponent implements OnInit, OnDestroy {
         modelNames.length
           ? this.showFiltUnList = true : this.showFiltUnList = false;
         return state ? modelNames
-          : (this.searchService.unitsCache.slice());
+          : null;
       })
     ).subscribe((units: Array<Unit>) => {
-      this.modelOptions = this.simplifyUnitsArr(units);
-      this.searchService.filteredUnits$.next(units);
+      units ? this.modelOptions = this.simplifyUnitsArr(units)
+        : this.modelOptions.length = 0;
+      // this.searchService.filteredUnits$.next(units);
     });
+
     // фильтрация имен юзеров по поисковой строке
     this.userCtrl.valueChanges.pipe(debounceTime(500), untilDestroyed(this),
       map((state: string) => {

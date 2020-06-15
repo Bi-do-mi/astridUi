@@ -7,9 +7,27 @@ import {MatSidenav} from '@angular/material';
 export class SidenavService {
   private _right_sidenav: MatSidenav;
   private _left_sidenav: MatSidenav;
+  private _searchContent: boolean;
+  private _parkContent: boolean;
 
   set right_sidenav(rSidenav: MatSidenav) {
     this._right_sidenav = rSidenav;
+  }
+
+  get searchContent(): boolean {
+    return this._searchContent;
+  }
+
+  set searchContent(value: boolean) {
+    this._searchContent = value;
+  }
+
+  get parkContent(): boolean {
+    return this._parkContent;
+  }
+
+  set parkContent(value: boolean) {
+    this._parkContent = value;
   }
 
   set left_sidenav(lSidenav: MatSidenav) {
@@ -44,6 +62,8 @@ export class SidenavService {
   }
 
   public closeAll() {
+    this.parkContent = false;
+    this.searchContent = false;
     this._right_sidenav.close();
     this._left_sidenav.close();
   }

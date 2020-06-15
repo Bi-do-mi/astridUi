@@ -7,19 +7,19 @@
                [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'">
     <!--тулбар левого сайдбара-->
     <mat-toolbar class="cursor-pointer" color="accent"
-                 (click)="leftDrawer.toggle()">{{searchContent?'Поиск'
-      :parkContent?'Мой парк техники':''}}
+                 (click)="leftDrawer.toggle()">{{sidenavService.searchContent?'Поиск'
+      :sidenavService.parkContent?'Мой парк техники':''}}
       <div fxFlex></div>
       <mat-icon aria-label="Arrow back icon">arrow_back_ios</mat-icon>
     </mat-toolbar>
 
     <!--раздел поиска-->
-    <div *ngIf="searchContent">
+    <div *ngIf="sidenavService.searchContent">
       <ng-container *ngComponentOutlet="SearchComponent"></ng-container>
     </div>
 
     <!--раздел парка техники-->
-    <div fxLayout="column" *ngIf="parkContent && uService.authenticated">
+    <div fxLayout="column" *ngIf="sidenavService.parkContent && uService.authenticated">
       <div class="ml-1 mr-0" fxLayout="row">
         <div fxLayout="column" fxFlex>
           <div fxLayout="column" fxLayoutAlign="start center">
@@ -55,15 +55,15 @@
                     matTooltipPosition="above" (click)="openUserOptionsDialog()"
                     class="mn-cursor-pointer">edit
           </mat-icon>
-          <mat-icon *ngIf="currentUser?.units?.length > 0 && !mapService._hidePrivateUnits"
+          <mat-icon *ngIf="currentUser?.units?.length > 0 && !mapService._hideOtherUnits"
                     matTooltip="Панорамировать свою технику на карте" tabindex="-1"
                     matTooltipPosition="above" (click)=" mapService.fitBounds()"
                     class="mn-cursor-pointer">crop_free
           </mat-icon>
           <mat-icon *ngIf="currentUser?.units?.length > 0"
                     matTooltip="Показать/скрыть свою технику на карте" tabindex="-1"
-                    matTooltipPosition="above" (click)="mapService.hidePrivateUnits()" class="mn-cursor-pointer">
-            {{mapService._hidePrivateUnits ? 'visibility_off' : 'visibility'}}
+                    matTooltipPosition="above" (click)="mapService.hideOtherUnits()" class="mn-cursor-pointer">
+            {{mapService._hideOtherUnits ? 'visibility_off' : 'visibility'}}
           </mat-icon>
           <mat-icon *ngIf="currentUser?.units?.length > 0"
                     matTooltip="Открыть список" tabindex="-1" class="mn-cursor-pointer"
@@ -77,7 +77,7 @@
     </div>
 
     <!--если не авторизован-->
-    <div *ngIf="parkContent && !uService.authenticated">
+    <div *ngIf="sidenavService.parkContent && !uService.authenticated">
       <p class="ml-3 mr-3">Пожалуйста, авторизуйтесь или зарегистрируйтесь как новый пользователь.</p>
       <div fxLayout="row" fxLayoutAlign="center start">
         <button mat-raised-button="" tabindex="-1" (click)="sidenavService.closeAll()"
@@ -169,6 +169,15 @@
               matTooltipPosition="above" *ngIf="!setPointMode && url == '/'" aria-label="Toggle start_sidenav"
               mat-icon-button (click)="toggleParkBar()">
               <mat-icon aria-label="Park nav toggle icon">local_parking</mat-icon>
+            </button>
+          </div>
+          <!--кнопка обновления данных-->
+          <div class="button-div">
+            <button
+              type="button" class="tool-button" matTooltip="Обновить данные" tabindex="-1"
+              matTooltipPosition="above" *ngIf="!setPointMode && url == '/'" aria-label="Toggle start_sidenav"
+              mat-icon-button (click)="mapService.refreshData()">
+              <mat-icon aria-label="Refresh icon">refresh</mat-icon>
             </button>
           </div>
         </div>
