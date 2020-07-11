@@ -5,7 +5,6 @@ import {filter, finalize, first, map} from 'rxjs/operators';
 import {User} from '../../_model/User';
 import {UserService} from '../../_services/user.service';
 import {NGXLogger} from 'ngx-logger';
-import {MatDialog, MatSidenav} from '@angular/material';
 import {NavigationEnd, Router} from '@angular/router';
 import {SidenavService} from '../../_services/sidenav.service';
 import {UserOptionsDialogComponent} from '../user-options-dialog/user-options-dialog.component';
@@ -19,15 +18,15 @@ import {Unit} from '../../_model/Unit';
 import {UnitsMainListDialogComponent} from '../units-main-list-dialog/units-main-list-dialog.component';
 import {SetLocationCallService} from '../../_services/set-location-call.service';
 import {OpenUnitInfoService} from '../../_services/open-unit-info.service';
-import {NgxGalleryImage} from 'ngx-gallery';
 import {UnitInfoCardDialogComponent} from '../unit-info-card-dialog/unit-info-card-dialog.component';
 import {createCustomElement} from '@angular/elements';
 import {UnitsPopupComponent} from '../units-popup/units-popup.component';
 import {UsersPopupComponent} from '../users-popup/users-popup.component';
 import {OpenUserInfoService} from '../../_services/open-user-info.service';
 import {UserInfoCardDialogComponent} from '../user-info-card-dialog/user-info-card-dialog.component';
-import {SearchService} from '../../_services/search.service';
 import {SearchComponent} from '../search/search.component';
+import {MatSidenav} from '@angular/material/sidenav';
+import {MatDialog} from '@angular/material/dialog';
 
 @Component({
   selector: 'app-main-nav',
@@ -53,7 +52,7 @@ export class MainNavComponent implements OnInit, OnDestroy {
 
   constructor(private breakpointObserver: BreakpointObserver,
               private router: Router,
-              private sidenavService: SidenavService,
+              public sidenavService: SidenavService,
               public uService: UserService,
               private logger: NGXLogger,
               public mapService: MapService,

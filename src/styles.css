@@ -58,6 +58,28 @@ html, body {
   border-radius: 20%;
   background-color: #212121; }
 
+.unit_marker_in_park {
+  border-radius: 50%;
+  background-color: #0bc714;
+  border-color: #212121;
+  border-style: solid;
+  border-width: medium;
+  margin: 1px;
+  width: 11px;
+  height: 11px;
+  float: left; }
+
+.unit_marker_in_park_etc {
+  border-radius: 50%;
+  background-color: #0bc714;
+  border-color: #212121;
+  border-style: solid;
+  border-width: medium;
+  margin: 1px;
+  width: 2px;
+  height: 2px;
+  float: left; }
+
 button:focus, button:active:focus, button.active:focus {
   outline: none !important;
   outline-style: none !important; }

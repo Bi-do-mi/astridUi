@@ -17,4 +17,11 @@
 .cursor-pointer {
   cursor: pointer; }
 
+.mat-icon, .svg {
+  font-size: 20px;
+  vertical-align: middle; }
+
+#vis1, #vis2, #loc, #payed, #not_payed {
+  width: 25px; }
+
 /*# sourceMappingURL=units-main-list-dialog.component.css.map */

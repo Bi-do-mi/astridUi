@@ -1,15 +1,15 @@
 import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {MatDialog, MatPaginator, MatSort} from '@angular/material';
 import {UnitDataSource} from '../../_model/UnitDataSource';
 import {SearchService} from '../../_services/search.service';
 import {Unit} from '../../_model/Unit';
 import {SidenavService} from '../../_services/sidenav.service';
 import {MapService} from '../../_services/map.service';
-import {NgxGalleryImage} from 'ngx-gallery';
 import {UnitInfoCardDialogComponent} from '../unit-info-card-dialog/unit-info-card-dialog.component';
-import {untilDestroyed} from 'ngx-take-until-destroy';
-import {UnitCreateDialogComponent} from '../unit-create-dialog/unit-create-dialog.component';
 import {SetLocationCallService} from '../../_services/set-location-call.service';
+import {MatPaginator} from '@angular/material/paginator';
+import {MatSort} from '@angular/material/sort';
+import {MatDialog} from '@angular/material/dialog';
+import {NgxGalleryImage} from '@kolkov/ngx-gallery';
 
 @Component({
   selector: 'app-filtered-units-list-table',

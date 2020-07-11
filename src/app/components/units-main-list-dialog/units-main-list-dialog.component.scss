@@ -18,3 +18,12 @@
 .cursor-pointer{
   cursor: pointer;
 }
+.mat-icon, .svg {
+  //color: #b0b0b0;
+  font-size: 20px;
+  vertical-align: middle;
+}
+#vis1, #vis2, #loc, #payed, #not_payed{
+  width: 25px;
+}
+

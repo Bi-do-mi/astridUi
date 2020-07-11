@@ -2,10 +2,11 @@
 import {DataSource} from '@angular/cdk/table';
 import {OnDestroy} from '@angular/core';
 import {merge, Observable, Subscription} from 'rxjs';
-import {MatPaginator, MatSort} from '@angular/material';
 import {untilDestroyed} from 'ngx-take-until-destroy';
 import {map} from 'rxjs/operators';
 import {User} from './User';
+import {MatSort} from '@angular/material/sort';
+import {MatPaginator} from '@angular/material/paginator';
 
 export class UserDataSource extends DataSource<User> implements OnDestroy {
   public data: User[];

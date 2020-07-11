@@ -9,4 +9,8 @@
 .cursor-pointer {
   cursor: pointer; }
 
+.mat-icon {
+  font-size: 15px;
+  vertical-align: middle; }
+
 /*# sourceMappingURL=units-list-table.component.css.map */

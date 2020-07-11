@@ -1,6 +1,6 @@
 {
 "version": 3,
-"mappings": "AAAA,sBAAsB;EACpB,KAAK,EAAE,IAAI;EACX,UAAU,EAAE,IAAI;;AAElB,SAAS;EACP,SAAS,EAAE,IAAI;EACf,OAAO,EAAE,eAAe;;AAG1B,eAAe;EACb,MAAM,EAAE,OAAO",
+"mappings": "AAAA,sBAAsB;EACpB,KAAK,EAAE,IAAI;EACX,UAAU,EAAE,IAAI;;AAElB,SAAS;EACP,SAAS,EAAE,IAAI;EACf,OAAO,EAAE,eAAe;;AAG1B,eAAe;EACb,MAAM,EAAE,OAAO;;AAEjB,SAAU;EAER,SAAS,EAAE,IAAI;EACf,cAAc,EAAE,MAAM",
 "sources": ["units-list-table.component.scss"],
 "names": [],
 "file": "units-list-table.component.css"

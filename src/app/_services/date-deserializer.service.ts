@@ -29,8 +29,15 @@ export class DateDeserializerService {
   }
 
   private setUnitDate(unit: Unit) {
-    unit.createdOn = ZonedDateTime.parse(unit.createdOn.toString());
-    unit.lastUpdate = ZonedDateTime.parse(unit.lastUpdate.toString());
+    if (unit.createdOn) {
+      unit.createdOn = ZonedDateTime.parse(unit.createdOn.toString());
+    }
+    if (unit.lastUpdate) {
+      unit.lastUpdate = ZonedDateTime.parse(unit.lastUpdate.toString());
+    }
+    if (unit.workEnd) {
+      unit.workEnd = ZonedDateTime.parse(unit.workEnd.toString());
+    }
     return unit;
   }
 }

@@ -1,22 +1,30 @@
 import {AfterViewInit, ChangeDetectorRef, Component, Inject, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {MAT_DIALOG_DATA, MatDialogRef, MatStepper} from '@angular/material';
 import {untilDestroyed} from 'ngx-take-until-destroy';
 import {UnitBrand, UnitModel, UnitType} from '../../_model/UnitTypesModel';
 import {ParkService} from '../../_services/park.service';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {finalize, first} from 'rxjs/operators';
+import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
+import {finalize, first, map} from 'rxjs/operators';
 import {Unit} from '../../_model/Unit';
 import {UserService} from '../../_services/user.service';
 import {User} from '../../_model/User';
 import {SnackBarService} from '../../_services/snack-bar.service';
 import {NgxPicaErrorInterface, NgxPicaService} from '@digitalascetic/ngx-pica';
-import {NgxGalleryAnimation, NgxGalleryImage, NgxGalleryOptions} from 'ngx-gallery';
 import {MapService} from '../../_services/map.service';
 import {GeoCode} from '../../_model/GeoCode';
 import {UnitOptionModel} from './UnitOptions/UnitOptionModel';
 import {QuestionControlService} from './question-control.service';
 import {QuestionService} from './question.service';
 import {OpenUnitInfoService} from '../../_services/open-unit-info.service';
+import {MatStepper} from '@angular/material/stepper';
+import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
+import {NgxGalleryAnimation, NgxGalleryImage, NgxGalleryOptions} from '@kolkov/ngx-gallery';
+import {Observable} from 'rxjs';
+import {BreakpointObserver, Breakpoints} from '@angular/cdk/layout';
+import * as moment from 'moment';
+import {Moment} from 'moment';
+import {MatDatepickerInputEvent} from '@angular/material/datepicker';
+import {DateTimeFormatter, ZonedDateTime} from '@js-joda/core';
+import {environment} from '../../../environments/environment.prod';
 
 @Component({
   selector: 'app-unit-create',
@@ -30,6 +38,7 @@ export class UnitCreateDialogComponent implements OnInit, AfterViewInit, OnDestr
   loading = false;
   submitted = false;
   selectForm: FormGroup;
+  workEndDateCtl = new FormControl();
   unitsList = new Array<UnitType>();
   unitsBrandOptions = new UnitType();
   filteredBrands: string[];
@@ -42,8 +51,13 @@ export class UnitCreateDialogComponent implements OnInit, AfterViewInit, OnDestr
   unitGeoCode: GeoCode;
   optForm: FormGroup;
   unitOptions: UnitOptionModel<any>[] = [];
+  isHandset$: Observable<boolean> = this.breakpointObserver.observe(
+    Breakpoints.Handset).pipe(map(result => result.matches));
+  minDate: Moment;
+  maxDate: Moment;
 
   constructor(
+    private breakpointObserver: BreakpointObserver,
     private formBuilder: FormBuilder,
     private dialogRef: MatDialogRef<UnitCreateDialogComponent>,
     private parkService: ParkService,
@@ -60,6 +74,11 @@ export class UnitCreateDialogComponent implements OnInit, AfterViewInit, OnDestr
     private cdr: ChangeDetectorRef,
     private openUnitInfoService: OpenUnitInfoService
   ) {
+    this.minDate = moment();
+    this.maxDate = this.minDate.clone().add(environment.workEndPeriod, 'days');
+    this.data.unit.workEnd ? (this.workEndDateCtl.setValue(
+      moment(this.data.unit.workEnd.toString()))) :
+      this.workEndDateCtl.setValue(moment());
   }
 
   ngAfterViewInit() {
@@ -123,6 +142,9 @@ export class UnitCreateDialogComponent implements OnInit, AfterViewInit, OnDestr
     this.selectForm.get('modelCtrl').valueChanges.subscribe((value: string) => {
       this.filterModelOptions(value);
     });
+    // this.workEndForm = this.formBuilder.group({
+    //   workEndDateCtl: [this.data.unit.workEnd]
+    // });
 
     this.galleryOptions = [
       {
@@ -157,6 +179,10 @@ export class UnitCreateDialogComponent implements OnInit, AfterViewInit, OnDestr
   get sf() {
     return this.selectForm.controls;
   }
+
+  // get wf() {
+  //   return this.workEndForm.controls;
+  // }
 
   onSetPoint(): void {
     this.dialogRef.close('setLocation');
@@ -350,5 +376,10 @@ export class UnitCreateDialogComponent implements OnInit, AfterViewInit, OnDestr
       .subscribe((geoCode?: GeoCode) => {
         this.unitGeoCode = geoCode;
       });
+    this.data.unit.workEnd = null;
+  }
+
+  setUnitWorkEndDate(type: string, event: MatDatepickerInputEvent<Moment>) {
+    this.data.unit.workEnd = ZonedDateTime.parse(event.value.toISOString(true));
   }
 }

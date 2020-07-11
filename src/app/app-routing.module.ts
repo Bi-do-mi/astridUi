@@ -8,7 +8,7 @@ import {AdminGuard} from './_guards/admin.guard';
 
 
 const appRoutes: Routes = [
-  {path: 'preload', loadChildren: './components/preload/preload.module#PreloadModule'},
+  {path: 'preload', loadChildren: () => import('./components/preload/preload.module').then(m => m.PreloadModule)},
   {path: 'app-admin-units-collection', component: AdminUnitsCollectionComponent,
   canActivate: [AdminGuard]},
   {path: '404', component: PageNotFoundComponent},

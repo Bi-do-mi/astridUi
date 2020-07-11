@@ -11,3 +11,12 @@
     {{unit.model}}
   </div>
 </div>
+<div fxLayout="row" fxLayoutAlign="center center" *ngIf="unit.workEnd">
+  <mat-icon>access_time</mat-icon>
+  <div class="prog-bar-back">
+    <div [ngStyle]="{'width.%': progress, 'background-color': background, 'height.px': 3}">
+    </div>
+  </div>
+  <div>&nbsp;{{period}}&nbsp;д</div>
+</div>
+

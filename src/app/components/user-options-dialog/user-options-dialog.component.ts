@@ -1,18 +1,14 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {MatDialog, MatDialogRef} from '@angular/material';
 import {UserService} from '../../_services/user.service';
 import {User} from '../../_model/User';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {NgxSpinnerService} from 'ngx-spinner';
 import {SnackBarService} from '../../_services/snack-bar.service';
 import {finalize, first} from 'rxjs/operators';
 import {Router} from '@angular/router';
 import {DeleteUserDialogComponent} from '../delete-user-dialog/delete-user-dialog.component';
-import {logger} from 'codelyzer/util/logger';
 import {untilDestroyed} from 'ngx-take-until-destroy';
-import {interval} from 'rxjs';
-import {NgxGalleryAnimation, NgxGalleryImage, NgxGalleryOptions} from 'ngx-gallery';
 import {NgxPicaErrorInterface, NgxPicaService} from '@digitalascetic/ngx-pica';
+import {MatDialog, MatDialogRef} from '@angular/material/dialog';
 
 @Component({
   selector: 'app-user-options-dialog',

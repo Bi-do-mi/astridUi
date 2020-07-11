@@ -15,68 +15,45 @@
              (click)="openUnitInfoCardDialog(unit)">
           <div fxLayout="column" fxLayoutAlign="center">{{unit.model}}</div>
         </div>
-        <!--is paid-->
-        <div fxLayout="column" fxLayoutAlign="center">
-          <svg class="ml-4" *ngIf="unit.paid" matTooltip="Оплачен" tabindex="-1"
-               matTooltipPosition="above" version="1.1" xmlns="http://www.w3.org/2000/svg"
-               xmlns:xlink="http://www.w3.org/1999/xlink" preserveAspectRatio="xMidYMid meet" viewBox="0 0 4 5.52"
-               width="12" height="16.56">
-            <defs>
-              <path
-                d="M3.56 0.44L3.88 0.93L4 1.52L3.88 2.11L3.56 2.59L3.07 2.92L2.48 3.04L0.83 3.04L0.83 3.37L2.92 3.37L2.92 3.92L0.83 3.92L0.83 5.52L0.28 5.52L0.28 3.92L0 3.92L0 3.37L0.28 3.37L0.28 3.04L0 3.04L0 2.48L0.28 2.48L0.28 0L2.48 0L3.07 0.12L3.56 0.44ZM0.83 2.48L2.48 2.48L2.86 2.41L3.17 2.2L3.37 1.89L3.45 1.52L3.37 1.14L3.17 0.83L2.86 0.63L2.48 0.55L0.83 0.55L0.83 2.48Z"
-                id="b5PXizI3A"></path>
-            </defs>
-            <g>
-              <g>
-                <g>
-                  <use xlink:href="#b5PXizI3A" opacity="1" fill="#32cd32" fill-opacity="1"></use>
-                </g>
-              </g>
-            </g>
-          </svg>
-          <svg class="ml-4" *ngIf="!unit.paid" matTooltip="Не оплачен" tabindex="-1"
-               matTooltipPosition="above" version="1.1" xmlns="http://www.w3.org/2000/svg"
-               xmlns:xlink="http://www.w3.org/1999/xlink" preserveAspectRatio="xMidYMid meet" viewBox="0 0 4 5.52"
-               width="12" height="16.56">
-            <defs>
-              <path
-                d="M3.56 0.44L3.88 0.93L4 1.52L3.88 2.11L3.56 2.59L3.07 2.92L2.48 3.04L0.83 3.04L0.83 3.37L2.92 3.37L2.92 3.92L0.83 3.92L0.83 5.52L0.28 5.52L0.28 3.92L0 3.92L0 3.37L0.28 3.37L0.28 3.04L0 3.04L0 2.48L0.28 2.48L0.28 0L2.48 0L3.07 0.12L3.56 0.44ZM0.83 2.48L2.48 2.48L2.86 2.41L3.17 2.2L3.37 1.89L3.45 1.52L3.37 1.14L3.17 0.83L2.86 0.63L2.48 0.55L0.83 0.55L0.83 2.48Z"
-                id="a1nJwFGeHN"></path>
-            </defs>
-            <g>
-              <g>
-                <g>
-                  <use xlink:href="#a1nJwFGeHN" opacity="1" fill="#969696" fill-opacity="1"></use>
-                </g>
-              </g>
-            </g>
-          </svg>
+        <!--not payed-->
+        <div fxLayout="column" fxLayoutAlign="center" *ngIf="!unit.paid">
+          <button id="not_payed" type="button"
+                  matTooltip="Не оплачен" tabindex="-1"
+                  matTooltipPosition="above" aria-label="Оплатить технику"
+                  mat-icon-button>
+            <mat-icon>money_off</mat-icon>
+          </button>
+        </div>
+        <!--payed-->
+        <div fxLayout="column" fxLayoutAlign="center" *ngIf="unit.paid">
+          <button id="payed" type="button"
+                  matTooltip="Оплачен" tabindex="-1"
+                  matTooltipPosition="above" aria-label="Оплатить технику"
+                  mat-icon-button [disabled]="true">
+            <mat-icon>attach_money</mat-icon>
+          </button>
         </div>
         <!--is visible-->
         <div fxLayout="column" fxLayoutAlign="center">
-          <!--<svg class="ml-2" *ngIf="!unit.enabled" height="12" width="12"-->
-               <!--matTooltip="Не виден арендаторам" tabindex="-1" matTooltipPosition="above">-->
-            <!--<circle cx="6" cy="6" r="6" fill="rgb(150,150,150)"></circle>-->
-          <!--</svg>-->
-          <!--<svg class="ml-2" *ngIf="unit.enabled" height="12" width="12"-->
-               <!--matTooltip="Виден арендаторам" tabindex="-1" matTooltipPosition="above">-->
-            <!--<circle cx="6" cy="6" r="6" fill="rgb(50,205,50)"></circle>-->
-          <!--</svg>-->
-          <mat-icon class="ml-2" *ngIf="!unit.enabled"
-                    matTooltip="Не виден арендаторам" tabindex="-1"
-                    matTooltipPosition="above">visibility_off
-          </mat-icon>
-          <mat-icon class="ml-2" *ngIf="unit.enabled"
-                    matTooltip="Виден арендаторам" tabindex="-1"
-                    matTooltipPosition="above">visibility
-          </mat-icon>
+          <button id="vis1" type="button" *ngIf="!unit.enabled"
+                  matTooltip="Не виден арендаторам" tabindex="-1"
+                  matTooltipPosition="above" aria-label="Toggle edit unit visibility"
+                  mat-icon-button (click)="onToggleUnitVisiobility(unit)">
+            <mat-icon aria-label="Visibility toggle icon">visibility_off</mat-icon>
+          </button>
+          <button id="vis2" type="button" *ngIf="unit.enabled"
+                  matTooltip="Виден арендаторам" tabindex="-1"
+                  matTooltipPosition="above" aria-label="Toggle edit unit visibility"
+                  mat-icon-button (click)="onToggleUnitVisiobility(unit)">
+            <mat-icon aria-label="Visibility toggle icon">visibility</mat-icon>
+          </button>
         </div>
         <!--location-->
         <div fxLayout="column" fxLayoutAlign="center">
-          <button type="button" matTooltip="показать на карте" tabindex="-1"
+          <button id="loc" type="button" matTooltip="показать на карте" tabindex="-1"
                   matTooltipPosition="above" aria-label="Toggle edit unit location"
                   mat-icon-button (click)="flyToUnit(unit)">
-            <mat-icon aria-label="Edit toggle icon">gps_fixed</mat-icon>
+            <mat-icon aria-label="FlyToUnit toggle icon">gps_fixed</mat-icon>
           </button>
         </div>
       </td>

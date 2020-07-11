@@ -143,7 +143,8 @@
     </mat-step>
 
     <!--Step Four-->
-    <mat-step label="Обозначьте местоположение на карте" state="location">
+    <mat-step label="Обозначьте местоположение на карте" state="location"
+              [stepControl]="workEndForm">
       <div class="m-3">
         <div fxLayout="row wrap" fxLayoutAlign="start center">
           <button class="m-3" mat-fab matTooltip="Указать на карте" tabindex="-1"
@@ -175,6 +176,25 @@
             Отогнать технику в парк.
           </p>
         </div>
+        <mat-form-field #datePickerField *ngIf="data.unit.location
+        && data.unit.location.geometry.coordinates[0]
+              !== currentUser.location.geometry.coordinates[0]
+               && data.unit.location.geometry.coordinates[1]
+              !== currentUser.location.geometry.coordinates[1]">
+          <mat-label>Дата окончания работ</mat-label>
+          <input matInput [matDatepicker]="workEndPicker" autocomplete="off"
+                 [formControl]="workEndDateCtl" [min]="minDate" [max]="maxDate"
+                 (dateChange)="setUnitWorkEndDate('change', $event)"
+                 [required]="data.unit.location && data.unit.location.geometry.coordinates[0]
+              !== currentUser.location.geometry.coordinates[0]
+               && data.unit.location.geometry.coordinates[1]
+              !== currentUser.location.geometry.coordinates[1]">
+          <mat-datepicker-toggle matSuffix [for]="workEndPicker"></mat-datepicker-toggle>
+          <mat-datepicker [touchUi]="isHandset$ | async" #workEndPicker></mat-datepicker>
+          <mat-error *ngIf="workEndDateCtl.hasError('required')">
+            укажите дату окончания работ
+          </mat-error>
+        </mat-form-field>
       </div>
       <div fxLayout="row wrap" fxLayoutAlign="space-between center">
         <div>
@@ -184,7 +204,11 @@
         <div fxLayout="row" fxLayoutAlign="end">
           <button class="mr-3" mat-button matStepperPrevious>Назад</button>
           <button mat-raised-button color="accent" matStepperNext
-                  [disabled]="loading" (click)="onFourth()">Сохранить
+                  [disabled]="loading || (data.unit.location && data.unit.location.geometry.coordinates[0]
+              !== currentUser.location.geometry.coordinates[0]
+               && data.unit.location.geometry.coordinates[1]
+              !== currentUser.location.geometry.coordinates[1] && workEndDateCtl?.invalid)" (click)="onFourth()">
+            Сохранить
           </button>
         </div>
       </div>

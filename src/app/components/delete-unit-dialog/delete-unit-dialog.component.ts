@@ -1,10 +1,10 @@
 import {Component, Inject, OnDestroy, OnInit} from '@angular/core';
-import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material';
 import {first} from 'rxjs/operators';
 import {untilDestroyed} from 'ngx-take-until-destroy';
 import {ParkService} from '../../_services/park.service';
 import {Unit} from '../../_model/Unit';
 import {SnackBarService} from '../../_services/snack-bar.service';
+import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 
 @Component({
   selector: 'app-delete-unit-dialog',

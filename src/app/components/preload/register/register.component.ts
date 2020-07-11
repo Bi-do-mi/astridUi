@@ -17,9 +17,9 @@ import {User} from '../../../_model/User';
 import {HttpErrorResponse} from '@angular/common/http';
 import {NGXLogger} from 'ngx-logger';
 import {SnackBarService} from '../../../_services/snack-bar.service';
-import {ErrorStateMatcher} from '@angular/material';
 import {MessageService} from '../../../_services/message.service';
 import {untilDestroyed} from 'ngx-take-until-destroy';
+import {ErrorStateMatcher} from '@angular/material/core';
 
 @Component({
   selector: 'app-register',

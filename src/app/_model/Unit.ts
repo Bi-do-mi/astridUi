@@ -17,5 +17,6 @@ export class Unit {
   createdOn: ZonedDateTime;
   lastUpdate: ZonedDateTime;
   paidUntil: ZonedDateTime;
+  workEnd: ZonedDateTime;
   options: UnitOptionModel<any>[] = [];
 }

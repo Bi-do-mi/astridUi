@@ -1,6 +1,6 @@
 import {Injectable, OnDestroy, OnInit, Renderer2, RendererFactory2} from '@angular/core';
 import * as mapboxgl from 'mapbox-gl';
-import {GeoJSONSource, LngLat, MapboxGeoJSONFeature, Marker} from 'mapbox-gl';
+import {LngLat, Marker} from 'mapbox-gl';
 import {NGXLogger} from 'ngx-logger';
 import {BehaviorSubject, Observable, Subject} from 'rxjs';
 import {HttpClient} from '@angular/common/http';
@@ -15,13 +15,10 @@ import {GeoCode} from '../_model/GeoCode';
 import {SidenavService} from './sidenav.service';
 import {Unit} from '../_model/Unit';
 import {environment} from '../../environments/environment.prod';
-import {NgElement, WithProperties} from '@angular/elements';
 import {ParkService} from './park.service';
 import * as _helpers from '@turf/helpers';
 import {Feature, FeatureCollection, MultiPolygon, Polygon} from '@turf/helpers';
 import * as turf from '@turf/turf';
-import {UnitsPopupComponent} from '../components/units-popup/units-popup.component';
-import {UsersPopupComponent} from '../components/users-popup/users-popup.component';
 import {PopupService} from './popup.service';
 
 // import * as _difference from '@turf/difference';
@@ -48,21 +45,24 @@ export class MapService implements OnInit, OnDestroy {
   private _clickedPoint = this._clickedPoint$.asObservable();
   currentUser: User;
   public userMarker: Marker;
+  public unitsInParkMarkers = new Map<Number, Marker>();
   userGeoCode: GeoCode;
   public _hidePrivateUnits = false;
   public _hideOtherUnits = false;
   renderer: Renderer2;
-  private ownUnitsSource: any;
-  private usersSource: any;
+  public ownUnitsSource: any;
+  public ownUnitsInParkSource: any;
+  public ownUnitsNotEnabledSource: any;
+  public ownUnitsNotPaidSource: any;
+  public usersSource: any;
   public unitsSource: any;
+  public unitsInParkSource: any;
   private viewportSource: any;
   private queryViewportSource: any;
-  private colors = ['#212121', '#fbc02d', '#c2c3c2', '#0bc714'];
+  private colors = ['#212121', '#fbc02d', '#c2c3c2', '#0bc714', '#e61120'];
   private viewportMultiPolygons: Feature<MultiPolygon> = turf.multiPolygon([]);
   private queryPolygon: Feature<MultiPolygon>;
   private isViewportFirstLoading = true;
-  private usersCache_ = new Array<User>();
-  private unitsCache_ = new Array<Unit>();
 
 
   constructor(private logger: NGXLogger,
@@ -124,37 +124,54 @@ export class MapService implements OnInit, OnDestroy {
             this._clickedPoint$.next(p);
           });
 
-          // map movestart listener
-          // this.map.on('movestart', () => {
-          //   if ((this.privateMarkers.length > 0 || this.userMarker) && this.isPopupOpened) {
-          //     this.privateMarkers.forEach(m => {
-          //       if (m.getPopup() && m.getPopup().isOpen()) {
-          //         m.togglePopup();
-          //       }
-          //     });
-          //     if (this.userMarker.getPopup() && this.userMarker.getPopup().isOpen()) {
-          //       this.userMarker.togglePopup();
-          //     }
-          //     this.isPopupOpened = false;
-          //   }
-          // });
-
           // map moveend listener
           this.map.on('moveend', () => {
             this.loadDataOnMoveEnd();
-            // if (this.map.getZoom() >= 8) {
-            //   this.loadDataOnMoveEnd();
-            // }
-            // if (this.map.getZoom() < 8 && !this.snackBarService.isOpen()) {
-            //   this.snackBarService.success('Для загрузки данных приблизьте карту.', 'OK', 10000);
-            // }
           });
+
+          // this.map.on('mouseenter', 'usersLayer', (e) => {
+          //   this.map.setLayoutProperty('unitsInParkLayer', 'visibility', 'visible');
+          // });
+          //
+          // this.map.on('mouseleave', 'usersLayer', (e) => {
+          //   this.map.setLayoutProperty('unitsInParkLayer', 'visibility', 'none');
+          // });
 
           // load listener
           this.map.on('load', () => {
 
             /// register sources
             this.map.addSource('ownUnitsSource', {
+              type: 'geojson',
+              data: {
+                type: 'FeatureCollection',
+                features: []
+              },
+              cluster: true,
+              clusterMaxZoom: 8, // Max zoom to cluster points on
+              clusterRadius: 50
+            });
+            this.map.addSource('ownUnitsInParkSource', {
+              type: 'geojson',
+              data: {
+                type: 'FeatureCollection',
+                features: []
+              },
+              cluster: false,
+              clusterMaxZoom: 8, // Max zoom to cluster points on
+              clusterRadius: 50
+            });
+            this.map.addSource('ownUnitsNotPaidSource', {
+              type: 'geojson',
+              data: {
+                type: 'FeatureCollection',
+                features: []
+              },
+              cluster: true,
+              clusterMaxZoom: 8, // Max zoom to cluster points on
+              clusterRadius: 50
+            });
+            this.map.addSource('ownUnitsNotEnabledSource', {
               type: 'geojson',
               data: {
                 type: 'FeatureCollection',
@@ -184,6 +201,16 @@ export class MapService implements OnInit, OnDestroy {
               clusterMaxZoom: 8, // Max zoom to cluster points on
               clusterRadius: 50
             });
+            this.map.addSource('unitsInParkSource', {
+              type: 'geojson',
+              data: {
+                type: 'FeatureCollection',
+                features: []
+              },
+              cluster: false,
+              clusterMaxZoom: 8, // Max zoom to cluster points on
+              clusterRadius: 50
+            });
             this.map.addSource('viewportSource', {
               type: 'geojson',
               data: {
@@ -209,8 +236,12 @@ export class MapService implements OnInit, OnDestroy {
 
             /// get source
             this.ownUnitsSource = this.map.getSource('ownUnitsSource');
+            this.ownUnitsInParkSource = this.map.getSource('ownUnitsInParkSource');
+            this.ownUnitsNotPaidSource = this.map.getSource('ownUnitsNotPaidSource');
+            this.ownUnitsNotEnabledSource = this.map.getSource('ownUnitsNotEnabledSource');
             this.usersSource = this.map.getSource('usersSource');
             this.unitsSource = this.map.getSource('unitsSource');
+            this.unitsInParkSource = this.map.getSource('unitsInParkSource');
             this.viewportSource = this.map.getSource('viewportSource');
             this.queryViewportSource = this.map.getSource('queryViewportSource');
 
@@ -291,6 +322,174 @@ export class MapService implements OnInit, OnDestroy {
               }
             });
             this.map.addLayer({
+              id: 'ownUnitsInParkLayer',
+              source: 'ownUnitsInParkSource',
+              type: 'circle',
+              filter: ['!', ['has', 'point_count']],
+              layout: {
+                'visibility': 'none'
+              },
+              paint: {
+                'circle-color': ['case',
+                  ['case',
+                    ['has', 'paid'], ['get', 'paid'],
+                    false], this.colors[1],
+                  this.colors[2]],
+                'circle-radius': 4,
+                'circle-stroke-width': 2,
+                'circle-stroke-color': this.colors[0]
+              }
+            });
+            this.map.addLayer({
+              id: 'ownUnitsInParkLayerClusters',
+              type: 'circle',
+              source: 'ownUnitsInParkSource',
+              filter: ['has', 'point_count'],
+              paint: {
+                'circle-color': [
+                  'step',
+                  ['get', 'point_count'],
+                  '#FBDC2E',
+                  100,
+                  '#FBC02D',
+                  750,
+                  '#FBAF30'
+                ],
+                'circle-radius': [
+                  'step',
+                  ['get', 'point_count'],
+                  20,
+                  100,
+                  30,
+                  750,
+                  40
+                ],
+                'circle-stroke-color': this.colors[0],
+                'circle-stroke-width': 3
+              }
+            });
+            this.map.addLayer({
+              id: 'ownUnitsInParkLayerClusterCount',
+              type: 'symbol',
+              source: 'ownUnitsInParkSource',
+              filter: ['has', 'point_count'],
+              layout: {
+                'text-field': '{point_count_abbreviated}',
+                'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
+                'text-size': 12
+              }
+            });
+            this.map.addLayer({
+              id: 'ownUnitsNotPaidLayer',
+              source: 'ownUnitsNotPaidSource',
+              type: 'circle',
+              filter: ['!', ['has', 'point_count']],
+              paint: {
+                'circle-color': ['case',
+                  ['case',
+                    ['has', 'paid'], ['get', 'paid'],
+                    false], this.colors[1],
+                  this.colors[4]],
+                'circle-radius': 4,
+                'circle-stroke-width': 2,
+                'circle-stroke-color': this.colors[0]
+              }
+            });
+            this.map.addLayer({
+              id: 'ownUnitsNotPaidLayerClusters',
+              type: 'circle',
+              source: 'ownUnitsNotPaidSource',
+              filter: ['has', 'point_count'],
+              paint: {
+                'circle-color': [
+                  'step',
+                  ['get', 'point_count'],
+                  '#fa1323',
+                  100,
+                  '#e61120',
+                  500,
+                  '#a80c17'
+                ],
+                'circle-radius': [
+                  'step',
+                  ['get', 'point_count'],
+                  20,
+                  100,
+                  30,
+                  750,
+                  40
+                ],
+                'circle-stroke-color': this.colors[0],
+                'circle-stroke-width': 3
+              }
+            });
+            this.map.addLayer({
+              id: 'ownUnitsNotPaidLayerClusterCount',
+              type: 'symbol',
+              source: 'ownUnitsNotPaidSource',
+              filter: ['has', 'point_count'],
+              layout: {
+                'text-field': '{point_count_abbreviated}',
+                'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
+                'text-size': 12
+              }
+            });
+            this.map.addLayer({
+              id: 'ownUnitsNotEnabledLayer',
+              source: 'ownUnitsNotEnabledSource',
+              type: 'circle',
+              filter: ['!', ['has', 'point_count']],
+              paint: {
+                'circle-color': ['case',
+                  ['case',
+                    ['has', 'paid'], ['get', 'paid'],
+                    false], this.colors[1],
+                  this.colors[2]],
+                'circle-radius': 4,
+                'circle-stroke-width': 2,
+                'circle-stroke-color': this.colors[0]
+              }
+            });
+            this.map.addLayer({
+              id: 'ownUnitsNotEnabledLayerClusters',
+              type: 'circle',
+              source: 'ownUnitsNotEnabledSource',
+              filter: ['has', 'point_count'],
+              paint: {
+                'circle-color': [
+                  'step',
+                  ['get', 'point_count'],
+                  '#c2c3c2',
+                  100,
+                  '#aaabaa',
+                  500,
+                  '#7c7d7c'
+                ],
+                'circle-radius': [
+                  'step',
+                  ['get', 'point_count'],
+                  20,
+                  100,
+                  30,
+                  750,
+                  40
+                ],
+                'circle-stroke-color': this.colors[0],
+                'circle-stroke-width': 3
+              }
+            });
+            this.map.addLayer({
+              id: 'ownUnitsNotEnabledLayerClusterCount',
+              type: 'symbol',
+              source: 'ownUnitsNotEnabledSource',
+              filter: ['has', 'point_count'],
+              layout: {
+                'text-field': '{point_count_abbreviated}',
+                'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
+                'text-size': 12
+              }
+            });
+            this.map.addLayer({
               id: 'unitsLayer',
               source: 'unitsSource',
               type: 'circle',
@@ -338,6 +537,64 @@ export class MapService implements OnInit, OnDestroy {
               id: 'unitsLayerClusterCount',
               type: 'symbol',
               source: 'unitsSource',
+              filter: ['has', 'point_count'],
+              layout: {
+                'text-field': '{point_count_abbreviated}',
+                'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
+                'text-size': 12
+              }
+            });
+            this.map.addLayer({
+              id: 'unitsInParkLayer',
+              source: 'unitsInParkSource',
+              type: 'circle',
+              filter: ['!', ['has', 'point_count']],
+              layout: {
+                'visibility': 'visible',
+              },
+              paint: {
+                'circle-color': ['case',
+                  ['case',
+                    ['has', 'paid'], ['get', 'paid'],
+                    false], this.colors[3],
+                  this.colors[2]],
+                'circle-radius': 4,
+                'circle-stroke-width': 2,
+                'circle-stroke-color': this.colors[0]
+              }
+            });
+            this.map.addLayer({
+              id: 'unitsInParkLayerClusters',
+              type: 'circle',
+              source: 'unitsInParkSource',
+              filter: ['has', 'point_count'],
+              paint: {
+                'circle-color': [
+                  'step',
+                  ['get', 'point_count'],
+                  '#0dea18',
+                  100,
+                  '#0bc714',
+                  750,
+                  '#099f10'
+                ],
+                'circle-radius': [
+                  'step',
+                  ['get', 'point_count'],
+                  20,
+                  100,
+                  30,
+                  750,
+                  40
+                ],
+                'circle-stroke-color': this.colors[0],
+                'circle-stroke-width': 3
+              }
+            });
+            this.map.addLayer({
+              id: 'unitsInParkLayerClusterCount',
+              type: 'symbol',
+              source: 'unitsInParkSource',
               filter: ['has', 'point_count'],
               layout: {
                 'text-field': '{point_count_abbreviated}',
@@ -398,18 +655,60 @@ export class MapService implements OnInit, OnDestroy {
               }
             });
 
+            this.parkService.usersCacheFiltered.pipe(untilDestroyed(this))
+              .subscribe((users: Array<User>) => {
+                this.updateUsersSource(users);
+              });
+            this.parkService.ownUnitsCacheFiltered.pipe(untilDestroyed(this))
+              .subscribe((units: Array<Unit>) => {
+                this.ownUnitsSource.setData(this.getUnitsGeoJsonSource(units));
+              });
+            this.parkService.ownUnitsInParkCacheFiltered.pipe(untilDestroyed(this))
+              .subscribe((units: Array<Unit>) => {
+                this.ownUnitsInParkSource.setData(this.getUnitsGeoJsonSource(units));
+                // console.log('ownUnitsInParkSource: ', this.ownUnitsInParkSource
+                //   ._data.features.length);
+              });
+            this.parkService.ownUnitsNotPaidCacheFiltered.pipe(untilDestroyed(this))
+              .subscribe((units: Array<Unit>) => {
+                this.ownUnitsNotPaidSource.setData(this.getUnitsGeoJsonSource(units));
+              });
+            this.parkService.ownUnitsNotEnabledCacheFiltered.pipe(untilDestroyed(this))
+              .subscribe((units: Array<Unit>) => {
+                this.ownUnitsNotEnabledSource.setData(this.getUnitsGeoJsonSource(units));
+              });
+            this.parkService.unitsCacheFiltered.pipe(untilDestroyed(this))
+              .subscribe((units: Array<Unit>) => {
+                this.unitsSource.setData(this.getUnitsGeoJsonSource(units));
+              });
+            this.parkService.unitsInParkCacheFiltered.pipe(untilDestroyed(this))
+              .subscribe((units: Array<Unit>) => {
+                // this.unitsInParkSource.setData(this.getUnitsGeoJsonSource(units));
+                // if (units && units.length > 0) {
+                //   this.unitsInParkMarkers.forEach(m => {
+                //     m.remove();
+                //   });
+                //   this.unitsInParkMarkers.clear();
+                //   this.unitsInParkMarkers = this.popupService.createUnitsInParkMarkers(units);
+                //   this.unitsInParkMarkers.forEach(m => {
+                //     m.addTo(this.map);
+                //   });
+                // }
+              });
+
             this.userService.currentUser.pipe(untilDestroyed(this))
               .subscribe(user => {
                 this.currentUser = user;
-                this.ownUnitsSource.setData(new FCollModel.FeatureCollection(new Array<GeoJson>()));
-                this.parkService.loadDataOnMoveEnd(this.viewportMultiPolygons);
+                // this.ownUnitsSource.setData(new FCollModel.FeatureCollection(new Array<GeoJson>()));
+                this.parkService.ownUnitsSourcesRebuild(this.viewportMultiPolygons);
+                // this.parkService.loadDataOnMoveEnd(this.viewportMultiPolygons);
                 // Adding popup, user's marker and user's geocode
                 try {
                   if (this.userMarker) {
                     this.userMarker.remove();
                   }
                   if (user.location) {
-                    this.userMarker = this.popupService.createUserMarker(this.userMarker, this.map);
+                    this.userMarker = this.popupService.createUserMarker(this.userMarker);
                     this.userMarker.addTo(this.map);
                     this.getGeocodeByPoint(this.currentUser.location).pipe(first(),
                       untilDestroyed(this)).subscribe((geoCode: GeoCode) => {
@@ -419,35 +718,22 @@ export class MapService implements OnInit, OnDestroy {
                 } catch (e) {
                   console.log(e);
                 }
-
-                if (user.units && user.units.length > 0) {
-                  const unitsLocArray = new Array<GeoJson>();
-                  user.units.forEach(unit => {
-                    if (user.location.geometry.coordinates[0] !== unit.location.geometry.coordinates[0]) {
-                      unitsLocArray.push(new GeoJson(
-                        unit.location.geometry.coordinates,
-                        unit.id, {paid: environment.testing_paid ? true : unit.paid}));
-                    }
-                  });
-                  const data = new FCollModel.FeatureCollection(unitsLocArray);
-                  // console.log(JSON.stringify(data));
-                  this.ownUnitsSource.setData(data);
-                }
-              });
-            this.parkService.usersCacheFiltered.pipe(untilDestroyed(this))
-              .subscribe((usersCache: Array<User>) => {
-                this.usersCache_ = usersCache;
-                this.updateUsersSource();
-              });
-            this.parkService.unitsCacheFiltered.pipe(untilDestroyed(this))
-              .subscribe((unitsCache: Array<Unit>) => {
-                this.unitsCache_ = unitsCache;
-                this.updateUnitsSource();
               });
           });
-          this.popupService.tunePopup(this.map, 'ownUnitsLayer', 'ownUnitsLayerClusters', 'ownUnitsSource');
-          this.popupService.tunePopup(this.map, 'unitsLayer', 'unitsLayerClusters', 'unitsSource');
-          this.popupService.tunePopup(this.map, 'usersLayer', 'usersLayerClusters', 'usersSource');
+          this.popupService.tunePopup(this.map, 'ownUnitsLayer',
+            'ownUnitsLayerClusters', 'ownUnitsSource');
+          this.popupService.tunePopup(this.map, 'ownUnitsInParkLayer',
+            'ownUnitsInParkLayerClusters', 'ownUnitsInParkSource');
+          this.popupService.tunePopup(this.map, 'ownUnitsNotPaidLayer',
+            'ownUnitsNotPaidLayerClusters', 'ownUnitsNotPaidSource');
+          this.popupService.tunePopup(this.map, 'ownUnitsNotEnabledLayer',
+            'ownUnitsNotEnabledLayerClusters', 'ownUnitsNotEnabledSource');
+          this.popupService.tunePopup(this.map, 'unitsLayer',
+            'unitsLayerClusters', 'unitsSource');
+          this.popupService.tunePopup(this.map, 'unitsInParkLayer',
+            'unitsInParkLayerClusters', 'unitsInParkSource');
+          this.popupService.tunePopup(this.map, 'usersLayer',
+            'usersLayerClusters', 'usersSource');
           this.navigatorCheck();
         }, 10);
       }
@@ -541,7 +827,11 @@ export class MapService implements OnInit, OnDestroy {
   hidePrivateUnits(hide?: boolean) {
     this.sidenavService.closeAll();
     this._hidePrivateUnits = hide || !this._hidePrivateUnits;
-    const layers = ['ownUnitsLayer', 'ownUnitsLayerClusters', 'ownUnitsLayerClusterCount'];
+    const layers = [
+      'ownUnitsLayer', 'ownUnitsLayerClusters', 'ownUnitsLayerClusterCount',
+      'ownUnitsNotPaidLayer', 'ownUnitsNotPaidLayerClusters', 'ownUnitsNotPaidLayerClusterCount',
+      'ownUnitsNotEnabledLayer', 'ownUnitsNotEnabledLayerClusters', 'ownUnitsNotEnabledLayerClusterCount'
+    ];
     layers.forEach(layer => {
       this.map.setLayoutProperty(layer, 'visibility',
         this._hidePrivateUnits ? 'none' : 'visible');
@@ -696,15 +986,7 @@ export class MapService implements OnInit, OnDestroy {
             oldViewportMultiPolygon);
         }
       }
-
       this.parkService.loadDataOnMoveEnd(this.queryPolygon);
-
-      // if (this.viewportSource) {
-      //   this.viewportSource.setData(this.viewportMultiPolygons);
-      // }
-      // if (this.queryViewportSource) {
-      //   this.queryViewportSource.setData(queryPolygon);
-      // }
       this.isViewportFirstLoading = false;
     }
   }
@@ -736,26 +1018,25 @@ export class MapService implements OnInit, OnDestroy {
     }
   }
 
-  updateUsersSource() {
+  updateUsersSource(users: Array<User>) {
     const tempArr = new Array<GeoJson>();
-    this.usersCache_.forEach(us => {
+    users.forEach((us: User) => {
       tempArr.push(new GeoJson(
         us.location.geometry.coordinates,
-        us.id, {enabled: environment.testing_paid ? true : us.enabled}));
+        us.id, {enabled: us.enabled}));
     });
     // console.log('unitsCacheFiltered.length: \n' + this.unitsCache_.length);
     this.usersSource.setData(new FCollModel.FeatureCollection(tempArr));
   }
 
-  updateUnitsSource() {
+  getUnitsGeoJsonSource(units: Array<Unit>) {
     const tempArr = new Array<GeoJson>();
-    this.unitsCache_.forEach(un => {
+    units.forEach(un => {
       tempArr.push(new GeoJson(
         un.location.geometry.coordinates,
         un.id, {paid: environment.testing_paid ? true : un.paid}));
     });
-    this.unitsSource.setData(new FCollModel.FeatureCollection(tempArr));
-    // console.log('unitsSource: \n' + JSON.stringify(this.unitsSource));
+    return new FCollModel.FeatureCollection(tempArr);
   }
 
   refreshData() {
@@ -763,5 +1044,6 @@ export class MapService implements OnInit, OnDestroy {
       this.parkService.loadDataOnMoveEnd(this.viewportMultiPolygons, true);
     }
   }
+
 }
 

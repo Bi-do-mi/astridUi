@@ -1,10 +1,10 @@
 import {Injectable, OnDestroy} from '@angular/core';
 import {Subject} from 'rxjs';
 import {Unit} from '../_model/Unit';
-import {NgxGalleryImage} from 'ngx-gallery';
 import {finalize, first} from 'rxjs/operators';
 import {untilDestroyed} from 'ngx-take-until-destroy';
 import {ParkService} from './park.service';
+import {NgxGalleryImage} from '@kolkov/ngx-gallery';
 
 @Injectable({
   providedIn: 'root'

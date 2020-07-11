@@ -10,7 +10,7 @@ export class DateToLocalStringPipe implements PipeTransform {
 
   transform(value: any): Observable<string> {
     return of(value.format(
-      DateTimeFormatter.ofPattern('dd.MM.yyy')).toString());
+      DateTimeFormatter.ofPattern('dd.MM.yyyy')).toString());
   }
 
 }

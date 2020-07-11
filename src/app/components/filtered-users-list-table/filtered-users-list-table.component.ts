@@ -1,11 +1,13 @@
 import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {MatDialog, MatPaginator, MatSort} from '@angular/material';
 import {UserDataSource} from '../../_model/UserDataSource';
 import {SearchService} from '../../_services/search.service';
 import {SidenavService} from '../../_services/sidenav.service';
 import {MapService} from '../../_services/map.service';
 import {User} from '../../_model/User';
 import {UserInfoCardDialogComponent} from '../user-info-card-dialog/user-info-card-dialog.component';
+import {MatSort} from '@angular/material/sort';
+import {MatDialog} from '@angular/material/dialog';
+import {MatPaginator} from '@angular/material/paginator';
 
 @Component({
   selector: 'app-filtered-users-list-table',

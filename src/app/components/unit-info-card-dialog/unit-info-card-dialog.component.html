@@ -26,6 +26,8 @@
           </div>
           <div>&bull;Дата последнего редактирования: {{unit.lastUpdate  | dateToLocaleString | async}}
           </div>
+          <div *ngIf="unit.workEnd">&bull;Дата окончания работ: {{unit.workEnd  | dateToLocaleString | async}}
+          </div>
           <div>&bull;Количество опций: {{unit.options.length}}</div>
         </div>
       </div>

@@ -6,5 +6,7 @@ export const environment = {
   },
   testing_paid: true,
   unitPicSpacer: './assets/pics/unit_pic_spacer-500x333.png',
-  userPicSpacer: './assets/pics/buldozer_.jpg'
+  userPicSpacer: './assets/pics/buldozer_.jpg',
+  dateLocal: 'ru-RU',
+  workEndPeriod: 365
 };

@@ -27,18 +27,19 @@ export class UserService implements OnDestroy {
               private logger: NGXLogger,
               private dateDeserializer: DateDeserializerService) {
   }
+
   checkAuth(): Observable<any> {
-      try {
-        return this.http.get<any>('/rest/users/check-auth')
-          .pipe(map((u: User) => {
-            this.dateDeserializer.date(u);
-            this.updateCurrentUser(u, true);
-            this.authenticated = true;
-            this.checkAdmin();
-          }), untilDestroyed(this));
-      } catch (e) {
-        console.log(e.toString());
-      }
+    try {
+      return this.http.get<any>('/rest/users/check-auth')
+        .pipe(map((u: User) => {
+          this.dateDeserializer.date(u);
+          this.updateCurrentUser(u, true);
+          this.authenticated = true;
+          this.checkAdmin();
+        }), untilDestroyed(this));
+    } catch (e) {
+      console.log(e.toString());
+    }
   }
 
   updateCurrentUser(user: User, updateUserInLocalStore?: boolean) {
@@ -129,7 +130,8 @@ export class UserService implements OnDestroy {
   }
 
   getByName(name: string) {
-    return this.http.get('/rest/users/name_check?name=' + name, {'withCredentials': false, responseType: 'text'});
+    return this.http.get('/rest/users/name_check?name=' + name,
+      {'withCredentials': false, responseType: 'text'});
   }
 
   register(userCredentials) {

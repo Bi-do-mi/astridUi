@@ -13,30 +13,6 @@ import {LoggerModule, NgxLoggerLevel} from 'ngx-logger';
 import {RequestInterceptor} from './_guards/RequestInterceptor';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {MatToolbarModule} from '@angular/material/toolbar';
-import {
-  MatAutocompleteModule,
-  MatButtonModule,
-  MatCardModule,
-  MatCheckboxModule,
-  MatDialogModule,
-  MatDividerModule,
-  MatFormFieldModule,
-  MatIconModule,
-  MatInputModule,
-  MatListModule,
-  MatPaginatorModule,
-  MatProgressSpinnerModule,
-  MatRadioModule,
-  MatSelectModule,
-  MatSidenavModule,
-  MatSlideToggleModule,
-  MatSnackBarModule,
-  MatSortModule,
-  MatStepperModule,
-  MatTableModule,
-  MatTabsModule,
-  MatTooltipModule
-} from '@angular/material';
 import {NgxMapboxGLModule} from 'ngx-mapbox-gl';
 import {MapBoxComponent} from './components/map-box/map-box.component';
 import {FlexLayoutModule} from '@angular/flex-layout';
@@ -51,7 +27,7 @@ import {AdminUnitsCollectionComponent} from './components/admin-units-collection
 import {UnitCreateDialogComponent} from './components/unit-create-dialog/unit-create-dialog.component';
 import {STEPPER_GLOBAL_OPTIONS} from '@angular/cdk/stepper';
 import {NgxPicaModule} from '@digitalascetic/ngx-pica';
-import {NgxGalleryModule} from 'ngx-gallery';
+import {NgxGalleryModule} from '@kolkov/ngx-gallery';
 import {UnitsListTableComponent} from './components/units-list/units-list-table.component';
 import {DynamicFormQuestionComponent} from './components/unit-create-dialog/dynamic-form-question/dynamic-form-question.component';
 import {DynamicFormComponent} from './components/unit-create-dialog/dynamic-form/dynamic-form.component';
@@ -67,6 +43,32 @@ import {FilteredUsersListTableComponent} from './components/filtered-users-list-
 import {LoadUnitImagePipe} from './pipes/load-unit-image.pipe';
 import {LoadUserImagePipe} from './pipes/load-user-image.pipe';
 import { DateToLocalStringPipe } from './pipes/date-to-local-string.pipe';
+import {MatIconModule} from '@angular/material/icon';
+import {MatInputModule} from '@angular/material/input';
+import {MatCheckboxModule} from '@angular/material/checkbox';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatCardModule} from '@angular/material/card';
+import {MatRadioModule} from '@angular/material/radio';
+import {MatButtonModule} from '@angular/material/button';
+import {MatSelectModule} from '@angular/material/select';
+import {MatTabsModule} from '@angular/material/tabs';
+import {MatTableModule} from '@angular/material/table';
+import {MatPaginatorModule} from '@angular/material/paginator';
+import {MatSortModule} from '@angular/material/sort';
+import {MatStepperModule} from '@angular/material/stepper';
+import {MatSidenavModule} from '@angular/material/sidenav';
+import {MatDividerModule} from '@angular/material/divider';
+import {MatSlideToggleModule} from '@angular/material/slide-toggle';
+import {MatDialogModule} from '@angular/material/dialog';
+import {MatTooltipModule} from '@angular/material/tooltip';
+import {MatAutocompleteModule} from '@angular/material/autocomplete';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import {MatListModule} from '@angular/material/list';
+import {MatSnackBarModule} from '@angular/material/snack-bar';
+import {MatDatepickerModule} from '@angular/material/datepicker';
+import {DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE, MatNativeDateModule} from '@angular/material/core';
+import {MAT_MOMENT_DATE_ADAPTER_OPTIONS, MAT_MOMENT_DATE_FORMATS, MomentDateAdapter} from '@angular/material-moment-adapter';
+import {MatProgressBarModule} from '@angular/material/progress-bar';
 
 // import {registerLocaleData} from '@angular/common';
 // import localeRu from '@angular/common/locales/ru';
@@ -128,10 +130,13 @@ export const httpInterceptorProviders = [
     MatCardModule,
     MatTabsModule,
     MatTableModule,
+    MatProgressBarModule,
     MatRadioModule,
     MatPaginatorModule,
     MatSortModule,
     MatStepperModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
     MatSidenavModule,
     MatDividerModule,
     MatAutocompleteModule,
@@ -139,6 +144,8 @@ export const httpInterceptorProviders = [
     MatProgressSpinnerModule,
     MatTooltipModule,
     MatDialogModule,
+    MatListModule,
+    MatSnackBarModule,
     NgxMapboxGLModule.withConfig({
       // Optionnal, can also be set per map (accessToken input of mgl-map)
       // accessToken: 'pk.eyJ1IjoiYmlkb21pIiwiYSI6ImNqbWt6dm05aTAydjQza3BianJwajV5ZmkifQ.46hioGSUTzMOdWqTFHwnDQ'
@@ -149,31 +156,34 @@ export const httpInterceptorProviders = [
     }),
     FlexLayoutModule,
     LayoutModule,
-    MatListModule,
-    MatSnackBarModule,
     AppRoutingModule
     // ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production })
   ],
-  entryComponents: [
-    UserOptionsDialogComponent,
-    DeleteUserDialogComponent,
-    DeleteUnitDialogComponent,
-    UnitCreateDialogComponent,
-    UnitsListTableComponent,
-    UnitsMainListDialogComponent,
-    UnitInfoCardDialogComponent,
-    UnitsPopupComponent,
-    UsersPopupComponent,
-    UserInfoCardDialogComponent,
-    SearchComponent,
-    FilteredUnitsListTableComponent,
-    FilteredUsersListTableComponent
-  ],
+  // entryComponents: [
+  //   UserOptionsDialogComponent,
+  //   DeleteUserDialogComponent,
+  //   DeleteUnitDialogComponent,
+  //   UnitCreateDialogComponent,
+  //   UnitsListTableComponent,
+  //   UnitsMainListDialogComponent,
+  //   UnitInfoCardDialogComponent,
+  //   UnitsPopupComponent,
+  //   UsersPopupComponent,
+  //   UserInfoCardDialogComponent,
+  //   SearchComponent,
+  //   FilteredUnitsListTableComponent,
+  //   FilteredUsersListTableComponent
+  // ],
   providers: [AuthGuard, httpInterceptorProviders, LoadUnitImagePipe,
     {
       provide: STEPPER_GLOBAL_OPTIONS,
       useValue: { displayDefaultIndicatorType: false }
-    }],
+    },
+    {provide: MAT_DATE_LOCALE, useValue: environment.dateLocal},
+    {provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE]},
+    {provide: MAT_DATE_FORMATS, useValue: MAT_MOMENT_DATE_FORMATS},
+    {provide: MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: {strict: true}}
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule {

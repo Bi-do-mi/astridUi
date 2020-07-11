@@ -2,12 +2,12 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import {UserService} from '../../_services/user.service';
 import {SnackBarService} from '../../_services/snack-bar.service';
 import {NgxSpinnerService} from 'ngx-spinner';
-import {MatDialogRef} from '@angular/material';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {Router} from '@angular/router';
 import {first} from 'rxjs/operators';
 import {User} from '../../_model/User';
 import {untilDestroyed} from 'ngx-take-until-destroy';
+import {MatDialogRef} from '@angular/material/dialog';
 
 @Component({
   selector: 'app-delete-user-dialog',

@@ -1,17 +1,20 @@
-import {AfterViewInit, Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {MatDialog, MatDialogRef, MatPaginator, MatSort} from '@angular/material';
+import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {Unit} from '../../_model/Unit';
 import {UserService} from '../../_services/user.service';
 import {MapService} from '../../_services/map.service';
 import {SidenavService} from '../../_services/sidenav.service';
-import {DataSource} from '@angular/cdk/table';
-import {Observable, Subscription, merge} from 'rxjs';
 import {untilDestroyed} from 'ngx-take-until-destroy';
-import {map} from 'rxjs/operators';
-import {NgxGalleryAnimation, NgxGalleryImage, NgxGalleryOptions} from 'ngx-gallery';
 import {UnitDataSource} from '../../_model/UnitDataSource';
 import {UnitInfoCardDialogComponent} from '../unit-info-card-dialog/unit-info-card-dialog.component';
 import {UnitCreateDialogComponent} from '../unit-create-dialog/unit-create-dialog.component';
+import {MatPaginator} from '@angular/material/paginator';
+import {MatSort} from '@angular/material/sort';
+import {MatDialog, MatDialogRef} from '@angular/material/dialog';
+import {NgxGalleryAnimation, NgxGalleryImage, NgxGalleryOptions} from '@kolkov/ngx-gallery';
+import {ParkService} from '../../_services/park.service';
+import {finalize, first} from 'rxjs/operators';
+import {SnackBarService} from '../../_services/snack-bar.service';
+import {NgxSpinnerService} from 'ngx-spinner';
 
 
 @Component({
@@ -20,8 +23,8 @@ import {UnitCreateDialogComponent} from '../unit-create-dialog/unit-create-dialo
   styleUrls: ['./units-main-list-dialog.component.scss']
 })
 export class UnitsMainListDialogComponent implements OnInit, OnDestroy {
-  @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
-  @ViewChild(MatSort, { static: true }) sort: MatSort;
+  @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
+  @ViewChild(MatSort, {static: true}) sort: MatSort;
   dataSource: UnitDataSource;
   columnsToDisplay = ['model'];
   galleryOptions: NgxGalleryOptions[];
@@ -32,7 +35,9 @@ export class UnitsMainListDialogComponent implements OnInit, OnDestroy {
     private dialog: MatDialog,
     public userService: UserService,
     private mapServ: MapService,
-    private sidenavService: SidenavService) {
+    private parkService: ParkService,
+    private spinner: NgxSpinnerService,
+    private snackbarService: SnackBarService) {
   }
 
   ngOnInit() {
@@ -43,30 +48,30 @@ export class UnitsMainListDialogComponent implements OnInit, OnDestroy {
       });
     this.dataSource = new UnitDataSource(
       this.userService.currentUserUnits, this.paginator, this.sort);
-    this.userService.currentUserUnits.pipe(untilDestroyed(this))
+    this.userService.currentUserUnits.pipe(untilDestroyed(this), first())
       .subscribe(units => {
-      this.galleryImagesMap = new Map();
-      units.forEach(u => {
-        const galleryImages: NgxGalleryImage[] = [];
-        if (u.images.length > 0) {
-          u.images.forEach(i => {
-            const im = 'data:image/jpg;base64,' + i.value;
-            galleryImages.push({
-              small: im,
-              medium: im,
-              big: im
+        this.galleryImagesMap = new Map();
+        units.forEach(u => {
+          const galleryImages: NgxGalleryImage[] = [];
+          if (u.images.length > 0) {
+            u.images.forEach(i => {
+              const im = 'data:image/jpg;base64,' + i.value;
+              galleryImages.push({
+                small: im,
+                medium: im,
+                big: im
+              });
             });
-          });
-        } else {
-          galleryImages.push({
-            small: null,
-            medium: null,
-            big: null
-          });
-        }
-        this.galleryImagesMap.set(u.id, galleryImages);
+          } else {
+            galleryImages.push({
+              small: null,
+              medium: null,
+              big: null
+            });
+          }
+          this.galleryImagesMap.set(u.id, galleryImages);
+        });
       });
-    });
     this.galleryOptions = [
       {
         width: '150px',
@@ -148,5 +153,22 @@ export class UnitsMainListDialogComponent implements OnInit, OnDestroy {
       });
     }
     return galleryImages;
+  }
+
+  onToggleUnitVisiobility(unit: Unit) {
+    unit.enabled = !unit.enabled;
+    this.spinner.show();
+    this.parkService.updateUnit(unit).pipe(first(), untilDestroyed(this),
+      finalize(() => {
+        this.spinner.hide();
+        this.snackbarService.success('Единица техники успешно обновлена',
+          'OK', 5000);
+      })).subscribe(() => {
+      },
+      error1 => {
+        console.log(error1);
+        this.spinner.hide();
+        this.snackbarService.error('Что-то пошло не так', 'OK');
+      });
   }
 }

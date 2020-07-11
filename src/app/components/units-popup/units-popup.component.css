@@ -9,4 +9,14 @@
 .cursor-style {
   cursor: pointer; }
 
+.mat-icon {
+  color: #b0b0b0;
+  font-size: 20px;
+  vertical-align: middle; }
+
+.prog-bar-back {
+  height: 3px;
+  width: 100%;
+  background: #ddd; }
+
 /*# sourceMappingURL=units-popup.component.css.map */
