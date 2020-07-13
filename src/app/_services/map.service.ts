@@ -553,12 +553,15 @@ export class MapService implements OnInit, OnDestroy {
                 'visibility': 'visible',
               },
               paint: {
-                'circle-color': ['case',
+                'circle-color':
                   ['case',
-                    ['has', 'paid'], ['get', 'paid'],
-                    false], this.colors[3],
-                  this.colors[2]],
-                'circle-radius': 4,
+                    ['case',
+                      ['has', 'paid'], ['get', 'paid'],
+                      false], this.colors[3],
+                    this.colors[2]],
+                'circle-radius':
+                  ['case',
+                    ['case', ['has', 'listLink'], ['get', 'listLink'], false], 0.5, 4],
                 'circle-stroke-width': 2,
                 'circle-stroke-color': this.colors[0]
               }

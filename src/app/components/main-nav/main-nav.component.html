@@ -1,4 +1,4 @@
-<mat-sidenav-container class="sidenav-container" [hasBackdrop]="hasBackdrop">
+<mat-sidenav-container class="sidenav-container" [hasBackdrop]="sidenavService.hasBackdrop | async">
 
   <!--Левый сайд бар-->
   <mat-sidenav #left_drawer mode="over" position="start" role="region"
@@ -7,7 +7,7 @@
                [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'">
     <!--тулбар левого сайдбара-->
     <mat-toolbar class="cursor-pointer" color="accent"
-                 (click)="leftDrawer.toggle()">{{sidenavService.searchContent?'Поиск'
+                 (click)="toggleParkBar()">{{sidenavService.searchContent?'Поиск'
       :sidenavService.parkContent?'Мой парк техники':''}}
       <div fxFlex></div>
       <mat-icon aria-label="Arrow back icon">arrow_back_ios</mat-icon>

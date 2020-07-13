@@ -1,5 +1,6 @@
 import {Injectable} from '@angular/core';
 import {MatSidenav} from '@angular/material/sidenav';
+import {BehaviorSubject} from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -9,6 +10,8 @@ export class SidenavService {
   private _left_sidenav: MatSidenav;
   private _searchContent: boolean;
   private _parkContent: boolean;
+  hasBackdrop$ = new BehaviorSubject<boolean>(false);
+  hasBackdrop = this.hasBackdrop$.asObservable();
 
   set right_sidenav(rSidenav: MatSidenav) {
     this._right_sidenav = rSidenav;

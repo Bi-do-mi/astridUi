@@ -57,7 +57,8 @@ export class PopupService implements OnInit, OnDestroy {
   }
 
   tunePopup(map: mapboxgl.Map, layer_?: string, clusterLayer?: string, sourceId?: string) {
-    let timer: any;
+    let popupTimer: any;
+    let unitsInParkTimer: any;
     let unit: Unit;
     let user: User;
     map.on('mouseenter', layer_, (e) => {
@@ -84,6 +85,7 @@ export class PopupService implements OnInit, OnDestroy {
 
       // unitsInParkLayer
       if (layer_ === 'unitsInParkLayer') {
+        clearTimeout(unitsInParkTimer);
         this.isMouseOnUnitsInPark = true;
         unit = this.parkService.unitsInPark.get(<number> e.features[0].id);
         this.setUnitPopupContent(unit, map);
@@ -109,6 +111,7 @@ export class PopupService implements OnInit, OnDestroy {
             this.isMouseOnPopup = false;
             this.removeUnitsPopup();
             this.openUserInfoCardDialog(user);
+            this.clearUnitsInParkSourse(map);
           });
           this.unitPopup.setDOMContent(usersPopupEl).on('open', () => {
             this.isPopupOpened = true;
@@ -120,19 +123,23 @@ export class PopupService implements OnInit, OnDestroy {
                 arr.push(un);
               }
             });
-            arr = arr.slice(0, 4);
+            arr = arr.slice(0, 5);
             (<any>map.getSource('unitsInParkSource'))
               .setData(this.getUnitsGeoJsonSource(arr, user));
           }
         }
       }
 
-      this.unitPopup.setLngLat(e.lngLat);
-      timer = setTimeout(() => {
-        if (!this.unitPopup.isOpen()) {
-          this.unitPopup.addTo(map);
-        }
-      }, 500);
+      if (!e.features[0].properties.listLink) {
+        this.unitPopup.setLngLat(e.lngLat);
+        popupTimer = setTimeout(() => {
+          if (!this.unitPopup.isOpen()) {
+            this.unitPopup.addTo(map);
+          }
+        }, 500);
+      } else {
+        this.removeUnitsPopup();
+      }
     });
 
     map.on('click', layer_, () => {
@@ -156,25 +163,25 @@ export class PopupService implements OnInit, OnDestroy {
       if (layer_ === 'unitsInParkLayer') {
         this.isMouseOnUnitsInPark = false;
       }
-      if (!this.unitPopup.isOpen()) {
-        clearTimeout(timer);
+      if (!this.unitPopup.isOpen() && (layer_ !== 'unitsInParkLayer')) {
+        clearTimeout(popupTimer);
         this.clearUnitsInParkSourse(map);
       }
       if (this.unitPopup.isOpen()) {
-        setTimeout(() => {
-          clearTimeout(timer);
+        unitsInParkTimer = setTimeout(() => {
+          // clearTimeout(timer);
           if (!this.isMouseOnPopup && !this.isMouseOnUnitsInPark) {
             this.unitPopup.remove();
-          }
-        }, (layer_ === 'unitsInParkLayer') ? 500 : 500);
-        setTimeout(() => {
-          if (!this.isMouseOnPopup && !this.isMouseOnUnitsInPark) {
-            console.log('clearUnitsInParkSourse');
             this.clearUnitsInParkSourse(map);
           }
-        }, 500);
+        }, (layer_ === 'unitsInParkLayer') ? 500 : 500);
+        // setTimeout(() => {
+        //   if (!this.isMouseOnPopup && !this.isMouseOnUnitsInPark) {
+        //     clearTimeout(timer);
+        //     this.clearUnitsInParkSourse(map);
+        //   }
+        // }, 500);
       }
-      // this.isMouseOnUnitsInPark = false;
     });
 
     // // inspect a cluster on click
@@ -248,6 +255,11 @@ export class PopupService implements OnInit, OnDestroy {
       }, 500);
     });
 
+    // adding click listener
+    markerDiv.addEventListener('click', () => {
+      this.toggleParkBar(true);
+    });
+
     // adding mouseleave listener
     markerDiv.addEventListener('mouseleave', () => {
       if (!popup.isOpen()) {
@@ -285,9 +297,9 @@ export class PopupService implements OnInit, OnDestroy {
   }
 
   setUnitPopupContent(unit: Unit, map: mapboxgl.Map) {
+    const unitsPopupEl: NgElement & WithProperties<UnitsPopupComponent> =
+      this.renderer.createElement('units-popup') as any;
     if (unit) {
-      const unitsPopupEl: NgElement & WithProperties<UnitsPopupComponent> =
-        this.renderer.createElement('units-popup') as any;
       unitsPopupEl.unit = unit;
       unitsPopupEl.addEventListener('mouseenter', () => this.isMouseOnPopup = true);
       unitsPopupEl.addEventListener('mouseleave', () => {
@@ -299,6 +311,7 @@ export class PopupService implements OnInit, OnDestroy {
         this.isMouseOnPopup = false;
         this.removeUnitsPopup();
         this.openUnitInfoCardDialog(unit);
+        this.clearUnitsInParkSourse(map);
       });
       this.unitPopup.setDOMContent(unitsPopupEl).on('open', () => {
         this.isPopupOpened = true;
@@ -314,6 +327,7 @@ export class PopupService implements OnInit, OnDestroy {
       if (!this.sidenavService.parkContent && !this.sidenavService.searchContent) {
         this.sidenavService.parkContent = true;
         this.sidenavService.closeRight();
+        this.sidenavService.hasBackdrop$.next(false);
         this.sidenavService.openLeft();
       }
     }
@@ -363,11 +377,17 @@ export class PopupService implements OnInit, OnDestroy {
   getUnitsGeoJsonSource(units: Array<Unit>, user: User) {
     const tempArr = new Array<GeoJson>();
     units.forEach((un, i, arr) => {
-      const coord = [(user.location.geometry.coordinates[0] + (++i * 0.023)),
-        user.location.geometry.coordinates[1]];
-      tempArr.push(new GeoJson(
-        coord,
-        un.id, {paid: environment.testing_paid ? true : un.paid}));
+      for (let k = 0; k < (i === 4 ? 3 : 1); k++) {
+        tempArr.push(new GeoJson(
+          [(user.location.geometry.coordinates[0] + ((i + 1) * 0.023)
+            + (k * 0.008)),
+            user.location.geometry.coordinates[1]],
+          un.id,
+          {
+            paid: environment.testing_paid ? true : un.paid,
+            listLink: i === 4 ? true : false
+          }));
+      }
     });
     return new FCollModel.FeatureCollection(tempArr);
   }

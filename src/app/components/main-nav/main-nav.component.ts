@@ -38,7 +38,6 @@ export class MainNavComponent implements OnInit, OnDestroy {
   leftDrawer: MatSidenav;
   @ViewChild('right_drawer', {static: true})
   rightDrawer: MatSidenav;
-  hasBackdrop: boolean;
   // searchContent: boolean;
   // parkContent: boolean;
   currentUser: User;
@@ -277,7 +276,7 @@ export class MainNavComponent implements OnInit, OnDestroy {
 
   toggleMenu(hasBackdrop?: boolean) {
     this.sidenavService.closeAll();
-    this.hasBackdrop = true;
+    this.sidenavService.hasBackdrop$.next(true);
     this.rightDrawer.toggle();
   }
 
@@ -289,14 +288,14 @@ export class MainNavComponent implements OnInit, OnDestroy {
       if (!this.sidenavService.parkContent && !this.sidenavService.searchContent) {
         this.sidenavService.searchContent = true;
         this.sidenavService.closeRight();
-        this.hasBackdrop = false;
+        this.sidenavService.hasBackdrop$.next(false);
         this.leftDrawer.open();
       } else {
         this.leftDrawer.close().then(v => {
           this.sidenavService.searchContent = true;
           this.sidenavService.parkContent = false;
           this.sidenavService.closeRight();
-          this.hasBackdrop = false;
+          this.sidenavService.hasBackdrop$.next(false);
           this.leftDrawer.open();
         });
       }
@@ -311,14 +310,14 @@ export class MainNavComponent implements OnInit, OnDestroy {
       if (!this.sidenavService.parkContent && !this.sidenavService.searchContent) {
         this.sidenavService.parkContent = true;
         this.sidenavService.closeRight();
-        this.hasBackdrop = false;
+        this.sidenavService.hasBackdrop$.next(false);
         this.leftDrawer.open();
       } else {
         this.leftDrawer.close().then(v => {
           this.sidenavService.searchContent = false;
           this.sidenavService.parkContent = true;
           this.sidenavService.closeRight();
-          this.hasBackdrop = false;
+          this.sidenavService.hasBackdrop$.next(false);
           this.leftDrawer.open();
         });
       }
