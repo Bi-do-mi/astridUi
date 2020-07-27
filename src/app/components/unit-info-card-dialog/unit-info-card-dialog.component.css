@@ -4,4 +4,12 @@
   min-height: 140px;
   min-width: 210px; }
 
+.idline {
+  margin: 0px 4px;
+  color: #9e9e9e; }
+
+.divcolor {
+  background-color: #aaabaa;
+  height: 1px; }
+
 /*# sourceMappingURL=unit-info-card-dialog.component.css.map */

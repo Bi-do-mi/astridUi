@@ -2,43 +2,54 @@
   <mat-card-content>
     <div fxLayout="column">
       <div fxLayout="row wrap">
-        <div class="border" fxLayout="row" fxLayoutAlign="center center">
-          <ngx-gallery [options]="galleryOptions"
-                       *ngIf="(images && images[0])"
-                       [images]="images">
-          </ngx-gallery>
-          <div>
-            <mat-spinner class="mat-accent" [diameter]="40"
-                         *ngIf="(images && !images[0])"></mat-spinner>
+        <div>
+          <div class="idline">Id: {{unit.id}}</div>
+          <div class="border" fxLayout="row" fxLayoutAlign="center center">
+            <ngx-gallery [options]="galleryOptions"
+                         *ngIf="(images && images[0])"
+                         [images]="images">
+            </ngx-gallery>
+            <div>
+              <mat-spinner class="mat-accent" [diameter]="40"
+                           *ngIf="(images && !images[0])"></mat-spinner>
+            </div>
           </div>
         </div>
         <div class="m-3">
           <h6><b>{{unit.model}}</b></h6>
-          <div>&bull;Id: {{unit.id}}</div>
-          <div>&bull;Владелец: {{unit.ownerId}}</div>
-          <div>&bull;Тип: {{unit.type}}</div>
-          <div>&bull;Оплачен: {{unit.paid ? 'да' : 'нет'}}</div>
+          <div>&bull; Тип: {{unit.type}}</div>
+          <div *ngIf="isPrivate">&bull; Оплачен: {{unit.paid ? 'да' : 'нет'}}</div>
           <div *ngIf="unit.paid">&bull;Оплачен до: {{unit.paidUntil !==null ?
-            (unit.paidUntil  | dateToLocaleString | async): '-'}}
+            (unit.paidUntil | dateToLocaleString | async): '-'}}
           </div>
-          <div>&bull;Виден другим пользователям: {{unit.enabled}}</div>
-          <div>&bull;Дата создания: {{unit.createdOn  | dateToLocaleString | async}}
+          <div>&bull; Виден другим пользователям: {{unit.enabled}}</div>
+          <div>&bull; Дата создания: {{unit.createdOn | dateToLocaleString | async}}
           </div>
-          <div>&bull;Дата последнего редактирования: {{unit.lastUpdate  | dateToLocaleString | async}}
+          <div>&bull; Дата последнего редактирования: {{unit.lastUpdate | dateToLocaleString | async}}
           </div>
-          <div *ngIf="unit.workEnd">&bull;Дата окончания работ: {{unit.workEnd  | dateToLocaleString | async}}
+          <div *ngIf="unit.workEnd">&bull; Дата окончания работ: {{unit.workEnd | dateToLocaleString | async}}
           </div>
-          <div>&bull;Количество опций: {{unit.options.length}}</div>
+          <div>&bull; Количество опций: {{unit.options.length}}</div>
+          <mat-spinner class="mat-accent mt-4" [diameter]="20" *ngIf="!isPrivate && !owner"></mat-spinner>
+          <div class="mt-4" *ngIf="!isPrivate && owner">
+            <span>КОНТАКТЫ:</span>
+            <div class="divcolor"></div>
+            <div>&bull; Владелец: {{owner?.name}}</div>
+            <div>&bull; Email: {{owner?.username}}</div>
+            <div>&bull; Телефон: {{owner?.phoneNumber}}</div>
+            <div>&bull; Был последний раз:
+              {{owner?.lastVisit | dateToLocaleString | async}}</div>
+          </div>
         </div>
       </div>
 
-      <div fxLayout="row wrap" fxLayoutAlign="space-between center">
-        <div fxLayout="row" fxFlex fxLayoutAlign="end center">
+      <div fxLayout="row wrap" [fxLayoutAlign]="align1">
+        <div fxLayout="row" fxLayoutAlign="end center">
           <button *ngIf="isPrivate" mat-raised-button="" class="m-2"
                   (click)="onDeleteUnit()" tabindex="-1">Удалить
           </button>
         </div>
-        <div fxLayout="row wrap" fxLayoutAlign="end center">
+        <div [fxLayout]="layout1" fxLayoutAlign="end center">
           <button *ngIf="isPrivate" mat-raised-button="" class="m-2" (click)="onEdit()"
                   tabindex="-1">Редактировать
           </button>

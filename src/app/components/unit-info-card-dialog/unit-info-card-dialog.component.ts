@@ -4,11 +4,16 @@ import {DeleteUnitDialogComponent} from '../delete-unit-dialog/delete-unit-dialo
 import {untilDestroyed} from 'ngx-take-until-destroy';
 import {UserService} from '../../_services/user.service';
 import {User} from '../../_model/User';
-import {first} from 'rxjs/operators';
+import {first, map} from 'rxjs/operators';
 import {OpenUnitInfoService} from '../../_services/open-unit-info.service';
 import {ZonedDateTime} from '@js-joda/core';
 import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from '@angular/material/dialog';
 import {NgxGalleryAnimation, NgxGalleryImage, NgxGalleryOptions} from '@kolkov/ngx-gallery';
+import {BreakpointObserver, Breakpoints} from '@angular/cdk/layout';
+import {Observable} from 'rxjs';
+import {ParkService} from '../../_services/park.service';
+import {HttpClient} from '@angular/common/http';
+import {DateDeserializerService} from '../../_services/date-deserializer.service';
 
 @Component({
   selector: 'app-unit-info-card-dialog',
@@ -20,14 +25,22 @@ export class UnitInfoCardDialogComponent implements OnInit, OnDestroy {
   images: NgxGalleryImage[] = [];
   galleryOptions: NgxGalleryOptions[];
   public isPrivate = false;
-
+  isHandset$: Observable<boolean> = this.breakpointObserver.observe(
+    Breakpoints.Handset).pipe(map(result => result.matches));
+  public align1: string;
+  public layout1: string;
+  owner: User;
 
   constructor(
+    private breakpointObserver: BreakpointObserver,
     private dialogRef: MatDialogRef<UnitInfoCardDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: { unit: Unit },
     private dialog: MatDialog,
     private userService: UserService,
-    private openUnitInfoService: OpenUnitInfoService) {
+    private openUnitInfoService: OpenUnitInfoService,
+    private parkService: ParkService,
+    private http: HttpClient,
+    private dateDeserializer: DateDeserializerService) {
   }
 
   ngOnInit() {
@@ -70,6 +83,22 @@ export class UnitInfoCardDialogComponent implements OnInit, OnDestroy {
         height: '140px'
       }
     ];
+    this.isHandset$.subscribe((res) => {
+      this.align1 = res ? 'space-between end' : 'space-between center';
+      this.layout1 = res ? 'column' : 'row wrap';
+    });
+    this.parkService.usersCacheFiltered.pipe(first())
+      .subscribe((owners: Array<User>) => {
+        this.owner = owners.filter((user: User) => {
+          return user.id === this.unit.ownerId;
+        })[0];
+        if (!this.owner) {
+          this.http.put('/rest/search/get_owner', this.unit.ownerId)
+            .pipe(first()).subscribe((u: User) => {
+              this.owner = this.dateDeserializer.date(u);
+          });
+        }
+      });
   }
 
   onCancel(): void {

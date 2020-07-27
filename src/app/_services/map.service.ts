@@ -442,7 +442,7 @@ export class MapService implements OnInit, OnDestroy {
               paint: {
                 'circle-color': ['case',
                   ['case',
-                    ['has', 'paid'], ['get', 'paid'],
+                    ['has', 'enabled'], ['get', 'enabled'],
                     false], this.colors[1],
                   this.colors[2]],
                 'circle-radius': 4,
@@ -1037,7 +1037,11 @@ export class MapService implements OnInit, OnDestroy {
     units.forEach(un => {
       tempArr.push(new GeoJson(
         un.location.geometry.coordinates,
-        un.id, {paid: environment.testing_paid ? true : un.paid}));
+        un.id,
+        {
+          paid: environment.testing_paid ? true : un.paid,
+          enabled: un.enabled
+        }));
     });
     return new FCollModel.FeatureCollection(tempArr);
   }
