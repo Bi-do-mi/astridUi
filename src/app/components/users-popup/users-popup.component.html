@@ -1,13 +1,48 @@
-<div class="cursor-style" fxLayout="row">
-  <div class="img-place" fxLayout="row" fxLayoutAlign="center center">
-    <img width=80 *ngIf="(user?.image && user?.image?.value)"
-         src="data:image/jpg;base64,{{user.image.value}}">
-    <img width=80 *ngIf="(!user?.image)"
-         src="assets/pics/buldozer_.jpg">
-    <mat-spinner class="mat-accent" [diameter]="20"
-                 *ngIf="(user?.image && !user?.image.value)"></mat-spinner>
+<div fxLayout="column" class="popup-width">
+  <div fxLayout="row">
+    <div class="cursor-style" fxLayout="row" *ngIf="isExpand[0]" (click)="openUserInfoCardDialog()">
+      <div class="img-place" fxLayout="row" fxLayoutAlign="center center">
+        <img width=80 *ngIf="(user?.image && user?.image?.value)"
+             src="data:image/jpg;base64,{{user.image.value}}">
+        <img width=80 *ngIf="(!user?.image)"
+             src="assets/pics/buldozer_.jpg">
+        <mat-spinner class="mat-accent" [diameter]="20"
+                     *ngIf="(user?.image && !user?.image.value)"></mat-spinner>
+      </div>
+      <div fxLayout="row" fxLayoutAlign="center center">
+        {{user?.name}}
+      </div>
+    </div>
+    <div *ngFor="let un of arr" class="shrink">
+      <div class="cursor-style" fxLayout="row" fxLayoutAlign="center"
+           *ngIf="isExpand[(1+arr.indexOf(un))]" (click)="openUnitInfoCardDialog(un)">
+        <div class="img-place" fxLayout="row" fxLayoutAlign="center center">
+          <img width=80 *ngIf="(un.images[0] && un.images[0].value)"
+               src="data:image/jpg;base64,{{un.images[0].value}}">
+          <img width=80 *ngIf="!(un.images[0])"
+               src="assets/pics/unit_pic_spacer-600x400.png">
+          <mat-spinner class="mat-accent" [diameter]="20"
+                       *ngIf="(un.images[0] && !un.images[0].value)"></mat-spinner>
+        </div>
+        <div fxLayout="row" fxLayoutAlign="center center">
+          {{un.model}}
+        </div>
+      </div>
+    </div>
   </div>
-  <div fxLayout="row" fxLayoutAlign="center center">
-    {{user?.name}}
+
+  <div *ngIf="arr && arr.length > 0" fxLayout="row" fxLayoutAlign="center stretch">
+    <div fxFlex="" fxLayout="row" fxLayoutAlign="center center" class="tab-park"
+         (mouseenter)="expandDiv(0)" (click)="openUserInfoCardDialog()">
+      <mat-icon class="icon-size" aria-label="Park nav toggle icon">local_parking</mat-icon>
+    </div>
+    <div *ngFor="let unit of arr" class="tab-unit" fxFlex="" fxLayoutAlign="center end"
+         (mouseenter)="expandDiv(arr.indexOf(unit)+1)" (click)="openUnitInfoCardDialog(unit)">
+      <div class="indicator" fxFlex=""></div>
+    </div>
+    <div fxFlex="" fxLayout="row" fxLayoutAlign="center center" class="tab-unit"
+    *ngIf="user?.units?.length > 5">
+      <div>>></div>
+    </div>
   </div>
 </div>

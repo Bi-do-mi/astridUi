@@ -1,5 +1,5 @@
 import {Injectable, OnDestroy} from '@angular/core';
-import {Subject} from 'rxjs';
+import {BehaviorSubject, Subject} from 'rxjs';
 import {Unit} from '../_model/Unit';
 import {finalize, first} from 'rxjs/operators';
 import {untilDestroyed} from 'ngx-take-until-destroy';

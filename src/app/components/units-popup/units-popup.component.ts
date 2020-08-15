@@ -3,6 +3,7 @@ import {Unit} from '../../_model/Unit';
 import {ParkService} from '../../_services/park.service';
 import {Duration, ZonedDateTime} from '@js-joda/core';
 import {environment} from '../../../environments/environment.prod';
+import {first} from 'rxjs/operators';
 
 @Component({
   selector: 'app-units-popup',
@@ -20,7 +21,8 @@ export class UnitsPopupComponent implements OnInit {
 
   ngOnInit() {
     if (this._unit.images && this._unit.images.length > 0 && (!this._unit.images[0].value)) {
-      this.parkService.loadUnitImgFromServer(this._unit).subscribe((data: Unit) => {
+      this.parkService.loadUnitImgFromServer(this._unit).pipe(first())
+        .subscribe((data: Unit) => {
         this._unit.images = data.images;
       });
     }

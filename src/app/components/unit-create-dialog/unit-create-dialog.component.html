@@ -123,7 +123,7 @@
       </div>
       <div class="input-group mb-3 mt-3">
         <div class="custom-file" *ngIf="galleryImages.length < 4">
-          <input type="file" class="custom-file-input" accept="image/jpeg"
+          <input type="file" class="custom-file-input" accept="image/jpeg" [(ngModel)]="inputValue"
                  (change)="handleImages($event)" multiple id="inputGroupFile01">
           <label class="custom-file-label" for="inputGroupFile01">Открыть</label>
         </div>

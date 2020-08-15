@@ -69,6 +69,7 @@ import {MatDatepickerModule} from '@angular/material/datepicker';
 import {DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE, MatNativeDateModule} from '@angular/material/core';
 import {MAT_MOMENT_DATE_ADAPTER_OPTIONS, MAT_MOMENT_DATE_FORMATS, MomentDateAdapter} from '@angular/material-moment-adapter';
 import {MatProgressBarModule} from '@angular/material/progress-bar';
+import { UnitsInParkMarkerContainerComponent } from './components/units-in-park-marker-container/units-in-park-marker-container.component';
 
 // import {registerLocaleData} from '@angular/common';
 // import localeRu from '@angular/common/locales/ru';
@@ -105,7 +106,8 @@ export const httpInterceptorProviders = [
     SearchComponent,
     FilteredUnitsListTableComponent,
     FilteredUsersListTableComponent,
-    DateToLocalStringPipe
+    DateToLocalStringPipe,
+    UnitsInParkMarkerContainerComponent
   ],
   imports: [
     BrowserModule,

@@ -1,8 +1,8 @@
 import {Injectable, OnDestroy, OnInit, Renderer2, RendererFactory2} from '@angular/core';
 import * as mapboxgl from 'mapbox-gl';
-import {LngLat, Marker} from 'mapbox-gl';
+import {AnySourceData, AnySourceImpl, LngLat, Marker} from 'mapbox-gl';
 import {NGXLogger} from 'ngx-logger';
-import {BehaviorSubject, Observable, Subject} from 'rxjs';
+import {BehaviorSubject, Observable, Subject, Subscription} from 'rxjs';
 import {HttpClient} from '@angular/common/http';
 import {User} from '../_model/User';
 import {SnackBarService} from './snack-bar.service';
@@ -39,13 +39,14 @@ export class MapService implements OnInit, OnDestroy {
     zoom: number;
   };
   private _isFirstLoading: boolean;
+  private isMapLoaded = false;
   private _mapTemplateId$ = new BehaviorSubject<string>('');
   currentMapId = this._mapTemplateId$.asObservable();
   private _clickedPoint$ = new Subject<GeoJson>();
   private _clickedPoint = this._clickedPoint$.asObservable();
   currentUser: User;
+  private currUserSubscr: Subscription;
   public userMarker: Marker;
-  public unitsInParkMarkers = new Map<Number, Marker>();
   userGeoCode: GeoCode;
   public _hidePrivateUnits = false;
   public _hideOtherUnits = false;
@@ -56,7 +57,6 @@ export class MapService implements OnInit, OnDestroy {
   public ownUnitsNotPaidSource: any;
   public usersSource: any;
   public unitsSource: any;
-  public unitsInParkSource: any;
   private viewportSource: any;
   private queryViewportSource: any;
   private colors = ['#212121', '#fbc02d', '#c2c3c2', '#0bc714', '#e61120'];
@@ -92,6 +92,7 @@ export class MapService implements OnInit, OnDestroy {
     };
 
     this._isFirstLoading = true;
+    // этот блок подписывается при каждой загрузке карты
     this.currentMapId.pipe(untilDestroyed(this)).subscribe(mapId => {
       if (mapId) {
         // отступ по времени для правильного отображения карты
@@ -104,6 +105,10 @@ export class MapService implements OnInit, OnDestroy {
               zoom: this._mapOps.zoom,
               center: [this._mapOps.lng, this._mapOps.lat]
             });
+            this.isMapLoaded = false;
+            if (this.currUserSubscr && !this.currUserSubscr.closed) {
+              this.currUserSubscr.unsubscribe();
+            }
           } catch (e) {
             console.log('Failed to load map!\n' + e);
           }
@@ -129,599 +134,9 @@ export class MapService implements OnInit, OnDestroy {
             this.loadDataOnMoveEnd();
           });
 
-          // this.map.on('mouseenter', 'usersLayer', (e) => {
-          //   this.map.setLayoutProperty('unitsInParkLayer', 'visibility', 'visible');
-          // });
-          //
-          // this.map.on('mouseleave', 'usersLayer', (e) => {
-          //   this.map.setLayoutProperty('unitsInParkLayer', 'visibility', 'none');
-          // });
-
           // load listener
           this.map.on('load', () => {
-
-            /// register sources
-            this.map.addSource('ownUnitsSource', {
-              type: 'geojson',
-              data: {
-                type: 'FeatureCollection',
-                features: []
-              },
-              cluster: true,
-              clusterMaxZoom: 8, // Max zoom to cluster points on
-              clusterRadius: 50
-            });
-            this.map.addSource('ownUnitsInParkSource', {
-              type: 'geojson',
-              data: {
-                type: 'FeatureCollection',
-                features: []
-              },
-              cluster: false,
-              clusterMaxZoom: 8, // Max zoom to cluster points on
-              clusterRadius: 50
-            });
-            this.map.addSource('ownUnitsNotPaidSource', {
-              type: 'geojson',
-              data: {
-                type: 'FeatureCollection',
-                features: []
-              },
-              cluster: true,
-              clusterMaxZoom: 8, // Max zoom to cluster points on
-              clusterRadius: 50
-            });
-            this.map.addSource('ownUnitsNotEnabledSource', {
-              type: 'geojson',
-              data: {
-                type: 'FeatureCollection',
-                features: []
-              },
-              cluster: true,
-              clusterMaxZoom: 8, // Max zoom to cluster points on
-              clusterRadius: 50
-            });
-            this.map.addSource('usersSource', {
-              type: 'geojson',
-              data: {
-                type: 'FeatureCollection',
-                features: []
-              },
-              cluster: true,
-              clusterMaxZoom: 8, // Max zoom to cluster points on
-              clusterRadius: 50
-            });
-            this.map.addSource('unitsSource', {
-              type: 'geojson',
-              data: {
-                type: 'FeatureCollection',
-                features: []
-              },
-              cluster: true,
-              clusterMaxZoom: 8, // Max zoom to cluster points on
-              clusterRadius: 50
-            });
-            this.map.addSource('unitsInParkSource', {
-              type: 'geojson',
-              data: {
-                type: 'FeatureCollection',
-                features: []
-              },
-              cluster: false,
-              clusterMaxZoom: 8, // Max zoom to cluster points on
-              clusterRadius: 50
-            });
-            this.map.addSource('viewportSource', {
-              type: 'geojson',
-              data: {
-                type: 'Feature',
-                geometry: {
-                  type: 'MultiPolygon',
-                  coordinates: [[[]]]
-                },
-                properties: {}
-              }
-            });
-            this.map.addSource('queryViewportSource', {
-              type: 'geojson',
-              data: {
-                type: 'Feature',
-                geometry: {
-                  type: 'MultiPolygon',
-                  coordinates: [[[]]]
-                },
-                properties: {}
-              }
-            });
-
-            /// get source
-            this.ownUnitsSource = this.map.getSource('ownUnitsSource');
-            this.ownUnitsInParkSource = this.map.getSource('ownUnitsInParkSource');
-            this.ownUnitsNotPaidSource = this.map.getSource('ownUnitsNotPaidSource');
-            this.ownUnitsNotEnabledSource = this.map.getSource('ownUnitsNotEnabledSource');
-            this.usersSource = this.map.getSource('usersSource');
-            this.unitsSource = this.map.getSource('unitsSource');
-            this.unitsInParkSource = this.map.getSource('unitsInParkSource');
-            this.viewportSource = this.map.getSource('viewportSource');
-            this.queryViewportSource = this.map.getSource('queryViewportSource');
-
-            // create map layers with realtime data
-            this.map.addLayer({
-              id: 'viewportLayer',
-              source: 'viewportSource',
-              type: 'fill',
-              layout: {},
-              paint: {
-                'fill-color': '#088',
-                'fill-opacity': 0.5
-              }
-            });
-            this.map.addLayer({
-              id: 'queryViewportLayer',
-              source: 'queryViewportSource',
-              type: 'fill',
-              layout: {},
-              paint: {
-                'fill-color': 'red',
-                'fill-opacity': 0.5
-              }
-            });
-            this.map.addLayer({
-              id: 'ownUnitsLayer',
-              source: 'ownUnitsSource',
-              type: 'circle',
-              filter: ['!', ['has', 'point_count']],
-              paint: {
-                'circle-color': ['case',
-                  ['case',
-                    ['has', 'paid'], ['get', 'paid'],
-                    false], this.colors[1],
-                  this.colors[2]],
-                'circle-radius': 4,
-                'circle-stroke-width': 2,
-                'circle-stroke-color': this.colors[0]
-              }
-            });
-            this.map.addLayer({
-              id: 'ownUnitsLayerClusters',
-              type: 'circle',
-              source: 'ownUnitsSource',
-              filter: ['has', 'point_count'],
-              paint: {
-                'circle-color': [
-                  'step',
-                  ['get', 'point_count'],
-                  '#FBDC2E',
-                  100,
-                  '#FBC02D',
-                  750,
-                  '#FBAF30'
-                ],
-                'circle-radius': [
-                  'step',
-                  ['get', 'point_count'],
-                  20,
-                  100,
-                  30,
-                  750,
-                  40
-                ],
-                'circle-stroke-color': this.colors[0],
-                'circle-stroke-width': 3
-              }
-            });
-            this.map.addLayer({
-              id: 'ownUnitsLayerClusterCount',
-              type: 'symbol',
-              source: 'ownUnitsSource',
-              filter: ['has', 'point_count'],
-              layout: {
-                'text-field': '{point_count_abbreviated}',
-                'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
-                'text-size': 12
-              }
-            });
-            this.map.addLayer({
-              id: 'ownUnitsInParkLayer',
-              source: 'ownUnitsInParkSource',
-              type: 'circle',
-              filter: ['!', ['has', 'point_count']],
-              layout: {
-                'visibility': 'none'
-              },
-              paint: {
-                'circle-color': ['case',
-                  ['case',
-                    ['has', 'paid'], ['get', 'paid'],
-                    false], this.colors[1],
-                  this.colors[2]],
-                'circle-radius': 4,
-                'circle-stroke-width': 2,
-                'circle-stroke-color': this.colors[0]
-              }
-            });
-            this.map.addLayer({
-              id: 'ownUnitsInParkLayerClusters',
-              type: 'circle',
-              source: 'ownUnitsInParkSource',
-              filter: ['has', 'point_count'],
-              paint: {
-                'circle-color': [
-                  'step',
-                  ['get', 'point_count'],
-                  '#FBDC2E',
-                  100,
-                  '#FBC02D',
-                  750,
-                  '#FBAF30'
-                ],
-                'circle-radius': [
-                  'step',
-                  ['get', 'point_count'],
-                  20,
-                  100,
-                  30,
-                  750,
-                  40
-                ],
-                'circle-stroke-color': this.colors[0],
-                'circle-stroke-width': 3
-              }
-            });
-            this.map.addLayer({
-              id: 'ownUnitsInParkLayerClusterCount',
-              type: 'symbol',
-              source: 'ownUnitsInParkSource',
-              filter: ['has', 'point_count'],
-              layout: {
-                'text-field': '{point_count_abbreviated}',
-                'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
-                'text-size': 12
-              }
-            });
-            this.map.addLayer({
-              id: 'ownUnitsNotPaidLayer',
-              source: 'ownUnitsNotPaidSource',
-              type: 'circle',
-              filter: ['!', ['has', 'point_count']],
-              paint: {
-                'circle-color': ['case',
-                  ['case',
-                    ['has', 'paid'], ['get', 'paid'],
-                    false], this.colors[1],
-                  this.colors[4]],
-                'circle-radius': 4,
-                'circle-stroke-width': 2,
-                'circle-stroke-color': this.colors[0]
-              }
-            });
-            this.map.addLayer({
-              id: 'ownUnitsNotPaidLayerClusters',
-              type: 'circle',
-              source: 'ownUnitsNotPaidSource',
-              filter: ['has', 'point_count'],
-              paint: {
-                'circle-color': [
-                  'step',
-                  ['get', 'point_count'],
-                  '#fa1323',
-                  100,
-                  '#e61120',
-                  500,
-                  '#a80c17'
-                ],
-                'circle-radius': [
-                  'step',
-                  ['get', 'point_count'],
-                  20,
-                  100,
-                  30,
-                  750,
-                  40
-                ],
-                'circle-stroke-color': this.colors[0],
-                'circle-stroke-width': 3
-              }
-            });
-            this.map.addLayer({
-              id: 'ownUnitsNotPaidLayerClusterCount',
-              type: 'symbol',
-              source: 'ownUnitsNotPaidSource',
-              filter: ['has', 'point_count'],
-              layout: {
-                'text-field': '{point_count_abbreviated}',
-                'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
-                'text-size': 12
-              }
-            });
-            this.map.addLayer({
-              id: 'ownUnitsNotEnabledLayer',
-              source: 'ownUnitsNotEnabledSource',
-              type: 'circle',
-              filter: ['!', ['has', 'point_count']],
-              paint: {
-                'circle-color': ['case',
-                  ['case',
-                    ['has', 'enabled'], ['get', 'enabled'],
-                    false], this.colors[1],
-                  this.colors[2]],
-                'circle-radius': 4,
-                'circle-stroke-width': 2,
-                'circle-stroke-color': this.colors[0]
-              }
-            });
-            this.map.addLayer({
-              id: 'ownUnitsNotEnabledLayerClusters',
-              type: 'circle',
-              source: 'ownUnitsNotEnabledSource',
-              filter: ['has', 'point_count'],
-              paint: {
-                'circle-color': [
-                  'step',
-                  ['get', 'point_count'],
-                  '#c2c3c2',
-                  100,
-                  '#aaabaa',
-                  500,
-                  '#7c7d7c'
-                ],
-                'circle-radius': [
-                  'step',
-                  ['get', 'point_count'],
-                  20,
-                  100,
-                  30,
-                  750,
-                  40
-                ],
-                'circle-stroke-color': this.colors[0],
-                'circle-stroke-width': 3
-              }
-            });
-            this.map.addLayer({
-              id: 'ownUnitsNotEnabledLayerClusterCount',
-              type: 'symbol',
-              source: 'ownUnitsNotEnabledSource',
-              filter: ['has', 'point_count'],
-              layout: {
-                'text-field': '{point_count_abbreviated}',
-                'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
-                'text-size': 12
-              }
-            });
-            this.map.addLayer({
-              id: 'unitsLayer',
-              source: 'unitsSource',
-              type: 'circle',
-              filter: ['!', ['has', 'point_count']],
-              paint: {
-                'circle-color': ['case',
-                  ['case',
-                    ['has', 'paid'], ['get', 'paid'],
-                    false], this.colors[3],
-                  this.colors[2]],
-                'circle-radius': 4,
-                'circle-stroke-width': 2,
-                'circle-stroke-color': this.colors[0]
-              }
-            });
-            this.map.addLayer({
-              id: 'unitsLayerClusters',
-              type: 'circle',
-              source: 'unitsSource',
-              filter: ['has', 'point_count'],
-              paint: {
-                'circle-color': [
-                  'step',
-                  ['get', 'point_count'],
-                  '#0dea18',
-                  100,
-                  '#0bc714',
-                  750,
-                  '#099f10'
-                ],
-                'circle-radius': [
-                  'step',
-                  ['get', 'point_count'],
-                  20,
-                  100,
-                  30,
-                  750,
-                  40
-                ],
-                'circle-stroke-color': this.colors[0],
-                'circle-stroke-width': 3
-              }
-            });
-            this.map.addLayer({
-              id: 'unitsLayerClusterCount',
-              type: 'symbol',
-              source: 'unitsSource',
-              filter: ['has', 'point_count'],
-              layout: {
-                'text-field': '{point_count_abbreviated}',
-                'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
-                'text-size': 12
-              }
-            });
-            this.map.addLayer({
-              id: 'unitsInParkLayer',
-              source: 'unitsInParkSource',
-              type: 'circle',
-              filter: ['!', ['has', 'point_count']],
-              layout: {
-                'visibility': 'visible',
-              },
-              paint: {
-                'circle-color':
-                  ['case',
-                    ['case',
-                      ['has', 'paid'], ['get', 'paid'],
-                      false], this.colors[3],
-                    this.colors[2]],
-                'circle-radius':
-                  ['case',
-                    ['case', ['has', 'listLink'], ['get', 'listLink'], false], 0.5, 4],
-                'circle-stroke-width': 2,
-                'circle-stroke-color': this.colors[0]
-              }
-            });
-            this.map.addLayer({
-              id: 'unitsInParkLayerClusters',
-              type: 'circle',
-              source: 'unitsInParkSource',
-              filter: ['has', 'point_count'],
-              paint: {
-                'circle-color': [
-                  'step',
-                  ['get', 'point_count'],
-                  '#0dea18',
-                  100,
-                  '#0bc714',
-                  750,
-                  '#099f10'
-                ],
-                'circle-radius': [
-                  'step',
-                  ['get', 'point_count'],
-                  20,
-                  100,
-                  30,
-                  750,
-                  40
-                ],
-                'circle-stroke-color': this.colors[0],
-                'circle-stroke-width': 3
-              }
-            });
-            this.map.addLayer({
-              id: 'unitsInParkLayerClusterCount',
-              type: 'symbol',
-              source: 'unitsInParkSource',
-              filter: ['has', 'point_count'],
-              layout: {
-                'text-field': '{point_count_abbreviated}',
-                'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
-                'text-size': 12
-              }
-            });
-            this.map.addLayer({
-              id: 'usersLayer',
-              source: 'usersSource',
-              type: 'symbol',
-              filter: ['!', ['has', 'point_count']],
-              layout: {
-                'text-field': 'P',
-                'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
-                'text-size': 14
-              },
-              paint: {
-                'text-color': '#0dea18',
-                'text-halo-color': '#212121',
-                'text-halo-width': 1
-              }
-            });
-            this.map.addLayer({
-              id: 'usersLayerClusters',
-              type: 'circle',
-              source: 'usersSource',
-              filter: ['has', 'point_count'],
-              paint: {
-                'circle-color': '#212121',
-                'circle-radius': [
-                  'step',
-                  ['get', 'point_count'],
-                  20,
-                  100,
-                  30,
-                  750,
-                  40
-                ],
-                'circle-stroke-color': this.colors[0],
-                'circle-stroke-width': 3
-              }
-            });
-            this.map.addLayer({
-              id: 'usersLayerClusterCount',
-              type: 'symbol',
-              source: 'usersSource',
-              filter: ['has', 'point_count'],
-              layout: {
-                'text-field': '{point_count_abbreviated}',
-                'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
-                'text-size': 12
-              },
-              paint: {
-                'text-color': '#0dea18',
-                'text-halo-color': '#ffffff',
-                'text-halo-width': 1
-              }
-            });
-
-            this.parkService.usersCacheFiltered.pipe(untilDestroyed(this))
-              .subscribe((users: Array<User>) => {
-                this.updateUsersSource(users);
-              });
-            this.parkService.ownUnitsCacheFiltered.pipe(untilDestroyed(this))
-              .subscribe((units: Array<Unit>) => {
-                this.ownUnitsSource.setData(this.getUnitsGeoJsonSource(units));
-              });
-            this.parkService.ownUnitsInParkCacheFiltered.pipe(untilDestroyed(this))
-              .subscribe((units: Array<Unit>) => {
-                this.ownUnitsInParkSource.setData(this.getUnitsGeoJsonSource(units));
-                // console.log('ownUnitsInParkSource: ', this.ownUnitsInParkSource
-                //   ._data.features.length);
-              });
-            this.parkService.ownUnitsNotPaidCacheFiltered.pipe(untilDestroyed(this))
-              .subscribe((units: Array<Unit>) => {
-                this.ownUnitsNotPaidSource.setData(this.getUnitsGeoJsonSource(units));
-              });
-            this.parkService.ownUnitsNotEnabledCacheFiltered.pipe(untilDestroyed(this))
-              .subscribe((units: Array<Unit>) => {
-                this.ownUnitsNotEnabledSource.setData(this.getUnitsGeoJsonSource(units));
-              });
-            this.parkService.unitsCacheFiltered.pipe(untilDestroyed(this))
-              .subscribe((units: Array<Unit>) => {
-                this.unitsSource.setData(this.getUnitsGeoJsonSource(units));
-              });
-            this.parkService.unitsInParkCacheFiltered.pipe(untilDestroyed(this))
-              .subscribe((units: Array<Unit>) => {
-                // this.unitsInParkSource.setData(this.getUnitsGeoJsonSource(units));
-                // if (units && units.length > 0) {
-                //   this.unitsInParkMarkers.forEach(m => {
-                //     m.remove();
-                //   });
-                //   this.unitsInParkMarkers.clear();
-                //   this.unitsInParkMarkers = this.popupService.createUnitsInParkMarkers(units);
-                //   this.unitsInParkMarkers.forEach(m => {
-                //     m.addTo(this.map);
-                //   });
-                // }
-              });
-
-            this.userService.currentUser.pipe(untilDestroyed(this))
-              .subscribe(user => {
-                this.currentUser = user;
-                // this.ownUnitsSource.setData(new FCollModel.FeatureCollection(new Array<GeoJson>()));
-                this.parkService.ownUnitsSourcesRebuild(this.viewportMultiPolygons);
-                // this.parkService.loadDataOnMoveEnd(this.viewportMultiPolygons);
-                // Adding popup, user's marker and user's geocode
-                try {
-                  if (this.userMarker) {
-                    this.userMarker.remove();
-                  }
-                  if (user.location) {
-                    this.userMarker = this.popupService.createUserMarker(this.userMarker);
-                    this.userMarker.addTo(this.map);
-                    this.getGeocodeByPoint(this.currentUser.location).pipe(first(),
-                      untilDestroyed(this)).subscribe((geoCode: GeoCode) => {
-                      this.userGeoCode = geoCode;
-                    });
-                  }
-                } catch (e) {
-                  console.log(e);
-                }
-              });
+            this.mapSourcesTune();
           });
           this.popupService.tunePopup(this.map, 'ownUnitsLayer',
             'ownUnitsLayerClusters', 'ownUnitsSource');
@@ -733,14 +148,51 @@ export class MapService implements OnInit, OnDestroy {
             'ownUnitsNotEnabledLayerClusters', 'ownUnitsNotEnabledSource');
           this.popupService.tunePopup(this.map, 'unitsLayer',
             'unitsLayerClusters', 'unitsSource');
-          this.popupService.tunePopup(this.map, 'unitsInParkLayer',
-            'unitsInParkLayerClusters', 'unitsInParkSource');
           this.popupService.tunePopup(this.map, 'usersLayer',
             'usersLayerClusters', 'usersSource');
           this.navigatorCheck();
         }, 10);
       }
     });
+
+    this.parkService.usersCacheFiltered.pipe(untilDestroyed(this))
+      .subscribe((users: Array<User>) => {
+        if (this.usersSource) {
+          this.updateUsersSource(users);
+        }
+      });
+    this.parkService.ownUnitsCacheFiltered.pipe(untilDestroyed(this))
+      .subscribe((units: Array<Unit>) => {
+        if (this.ownUnitsSource) {
+          this.ownUnitsSource.setData(this.getUnitsGeoJsonSource(units));
+        }
+      });
+    this.parkService.ownUnitsInParkCacheFiltered.pipe(untilDestroyed(this))
+      .subscribe((units: Array<Unit>) => {
+        if (this.ownUnitsInParkSource) {
+          this.ownUnitsInParkSource.setData(this.getUnitsGeoJsonSource(units));
+        }
+        // console.log('ownUnitsInParkSource: ', this.ownUnitsInParkSource
+        //   ._data.features.length);
+      });
+    this.parkService.ownUnitsNotPaidCacheFiltered.pipe(untilDestroyed(this))
+      .subscribe((units: Array<Unit>) => {
+        if (this.ownUnitsNotPaidSource) {
+          this.ownUnitsNotPaidSource.setData(this.getUnitsGeoJsonSource(units));
+        }
+      });
+    this.parkService.ownUnitsNotEnabledCacheFiltered.pipe(untilDestroyed(this))
+      .subscribe((units: Array<Unit>) => {
+        if (this.ownUnitsNotEnabledSource) {
+          this.ownUnitsNotEnabledSource.setData(this.getUnitsGeoJsonSource(units));
+        }
+      });
+    this.parkService.unitsCacheFiltered.pipe(untilDestroyed(this))
+      .subscribe((units: Array<Unit>) => {
+        if (this.unitsSource) {
+          this.unitsSource.setData(this.getUnitsGeoJsonSource(units));
+        }
+      });
   }
 
   private navigatorCheck() {
@@ -917,6 +369,7 @@ export class MapService implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
+    console.log('mapService destoyed!');
   }
 
   getCurrentViewportFromMap() {
@@ -1028,7 +481,6 @@ export class MapService implements OnInit, OnDestroy {
         us.location.geometry.coordinates,
         us.id, {enabled: us.enabled}));
     });
-    // console.log('unitsCacheFiltered.length: \n' + this.unitsCache_.length);
     this.usersSource.setData(new FCollModel.FeatureCollection(tempArr));
   }
 
@@ -1049,6 +501,481 @@ export class MapService implements OnInit, OnDestroy {
   refreshData() {
     if (this.viewportMultiPolygons) {
       this.parkService.loadDataOnMoveEnd(this.viewportMultiPolygons, true);
+    }
+  }
+
+  mapSourcesTune() {
+    if (!this.isMapLoaded) {
+      /// register sources
+      this.map.addSource('ownUnitsSource', {
+        type: 'geojson',
+        data: {
+          type: 'FeatureCollection',
+          features: []
+        },
+        cluster: true,
+        clusterMaxZoom: 8, // Max zoom to cluster points on
+        clusterRadius: 50
+      });
+      this.map.addSource('ownUnitsInParkSource', {
+        type: 'geojson',
+        data: {
+          type: 'FeatureCollection',
+          features: []
+        },
+        cluster: false,
+        clusterMaxZoom: 8, // Max zoom to cluster points on
+        clusterRadius: 50
+      });
+      this.map.addSource('ownUnitsNotPaidSource', {
+        type: 'geojson',
+        data: {
+          type: 'FeatureCollection',
+          features: []
+        },
+        cluster: true,
+        clusterMaxZoom: 8, // Max zoom to cluster points on
+        clusterRadius: 50
+      });
+      this.map.addSource('ownUnitsNotEnabledSource', {
+        type: 'geojson',
+        data: {
+          type: 'FeatureCollection',
+          features: []
+        },
+        cluster: true,
+        clusterMaxZoom: 8, // Max zoom to cluster points on
+        clusterRadius: 50
+      });
+      this.map.addSource('usersSource', {
+        type: 'geojson',
+        data: {
+          type: 'FeatureCollection',
+          features: []
+        },
+        cluster: true,
+        clusterMaxZoom: 8, // Max zoom to cluster points on
+        clusterRadius: 50
+      });
+      this.map.addSource('unitsSource', {
+        type: 'geojson',
+        data: {
+          type: 'FeatureCollection',
+          features: []
+        },
+        cluster: true,
+        clusterMaxZoom: 8, // Max zoom to cluster points on
+        clusterRadius: 50
+      });
+      this.map.addSource('viewportSource', {
+        type: 'geojson',
+        data: {
+          type: 'Feature',
+          geometry: {
+            type: 'MultiPolygon',
+            coordinates: [[[]]]
+          },
+          properties: {}
+        }
+      });
+      this.map.addSource('queryViewportSource', {
+        type: 'geojson',
+        data: {
+          type: 'Feature',
+          geometry: {
+            type: 'MultiPolygon',
+            coordinates: [[[]]]
+          },
+          properties: {}
+        }
+      });
+
+      /// get source
+      this.ownUnitsSource = this.map.getSource('ownUnitsSource');
+      this.ownUnitsInParkSource = this.map.getSource('ownUnitsInParkSource');
+      this.ownUnitsNotPaidSource = this.map.getSource('ownUnitsNotPaidSource');
+      this.ownUnitsNotEnabledSource = this.map.getSource('ownUnitsNotEnabledSource');
+      this.usersSource = this.map.getSource('usersSource');
+      this.unitsSource = this.map.getSource('unitsSource');
+      this.viewportSource = this.map.getSource('viewportSource');
+      this.queryViewportSource = this.map.getSource('queryViewportSource');
+
+      // create map layers with realtime data
+      this.map.addLayer({
+        id: 'viewportLayer',
+        source: 'viewportSource',
+        type: 'fill',
+        layout: {},
+        paint: {
+          'fill-color': '#088',
+          'fill-opacity': 0.5
+        }
+      });
+      this.map.addLayer({
+        id: 'queryViewportLayer',
+        source: 'queryViewportSource',
+        type: 'fill',
+        layout: {},
+        paint: {
+          'fill-color': 'red',
+          'fill-opacity': 0.5
+        }
+      });
+      // add markers
+      this.map.addLayer({
+        id: 'ownUnitsLayer',
+        source: 'ownUnitsSource',
+        type: 'circle',
+        filter: ['!', ['has', 'point_count']],
+        paint: {
+          'circle-color': ['case',
+            ['case',
+              ['has', 'paid'], ['get', 'paid'],
+              false], this.colors[1],
+            this.colors[2]],
+          'circle-radius': 4,
+          'circle-stroke-width': 2,
+          'circle-stroke-color': this.colors[0]
+        }
+      });
+      this.map.addLayer({
+        id: 'ownUnitsLayerClusters',
+        type: 'circle',
+        source: 'ownUnitsSource',
+        filter: ['has', 'point_count'],
+        paint: {
+          'circle-color': [
+            'step',
+            ['get', 'point_count'],
+            '#FBDC2E',
+            100,
+            '#FBC02D',
+            750,
+            '#FBAF30'
+          ],
+          'circle-radius': [
+            'step',
+            ['get', 'point_count'],
+            20,
+            100,
+            30,
+            750,
+            40
+          ],
+          'circle-stroke-color': this.colors[0],
+          'circle-stroke-width': 3
+        }
+      });
+      this.map.addLayer({
+        id: 'ownUnitsLayerClusterCount',
+        type: 'symbol',
+        source: 'ownUnitsSource',
+        filter: ['has', 'point_count'],
+        layout: {
+          'text-field': '{point_count_abbreviated}',
+          'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
+          'text-size': 12
+        }
+      });
+      this.map.addLayer({
+        id: 'ownUnitsInParkLayer',
+        source: 'ownUnitsInParkSource',
+        type: 'circle',
+        filter: ['!', ['has', 'point_count']],
+        layout: {
+          'visibility': 'none'
+        },
+        paint: {
+          'circle-color': ['case',
+            ['case',
+              ['has', 'paid'], ['get', 'paid'],
+              false], this.colors[1],
+            this.colors[2]],
+          'circle-radius': 4,
+          'circle-stroke-width': 2,
+          'circle-stroke-color': this.colors[0]
+        }
+      });
+      this.map.addLayer({
+        id: 'ownUnitsInParkLayerClusters',
+        type: 'circle',
+        source: 'ownUnitsInParkSource',
+        filter: ['has', 'point_count'],
+        paint: {
+          'circle-color': [
+            'step',
+            ['get', 'point_count'],
+            '#FBDC2E',
+            100,
+            '#FBC02D',
+            750,
+            '#FBAF30'
+          ],
+          'circle-radius': [
+            'step',
+            ['get', 'point_count'],
+            20,
+            100,
+            30,
+            750,
+            40
+          ],
+          'circle-stroke-color': this.colors[0],
+          'circle-stroke-width': 3
+        }
+      });
+      this.map.addLayer({
+        id: 'ownUnitsInParkLayerClusterCount',
+        type: 'symbol',
+        source: 'ownUnitsInParkSource',
+        filter: ['has', 'point_count'],
+        layout: {
+          'text-field': '{point_count_abbreviated}',
+          'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
+          'text-size': 12
+        }
+      });
+      this.map.addLayer({
+        id: 'ownUnitsNotPaidLayer',
+        source: 'ownUnitsNotPaidSource',
+        type: 'circle',
+        filter: ['!', ['has', 'point_count']],
+        paint: {
+          'circle-color': ['case',
+            ['case',
+              ['has', 'paid'], ['get', 'paid'],
+              false], this.colors[1],
+            this.colors[4]],
+          'circle-radius': 4,
+          'circle-stroke-width': 2,
+          'circle-stroke-color': this.colors[0]
+        }
+      });
+      this.map.addLayer({
+        id: 'ownUnitsNotPaidLayerClusters',
+        type: 'circle',
+        source: 'ownUnitsNotPaidSource',
+        filter: ['has', 'point_count'],
+        paint: {
+          'circle-color': [
+            'step',
+            ['get', 'point_count'],
+            '#fa1323',
+            100,
+            '#e61120',
+            500,
+            '#a80c17'
+          ],
+          'circle-radius': [
+            'step',
+            ['get', 'point_count'],
+            20,
+            100,
+            30,
+            750,
+            40
+          ],
+          'circle-stroke-color': this.colors[0],
+          'circle-stroke-width': 3
+        }
+      });
+      this.map.addLayer({
+        id: 'ownUnitsNotPaidLayerClusterCount',
+        type: 'symbol',
+        source: 'ownUnitsNotPaidSource',
+        filter: ['has', 'point_count'],
+        layout: {
+          'text-field': '{point_count_abbreviated}',
+          'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
+          'text-size': 12
+        }
+      });
+      this.map.addLayer({
+        id: 'ownUnitsNotEnabledLayer',
+        source: 'ownUnitsNotEnabledSource',
+        type: 'circle',
+        filter: ['!', ['has', 'point_count']],
+        paint: {
+          'circle-color': ['case',
+            ['case',
+              ['has', 'enabled'], ['get', 'enabled'],
+              false], this.colors[1],
+            this.colors[2]],
+          'circle-radius': 4,
+          'circle-stroke-width': 2,
+          'circle-stroke-color': this.colors[0]
+        }
+      });
+      this.map.addLayer({
+        id: 'ownUnitsNotEnabledLayerClusters',
+        type: 'circle',
+        source: 'ownUnitsNotEnabledSource',
+        filter: ['has', 'point_count'],
+        paint: {
+          'circle-color': [
+            'step',
+            ['get', 'point_count'],
+            '#c2c3c2',
+            100,
+            '#aaabaa',
+            500,
+            '#7c7d7c'
+          ],
+          'circle-radius': [
+            'step',
+            ['get', 'point_count'],
+            20,
+            100,
+            30,
+            750,
+            40
+          ],
+          'circle-stroke-color': this.colors[0],
+          'circle-stroke-width': 3
+        }
+      });
+      this.map.addLayer({
+        id: 'ownUnitsNotEnabledLayerClusterCount',
+        type: 'symbol',
+        source: 'ownUnitsNotEnabledSource',
+        filter: ['has', 'point_count'],
+        layout: {
+          'text-field': '{point_count_abbreviated}',
+          'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
+          'text-size': 12
+        }
+      });
+      this.map.addLayer({
+        id: 'unitsLayer',
+        source: 'unitsSource',
+        type: 'circle',
+        filter: ['!', ['has', 'point_count']],
+        paint: {
+          'circle-color': ['case',
+            ['case',
+              ['has', 'paid'], ['get', 'paid'],
+              false], this.colors[3],
+            this.colors[2]],
+          'circle-radius': 4,
+          'circle-stroke-width': 2,
+          'circle-stroke-color': this.colors[0]
+        }
+      });
+      this.map.addLayer({
+        id: 'unitsLayerClusters',
+        type: 'circle',
+        source: 'unitsSource',
+        filter: ['has', 'point_count'],
+        paint: {
+          'circle-color': [
+            'step',
+            ['get', 'point_count'],
+            '#0dea18',
+            100,
+            '#0bc714',
+            750,
+            '#099f10'
+          ],
+          'circle-radius': [
+            'step',
+            ['get', 'point_count'],
+            20,
+            100,
+            30,
+            750,
+            40
+          ],
+          'circle-stroke-color': this.colors[0],
+          'circle-stroke-width': 3
+        }
+      });
+      this.map.addLayer({
+        id: 'unitsLayerClusterCount',
+        type: 'symbol',
+        source: 'unitsSource',
+        filter: ['has', 'point_count'],
+        layout: {
+          'text-field': '{point_count_abbreviated}',
+          'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
+          'text-size': 12
+        }
+      });
+      this.map.addLayer({
+        id: 'usersLayer',
+        source: 'usersSource',
+        type: 'symbol',
+        filter: ['!', ['has', 'point_count']],
+        layout: {
+          'text-field': 'P',
+          'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
+          'text-size': 14
+        },
+        paint: {
+          'text-color': '#0dea18',
+          'text-halo-color': '#212121',
+          'text-halo-width': 1
+        }
+      });
+      this.map.addLayer({
+        id: 'usersLayerClusters',
+        type: 'circle',
+        source: 'usersSource',
+        filter: ['has', 'point_count'],
+        paint: {
+          'circle-color': '#212121',
+          'circle-radius': [
+            'step',
+            ['get', 'point_count'],
+            20,
+            100,
+            30,
+            750,
+            40
+          ],
+          'circle-stroke-color': this.colors[0],
+          'circle-stroke-width': 3
+        }
+      });
+      this.map.addLayer({
+        id: 'usersLayerClusterCount',
+        type: 'symbol',
+        source: 'usersSource',
+        filter: ['has', 'point_count'],
+        layout: {
+          'text-field': '{point_count_abbreviated}',
+          'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
+          'text-size': 12
+        },
+        paint: {
+          'text-color': '#0dea18',
+          'text-halo-color': '#ffffff',
+          'text-halo-width': 1
+        }
+      });
+      this.isMapLoaded = true;
+    }
+    if (!this.currUserSubscr || this.currUserSubscr.closed) {
+      this.currUserSubscr = this.userService.currentUser.pipe(untilDestroyed(this))
+        .subscribe(user => {
+          this.currentUser = user;
+          this.parkService.ownUnitsSourcesRebuild(this.viewportMultiPolygons);
+          // Adding popup, user's marker and user's geocode
+          try {
+            if (this.userMarker) {
+              this.userMarker.remove();
+            }
+            if (user.location) {
+              this.userMarker = this.popupService.createUserMarker(this.userMarker);
+              this.userMarker.addTo(this.map);
+              this.getGeocodeByPoint(this.currentUser.location).pipe(first(),
+                untilDestroyed(this)).subscribe((geoCode: GeoCode) => {
+                this.userGeoCode = geoCode;
+              });
+            }
+          } catch (e) {
+            console.log(e);
+          }
+        });
     }
   }
 

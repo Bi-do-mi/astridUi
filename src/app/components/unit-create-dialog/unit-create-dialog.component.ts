@@ -25,6 +25,7 @@ import {Moment} from 'moment';
 import {MatDatepickerInputEvent} from '@angular/material/datepicker';
 import {DateTimeFormatter, ZonedDateTime} from '@js-joda/core';
 import {environment} from '../../../environments/environment.prod';
+import {UnitImage} from '../../_model/UnitImage';
 
 @Component({
   selector: 'app-unit-create',
@@ -46,6 +47,7 @@ export class UnitCreateDialogComponent implements OnInit, AfterViewInit, OnDestr
   filteredModels: string[];
   galleryOptions: NgxGalleryOptions[];
   galleryImages: NgxGalleryImage[] = [];
+  tempUnitImages: UnitImage[];
   @ViewChild('stepper', {static: false}) stepper: MatStepper;
   linear = true;
   unitGeoCode: GeoCode;
@@ -55,6 +57,7 @@ export class UnitCreateDialogComponent implements OnInit, AfterViewInit, OnDestr
     Breakpoints.Handset).pipe(map(result => result.matches));
   minDate: Moment;
   maxDate: Moment;
+  public inputValue = '';
 
   constructor(
     private breakpointObserver: BreakpointObserver,
@@ -79,6 +82,7 @@ export class UnitCreateDialogComponent implements OnInit, AfterViewInit, OnDestr
     this.data.unit.workEnd ? (this.workEndDateCtl.setValue(
       moment(this.data.unit.workEnd.toString()))) :
       this.workEndDateCtl.setValue(moment());
+    this.tempUnitImages = [...this.data.unit.images];
   }
 
   ngAfterViewInit() {
@@ -154,7 +158,8 @@ export class UnitCreateDialogComponent implements OnInit, AfterViewInit, OnDestr
         imageAnimation: NgxGalleryAnimation.Slide,
         previewInfinityMove: true,
         imageInfinityMove: true,
-        previewCloseOnEsc: true
+        previewCloseOnEsc: true,
+        lazyLoading: false
       },
       {
         breakpoint: 800,
@@ -266,6 +271,7 @@ export class UnitCreateDialogComponent implements OnInit, AfterViewInit, OnDestr
   onFourth() {
     this.submitted = true;
     this.loading = true;
+    this.data.unit.images = [...this.tempUnitImages];
     if (this.currentUser.units.includes(this.data.unit)) {
       this.currentUser.units.forEach(u => {
         if (u.id === this.data.unit.id) {
@@ -323,15 +329,16 @@ export class UnitCreateDialogComponent implements OnInit, AfterViewInit, OnDestr
     }
     this.ngxPicaService.resizeImages(files, 1500, 1000,
       {aspectRatio: {keepAspectRatio: true, forceMinDimensions: true}})
-      .pipe(untilDestroyed(this), finalize(() => {
+      .pipe(first(), untilDestroyed(this), finalize(() => {
         this.loading = false;
+        this.inputValue = '';
       }))
       .subscribe((imageResized?: File) => {
           const reader: FileReader = new FileReader();
           reader.addEventListener('load', (evnt: any) => {
-            if (this.data.unit.images.length < 4) {
-              this.data.unit.images.push({
-                filename: this.data.unit.images.length + 1 + imageResized.name.slice(
+            if (this.tempUnitImages.length < 4) {
+              this.tempUnitImages.push({
+                filename: this.tempUnitImages.length + 1 + imageResized.name.slice(
                   imageResized.name.lastIndexOf('.')),
                 filetype: imageResized.type,
                 value: reader.result.toString().split(',')[1]
@@ -340,11 +347,14 @@ export class UnitCreateDialogComponent implements OnInit, AfterViewInit, OnDestr
 
             if (this.galleryImages.length < 4) {
               const f: File = evnt.target.result;
-              this.galleryImages.push({
+              const tempGallery = [... this.galleryImages];
+              this.galleryImages = [];
+              tempGallery.push({
                 small: f,
                 medium: f,
                 big: f
               });
+              this.galleryImages = [... tempGallery];
             }
           }, false);
           reader.readAsDataURL(imageResized);
@@ -366,8 +376,10 @@ export class UnitCreateDialogComponent implements OnInit, AfterViewInit, OnDestr
   }
 
   deleteImage(ind: number) {
-    this.galleryImages.splice(ind, 1);
-    this.data.unit.images.splice(ind, 1);
+    this.tempUnitImages.splice(ind, 1);
+    const tempGallery = [... this.galleryImages];
+    tempGallery.splice(ind, 1);
+    this.galleryImages = [... tempGallery];
   }
 
   onParkUnit() {
@@ -382,4 +394,5 @@ export class UnitCreateDialogComponent implements OnInit, AfterViewInit, OnDestr
   setUnitWorkEndDate(type: string, event: MatDatepickerInputEvent<Moment>) {
     this.data.unit.workEnd = ZonedDateTime.parse(event.value.toISOString(true));
   }
+
 }

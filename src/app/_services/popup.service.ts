@@ -17,6 +17,8 @@ import {SidenavService} from './sidenav.service';
 import {GeoJson} from '../_model/MarkerSourceModel';
 import {environment} from '../../environments/environment.prod';
 import * as FCollModel from '../_model/MarkerSourceModel';
+import {BehaviorSubject, Subject} from 'rxjs';
+import {UnitsInParkMarkerContainerComponent} from '../components/units-in-park-marker-container/units-in-park-marker-container.component';
 
 @Injectable({
   providedIn: 'root'
@@ -28,7 +30,6 @@ export class PopupService implements OnInit, OnDestroy {
   renderer: Renderer2;
   isPopupOpened = false;
   private isMouseOnPopup = false;
-  isMouseOnUnitsInPark = false;
   private unitPopup = new mapboxgl.Popup({
     closeButton: false, closeOnClick: false, offset: 10, maxWidth: '300'
   });
@@ -58,7 +59,6 @@ export class PopupService implements OnInit, OnDestroy {
 
   tunePopup(map: mapboxgl.Map, layer_?: string, clusterLayer?: string, sourceId?: string) {
     let popupTimer: any;
-    let unitsInParkTimer: any;
     let unit: Unit;
     let user: User;
     map.on('mouseenter', layer_, (e) => {
@@ -83,14 +83,6 @@ export class PopupService implements OnInit, OnDestroy {
         this.setUnitPopupContent(unit, map);
       }
 
-      // unitsInParkLayer
-      if (layer_ === 'unitsInParkLayer') {
-        clearTimeout(unitsInParkTimer);
-        this.isMouseOnUnitsInPark = true;
-        unit = this.parkService.unitsInPark.get(<number> e.features[0].id);
-        this.setUnitPopupContent(unit, map);
-      }
-
       // usersLayer
       if (layer_ === 'usersLayer') {
         user = this.usersCache_.filter((u, i, arr) => {
@@ -99,6 +91,11 @@ export class PopupService implements OnInit, OnDestroy {
           }
         })[0];
         if (user) {
+          if (user.image && (!user.image.value)) {
+            this.parkService.loadUsersImgFromServer(user).subscribe((data: User) => {
+              user.image = data.image;
+            });
+          }
           const usersPopupEl: NgElement & WithProperties<UsersPopupComponent> =
             this.renderer.createElement('users-popup') as any;
           usersPopupEl.user = user;
@@ -110,23 +107,12 @@ export class PopupService implements OnInit, OnDestroy {
           usersPopupEl.addEventListener('click', () => {
             this.isMouseOnPopup = false;
             this.removeUnitsPopup();
-            this.openUserInfoCardDialog(user);
-            this.clearUnitsInParkSourse(map);
+            // this.openUserInfoCardDialog(user);
+            // this.clearUnitsInParkSourse(map);
           });
           this.unitPopup.setDOMContent(usersPopupEl).on('open', () => {
             this.isPopupOpened = true;
           });
-          if (user.units && user.units.length > 0) {
-            let arr = new Array<Unit>();
-            user.units.forEach((un: Unit) => {
-              if (this.parkService.unitsInPark.has(un.id)) {
-                arr.push(un);
-              }
-            });
-            arr = arr.slice(0, 5);
-            (<any>map.getSource('unitsInParkSource'))
-              .setData(this.getUnitsGeoJsonSource(arr, user));
-          }
         }
       }
 
@@ -160,27 +146,16 @@ export class PopupService implements OnInit, OnDestroy {
 
     map.on('mouseleave', layer_, (e) => {
       map.getCanvas().style.cursor = '';
-      if (layer_ === 'unitsInParkLayer') {
-        this.isMouseOnUnitsInPark = false;
-      }
-      if (!this.unitPopup.isOpen() && (layer_ !== 'unitsInParkLayer')) {
+      if (!this.unitPopup.isOpen()) {
         clearTimeout(popupTimer);
-        this.clearUnitsInParkSourse(map);
       }
       if (this.unitPopup.isOpen()) {
-        unitsInParkTimer = setTimeout(() => {
-          // clearTimeout(timer);
-          if (!this.isMouseOnPopup && !this.isMouseOnUnitsInPark) {
+        setTimeout(() => {
+          clearTimeout(popupTimer);
+          if (!this.isMouseOnPopup) {
             this.unitPopup.remove();
-            this.clearUnitsInParkSourse(map);
           }
-        }, (layer_ === 'unitsInParkLayer') ? 500 : 500);
-        // setTimeout(() => {
-        //   if (!this.isMouseOnPopup && !this.isMouseOnUnitsInPark) {
-        //     clearTimeout(timer);
-        //     this.clearUnitsInParkSourse(map);
-        //   }
-        // }, 500);
+        }, 500);
       }
     });
 
@@ -305,13 +280,11 @@ export class PopupService implements OnInit, OnDestroy {
       unitsPopupEl.addEventListener('mouseleave', () => {
         this.isMouseOnPopup = false;
         this.removeUnitsPopup();
-        this.clearUnitsInParkSourse(map);
       });
       unitsPopupEl.addEventListener('click', () => {
         this.isMouseOnPopup = false;
         this.removeUnitsPopup();
         this.openUnitInfoCardDialog(unit);
-        this.clearUnitsInParkSourse(map);
       });
       this.unitPopup.setDOMContent(unitsPopupEl).on('open', () => {
         this.isPopupOpened = true;
@@ -333,47 +306,6 @@ export class PopupService implements OnInit, OnDestroy {
     }
   }
 
-  createUnitsInParkMarkers(units: Array<Unit>): Map<Number, Marker> {
-    const unitsByUsers = new Map<Number, Array<Unit>>();
-    const usersElements = new Map<Number, any>();
-    const unitsMarkers = new Map<Number, Marker>();
-    // console.log('unitsByUsers: ', unitsByUsers);
-    units.forEach(u => {
-      if (!unitsByUsers.has(u.ownerId)) {
-        unitsByUsers.set(u.ownerId, new Array<Unit>());
-      }
-      unitsByUsers.get(u.ownerId).push(u);
-      if (!usersElements.has(u.ownerId)) {
-        const userElement: NgElement = this.renderer.createElement('div');
-        // userElement.on('mouseenter', (e) => {
-        //
-        // });
-        // this.renderer.setStyle(userElement, 'backgroundColor', '#e61120');
-        // this.renderer.setStyle(userElement, 'float', 'left');
-        // this.renderer.setStyle(userElement, 'position', 'relative');
-        usersElements.set(u.ownerId, userElement);
-      }
-    });
-    unitsByUsers.forEach((unitsArray, key, map) => {
-      const l = unitsArray.length < 6 ? unitsArray.length : 5;
-      for (let i = 0; i < l; i++) {
-        const unitDiv = this.renderer.createElement('div');
-        this.renderer.setStyle(unitDiv, 'cursor', 'pointer');
-        this.renderer.setAttribute(unitDiv, 'class', 'unit_marker_in_park');
-        this.renderer.appendChild(usersElements.get(unitsArray[i].ownerId), unitDiv);
-        // usersElements.get(u.ownerId).innerHTML = markerDiv;
-      }
-    });
-    usersElements.forEach((el, key, map) => {
-      const marker = new Marker(el, {anchor: 'left', offset: [5, 0]});
-      const location = unitsByUsers.get(key)[0].location.geometry.coordinates as number[];
-      marker.setLngLat([location[0], location[1]]);
-      unitsMarkers.set(key, marker);
-    });
-    // console.log('unitsMarkers: ', unitsMarkers);
-    return unitsMarkers;
-  }
-
   getUnitsGeoJsonSource(units: Array<Unit>, user: User) {
     const tempArr = new Array<GeoJson>();
     units.forEach((un, i, arr) => {
@@ -390,11 +322,6 @@ export class PopupService implements OnInit, OnDestroy {
       }
     });
     return new FCollModel.FeatureCollection(tempArr);
-  }
-
-  clearUnitsInParkSourse(map: mapboxgl.Map) {
-    (<any>map.getSource('unitsInParkSource'))
-      .setData(new FCollModel.FeatureCollection(new Array<GeoJson>()));
   }
 }
 
