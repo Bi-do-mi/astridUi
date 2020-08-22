@@ -14,16 +14,20 @@
           <h4>{{user.name}}</h4>
           <h6><b>{{user.username}}</b></h6>
           <div>тел.: {{user.phoneNumber}}</div>
+          <div><a href="#" (click)="showOnMap()">показать на карте</a> </div>
           <div>дата регистрации: {{user.registrationDate | dateToLocaleString | async}}</div>
           <div>был последний раз: {{user.lastVisit | dateToLocaleString | async}}</div>
         </div>
       </div>
 
       <div fxLayout="row wrap" fxLayoutAlign="space-between center">
-        <div fxLayout="row wrap" fxLayoutAlign="end center">
-          <button mat-raised-button="" class="m-2" (click)="onCancel()"
-                  color="accent" tabindex="-1">Закрыть
+        <div fxLayout="row wrap" fxLayoutAlign="end center" fxFlex="">
+          <button mat-raised-button="" class="m-2" (click)="showUnitsList()"
+                  tabindex="-1">Список техники
           </button>
+          <button mat-raised-button="" class="m-2" (click)="onCancel()"
+                           color="accent" tabindex="-1">Закрыть
+        </button>
         </div>
       </div>
     </div>

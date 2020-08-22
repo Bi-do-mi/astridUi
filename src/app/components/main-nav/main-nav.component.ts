@@ -27,6 +27,7 @@ import {UserInfoCardDialogComponent} from '../user-info-card-dialog/user-info-ca
 import {SearchComponent} from '../search/search.component';
 import {MatSidenav} from '@angular/material/sidenav';
 import {MatDialog} from '@angular/material/dialog';
+import {OpenParkListService} from '../../_services/open-park-list.service';
 
 @Component({
   selector: 'app-main-nav',
@@ -63,6 +64,7 @@ export class MainNavComponent implements OnInit, OnDestroy {
               private setLocationService: SetLocationCallService,
               private openUnitInfoService: OpenUnitInfoService,
               private openUserInfoService: OpenUserInfoService,
+              private openParkList: OpenParkListService,
               private injector: Injector) {
     // Convert `PopupComponent` to a custom element.
     const UnitsPopup = createCustomElement(UnitsPopupComponent, {injector});
@@ -113,6 +115,10 @@ export class MainNavComponent implements OnInit, OnDestroy {
     this.openUserInfoService.openUserInfo.pipe(untilDestroyed(this))
       .subscribe((data: { user: User }) => {
         this.openUserInfoCardDialog(data.user);
+      });
+    this.openParkList.openParkList.pipe(untilDestroyed(this))
+      .subscribe((data: { user: User }) => {
+        this.openUnitsMainListDialog(data.user);
       });
   }
 
@@ -231,11 +237,12 @@ export class MainNavComponent implements OnInit, OnDestroy {
     }
   }
 
-  openUnitsMainListDialog() {
+  openUnitsMainListDialog(user?: User) {
     this.sidenavService.closeAll();
     const dialogRef = this.dialog.open(UnitsMainListDialogComponent, {
       maxHeight: '100vh',
-      maxWidth: '100vw'
+      maxWidth: '100vw',
+      data: (user ? {user: user} : {user: User})
     });
     dialogRef.afterClosed().pipe(untilDestroyed(this)).subscribe(unit_ => {
       if (unit_) {

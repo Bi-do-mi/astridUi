@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {Component, Inject, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {Unit} from '../../_model/Unit';
 import {UserService} from '../../_services/user.service';
 import {MapService} from '../../_services/map.service';
@@ -9,12 +9,14 @@ import {UnitInfoCardDialogComponent} from '../unit-info-card-dialog/unit-info-ca
 import {UnitCreateDialogComponent} from '../unit-create-dialog/unit-create-dialog.component';
 import {MatPaginator} from '@angular/material/paginator';
 import {MatSort} from '@angular/material/sort';
-import {MatDialog, MatDialogRef} from '@angular/material/dialog';
+import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from '@angular/material/dialog';
 import {NgxGalleryAnimation, NgxGalleryImage, NgxGalleryOptions} from '@kolkov/ngx-gallery';
 import {ParkService} from '../../_services/park.service';
 import {finalize, first} from 'rxjs/operators';
 import {SnackBarService} from '../../_services/snack-bar.service';
 import {NgxSpinnerService} from 'ngx-spinner';
+import {User} from '../../_model/User';
+import {BehaviorSubject, Observable} from 'rxjs';
 
 
 @Component({
@@ -29,49 +31,37 @@ export class UnitsMainListDialogComponent implements OnInit, OnDestroy {
   columnsToDisplay = ['model'];
   galleryOptions: NgxGalleryOptions[];
   galleryImagesMap: Map<number, NgxGalleryImage[]>;
+  private userUnits$ = new BehaviorSubject<Unit[]>(new Array<Unit>());
+  userUnits = this.userUnits$.asObservable();
 
   constructor(
     private dialogRef: MatDialogRef<UnitsMainListDialogComponent>,
     private dialog: MatDialog,
     public userService: UserService,
+    @Inject(MAT_DIALOG_DATA) public data: { user: User },
     private mapServ: MapService,
     private parkService: ParkService,
     private spinner: NgxSpinnerService,
     private snackbarService: SnackBarService) {
+    // console.log('data: ', this.data.user);
+    if (this.data.user.units) {
+      this.userUnits$.next(this.data.user.units);
+    }
   }
 
   ngOnInit() {
-    this.dialogRef.disableClose = true;
+    this.galleryImagesMap = new Map();
+    // this.dialogRef.disableClose = true;
     this.dialogRef.backdropClick().pipe(untilDestroyed(this))
       .subscribe(_ => {
         this.onCancel();
       });
-    this.dataSource = new UnitDataSource(
-      this.userService.currentUserUnits, this.paginator, this.sort);
-    this.userService.currentUserUnits.pipe(untilDestroyed(this), first())
-      .subscribe(units => {
-        this.galleryImagesMap = new Map();
-        units.forEach(u => {
-          const galleryImages: NgxGalleryImage[] = [];
-          if (u.images.length > 0) {
-            u.images.forEach(i => {
-              const im = 'data:image/jpg;base64,' + i.value;
-              galleryImages.push({
-                small: im,
-                medium: im,
-                big: im
-              });
-            });
-          } else {
-            galleryImages.push({
-              small: null,
-              medium: null,
-              big: null
-            });
-          }
-          this.galleryImagesMap.set(u.id, galleryImages);
-        });
-      });
+    if (this.data.user.units) {
+      this.initSources(this.userUnits);
+    } else {
+      this.initSources(this.userService.currentUserUnits);
+    }
+
     this.galleryOptions = [
       {
         width: '150px',
@@ -104,9 +94,45 @@ export class UnitsMainListDialogComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
   }
 
+  initSources(units: Observable<Array<Unit>>) {
+    this.dataSource = new UnitDataSource(
+      units, this.paginator, this.sort);
+    units.pipe(untilDestroyed(this), first())
+      .subscribe(units_ => {
+        units_.forEach(u => {
+          let galleryImages: NgxGalleryImage[] = [];
+          this.galleryImagesMap.set(u.id, galleryImages);
+          if (u.images && u.images.length > 0) {
+            this.fillGallery(u, galleryImages);
+          }
+          if (u.images && u.images.length > 0 && (!u.images[0].value)) {
+            this.parkService.loadUnitImgFromServer(u).pipe(first())
+              .subscribe(un => {
+                u.images = [...un.images];
+                galleryImages = [];
+               this.fillGallery(u, galleryImages);
+                this.galleryImagesMap.set(u.id, galleryImages);
+              });
+          }
+        });
+      });
+  }
+
+  fillGallery(u: Unit, galleryImages: NgxGalleryImage[]) {
+    u.images.forEach(i => {
+      const im = 'data:image/jpg;base64,' + i.value;
+      galleryImages.push({
+        small: im,
+        medium: im,
+        big: im
+      });
+    });
+  }
+
   flyToUnit(unit: Unit) {
     this.onCancel();
     this.mapServ.flyTo(unit.location);
+    this.mapServ.markerIndication(unit.location);
   }
 
   onCancel(unit?: Unit): void {
@@ -118,7 +144,7 @@ export class UnitsMainListDialogComponent implements OnInit, OnDestroy {
       maxHeight: '100vh',
       maxWidth: '100vw',
       backdropClass: 'leanerBack1',
-      data: {unit, image: this.galleryImagesMap.get(unit.id)}
+      data: {unit}
     });
     unitInfoDialogRef.afterClosed().pipe(untilDestroyed(this)).subscribe(unit_ => {
       if (unit_) {

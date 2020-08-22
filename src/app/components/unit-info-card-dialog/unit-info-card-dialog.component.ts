@@ -14,6 +14,9 @@ import {Observable} from 'rxjs';
 import {ParkService} from '../../_services/park.service';
 import {HttpClient} from '@angular/common/http';
 import {DateDeserializerService} from '../../_services/date-deserializer.service';
+import {OpenUserInfoService} from '../../_services/open-user-info.service';
+import {UnitOptionModel} from '../unit-create-dialog/UnitOptions/UnitOptionModel';
+import {UNIT_OPTIONS_CONSTANTS} from '../../constants/UnitOptionsConstants';
 
 @Component({
   selector: 'app-unit-info-card-dialog',
@@ -30,6 +33,7 @@ export class UnitInfoCardDialogComponent implements OnInit, OnDestroy {
   public align1: string;
   public layout1: string;
   owner: User;
+  public measures: Map<string, string>;
 
   constructor(
     private breakpointObserver: BreakpointObserver,
@@ -38,6 +42,7 @@ export class UnitInfoCardDialogComponent implements OnInit, OnDestroy {
     private dialog: MatDialog,
     private userService: UserService,
     private openUnitInfoService: OpenUnitInfoService,
+    private openUserInfoService: OpenUserInfoService,
     private parkService: ParkService,
     private http: HttpClient,
     private dateDeserializer: DateDeserializerService) {
@@ -95,10 +100,21 @@ export class UnitInfoCardDialogComponent implements OnInit, OnDestroy {
         if (!this.owner) {
           this.http.put('/rest/search/get_owner', this.unit.ownerId)
             .pipe(first()).subscribe((u: User) => {
-              this.owner = this.dateDeserializer.date(u);
+            this.owner = this.dateDeserializer.date(u);
           });
         }
       });
+    if (this.unit.options && this.unit.options.length > 0) {
+      this.measures = new Map<string, string>();
+      this.unit.options.forEach(op => {
+        UNIT_OPTIONS_CONSTANTS.forEach((constOp) => {
+          if (constOp.key.replace(/\s+/g, '_').toLowerCase()
+            === op.label.replace(/\s+/g, '_').toLowerCase()) {
+            this.measures.set(op.label, constOp.measure);
+          }
+        });
+      });
+    }
   }
 
   onCancel(): void {
@@ -125,6 +141,13 @@ export class UnitInfoCardDialogComponent implements OnInit, OnDestroy {
         this.onCancel();
       }
     });
+  }
+
+  openUserInfoCard() {
+    this.onCancel();
+    setTimeout(() => {
+      this.openUserInfoService.open(this.owner);
+    }, 100);
   }
 
   ngOnDestroy() {

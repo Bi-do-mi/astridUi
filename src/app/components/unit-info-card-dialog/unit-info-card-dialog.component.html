@@ -29,16 +29,23 @@
           </div>
           <div *ngIf="unit.workEnd">&bull; Дата окончания работ: {{unit.workEnd | dateToLocaleString | async}}
           </div>
-          <div>&bull; Количество опций: {{unit.options.length}}</div>
+          <div class="mt-4" *ngIf="unit?.options?.length > 0">
+            <span>ТЕХНИЧЕСКИЕ ХАРАКТЕРИСТИКИ:</span>
+            <div class="divcolor"></div>
+            <div *ngFor="let op of unit.options">
+              <div>&bull; {{op.label}}: {{op.value}} {{measures.get(op.label)}}</div>
+            </div>
+          </div>
           <mat-spinner class="mat-accent mt-4" [diameter]="20" *ngIf="!isPrivate && !owner"></mat-spinner>
           <div class="mt-4" *ngIf="!isPrivate && owner">
             <span>КОНТАКТЫ:</span>
             <div class="divcolor"></div>
-            <div>&bull; Владелец: {{owner?.name}}</div>
+            <div>&bull; Владелец: <a href="#" (click)="openUserInfoCard()">{{owner?.name}}</a></div>
             <div>&bull; Email: {{owner?.username}}</div>
             <div>&bull; Телефон: {{owner?.phoneNumber}}</div>
             <div>&bull; Был последний раз:
-              {{owner?.lastVisit | dateToLocaleString | async}}</div>
+              {{owner?.lastVisit | dateToLocaleString | async}}
+            </div>
           </div>
         </div>
       </div>

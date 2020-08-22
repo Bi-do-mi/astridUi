@@ -88,7 +88,7 @@
         <div fxLayout="column" fxLayoutAlign="center stretch">
           <mat-spinner class="mat-accent" [diameter]="40"
                        *ngIf="loading && galleryImages?.length == 0"></mat-spinner>
-          <ngx-gallery [options]="galleryOptions" *ngIf="galleryImages.length > 0"
+          <ngx-gallery [options]="galleryOptions" *ngIf="galleryImages?.length > 0"
                        [images]="galleryImages"
           ></ngx-gallery>
           <div>

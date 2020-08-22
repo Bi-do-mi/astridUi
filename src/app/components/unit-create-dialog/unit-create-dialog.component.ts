@@ -275,6 +275,7 @@ export class UnitCreateDialogComponent implements OnInit, AfterViewInit, OnDestr
     if (this.currentUser.units.includes(this.data.unit)) {
       this.currentUser.units.forEach(u => {
         if (u.id === this.data.unit.id) {
+          console.log(this.data.unit.options);
           this.parkService.updateUnit(this.data.unit).pipe(first(),
             untilDestroyed(this), finalize(() => {
               this.loading = false;
@@ -365,7 +366,7 @@ export class UnitCreateDialogComponent implements OnInit, AfterViewInit, OnDestr
         });
   }
 
-  validateFile(name: String) {
+  validateFile(name: string) {
     const ext = name.substring(name.lastIndexOf('.') + 1);
     if (ext.toLowerCase() === 'jpg' ||
       ext.toLowerCase() === 'jpeg') {
