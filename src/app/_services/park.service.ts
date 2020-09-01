@@ -49,7 +49,6 @@ export class ParkService implements OnDestroy {
   // Empty Users
   private emptyUsersCacheFiltered$ = new BehaviorSubject<Array<User>>(new Array<User>());
   emptyUsersCacheFiltered = this.emptyUsersCacheFiltered$.asObservable();
-  private emptyUsers = new Map<number, User>();
   private currentUser: User;
 
   constructor(

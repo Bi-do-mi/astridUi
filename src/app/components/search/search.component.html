@@ -1,46 +1,57 @@
 <div class="searchDiv" fxLayout="column">
-  <mat-radio-group aria-label="Select a search option"
-                   [(ngModel)]="searchService.searchUnits">
-    <mat-radio-button [value]="true"
-                      [checked]="searchService.searchUnits">Искать технику
-    </mat-radio-button>
-    <br>
-    <mat-radio-button [value]="false">Искать владельцев</mat-radio-button>
-  </mat-radio-group>
   <div>
-    <form>
-      <!--поиск по модели-->
-      <mat-form-field fxFlex *ngIf="searchService.searchUnits">
+    <form (submit)="search()">
+      <!--общий поиск-->
+      <mat-form-field fxFlex>
         <div fxLayout="row" fxLayoutAlign="space-between end">
-          <input type="text" placeholder="Искать по модели" aria-label="Model"
-                 matInput [formControl]="modelCtrl" [matAutocomplete]="modelCmplt">
-          <!--<button class="button-color"-->
-            <!--type="button" matTooltip="Искать" tabindex="-1"-->
-            <!--matTooltipPosition="above"-->
-            <!--mat-icon-button (click)="searchForUnits(modelCtrl.value)">-->
-            <!--<mat-icon aria-label="Search icon">search</mat-icon>-->
-          <!--</button>-->
+          <input #autoCompleteInput type="text" aria-label="Model"
+                 matInput [formControl]="searchCtrl" [matAutocomplete]="searchCmplt">
+          <button class="button-color"
+          type="button" matTooltip="Искать" tabindex="-1"
+          matTooltipPosition="above"
+          mat-icon-button type="submit">
+          <mat-icon aria-label="Search icon">search</mat-icon>
+          </button>
         </div>
-        <mat-autocomplete autoActiveFirstOption #modelCmplt="matAutocomplete">
-          <mat-option *ngFor="let model of modelOptions" [value]="model.model">
-            {{model.model}}
-          </mat-option>
-        </mat-autocomplete>
-      </mat-form-field>
-      <!--поиск владельца-->
-      <mat-form-field fxFlex *ngIf="!searchService.searchUnits">
-        <input type="text" placeholder="Искать владельца" aria-label="Owner" matInput
-               [formControl]="userCtrl" [matAutocomplete]="userCmplt">
-        <mat-autocomplete autoActiveFirstOption #userCmplt="matAutocomplete">
-          <mat-option *ngFor="let user of userOptions" [value]="user.name">
-            {{user.name}}
+        <mat-autocomplete #searchCmplt="matAutocomplete" (optionSelected)="search()">
+          <mat-option *ngFor="let opt of searchOptions" [value]="opt">
+            {{opt}}
           </mat-option>
         </mat-autocomplete>
       </mat-form-field>
     </form>
   </div>
+  <div>
+    <mat-accordion>
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            Настройки поиска
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+        <!--что искать-->
+        <mat-radio-group aria-label="Select a search option"
+                         (change)="searchCtrl.setValue(searchCtrl.value);
+                         autoCompleteInput.focus()"
+                         [(ngModel)]="searchService.searchUnits">
+          <mat-radio-button class="mr-4" [value]="true"
+                            [checked]="searchService.searchUnits">искать технику
+          </mat-radio-button>
+          <mat-radio-button [value]="false">искать владельцев</mat-radio-button>
+        </mat-radio-group>
+        <div class="divcolor"></div>
+        <!--как искать-->
+        <mat-radio-group aria-label="Select a search type" [(ngModel)]="searchService.searchType">
+          <mat-radio-button class="mr-4" *ngFor="let _searchType of searchService.searchTypes"
+                            [value]="_searchType" [checked]="searchService.searchType === value">
+            {{_searchType}}
+          </mat-radio-button>
+        </mat-radio-group>
+      </mat-expansion-panel>
+    </mat-accordion>
+  </div>
   <div class="filtered-units-list-container" *ngIf="showFiltUnList && searchService.searchUnits &&
-   ((searchService?.filteredUnits | async)?.length>0)">
+   ((searchService?.filteredAllUnits | async)?.length>0)">
     <ng-container *ngComponentOutlet="FilteredUnitsListTableComponent"></ng-container>
   </div>
   <div class="filtered-users-list-container" *ngIf="showFiltUsList && !searchService.searchUnits &&

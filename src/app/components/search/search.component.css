@@ -15,4 +15,9 @@
 .button-color {
   background: #fbc02d; }
 
+.divcolor {
+  background-color: #aaabaa;
+  height: 1px;
+  margin: 10px 0; }
+
 /*# sourceMappingURL=search.component.css.map */

@@ -2,12 +2,16 @@
 
   <!--Левый сайд бар-->
   <mat-sidenav #left_drawer mode="over" position="start" role="region"
+               (closedStart)="sidenavService.parkContent ? toggleParkBar()
+               :(sidenavService.searchContent?toggleSearchBar():null)"
                [ngClass]="{'start-sidenav':!(isHandset$ | async),
      'start-sidenav-phone':(isHandset$|async), 'mat-elevation-z4':true}"
                [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'">
     <!--тулбар левого сайдбара-->
     <mat-toolbar class="cursor-pointer" color="accent"
-                 (click)="toggleParkBar()">{{sidenavService.searchContent?'Поиск'
+                 (click)="sidenavService.parkContent ? toggleParkBar()
+                 :(sidenavService.searchContent?toggleSearchBar():null)">
+      {{sidenavService.searchContent?'Поиск'
       :sidenavService.parkContent?'Мой парк техники':''}}
       <div fxFlex></div>
       <mat-icon aria-label="Arrow back icon">arrow_back_ios</mat-icon>

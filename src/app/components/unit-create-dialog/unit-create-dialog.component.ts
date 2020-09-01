@@ -77,11 +77,11 @@ export class UnitCreateDialogComponent implements OnInit, AfterViewInit, OnDestr
     private cdr: ChangeDetectorRef,
     private openUnitInfoService: OpenUnitInfoService
   ) {
-    this.minDate = moment();
+    this.minDate = moment().add(1, 'days');
     this.maxDate = this.minDate.clone().add(environment.workEndPeriod, 'days');
     this.data.unit.workEnd ? (this.workEndDateCtl.setValue(
       moment(this.data.unit.workEnd.toString()))) :
-      this.workEndDateCtl.setValue(moment());
+      this.workEndDateCtl.setValue('');
     this.tempUnitImages = [...this.data.unit.images];
   }
 
@@ -348,14 +348,14 @@ export class UnitCreateDialogComponent implements OnInit, AfterViewInit, OnDestr
 
             if (this.galleryImages.length < 4) {
               const f: File = evnt.target.result;
-              const tempGallery = [... this.galleryImages];
+              const tempGallery = [...this.galleryImages];
               this.galleryImages = [];
               tempGallery.push({
                 small: f,
                 medium: f,
                 big: f
               });
-              this.galleryImages = [... tempGallery];
+              this.galleryImages = [...tempGallery];
             }
           }, false);
           reader.readAsDataURL(imageResized);
@@ -378,9 +378,9 @@ export class UnitCreateDialogComponent implements OnInit, AfterViewInit, OnDestr
 
   deleteImage(ind: number) {
     this.tempUnitImages.splice(ind, 1);
-    const tempGallery = [... this.galleryImages];
+    const tempGallery = [...this.galleryImages];
     tempGallery.splice(ind, 1);
-    this.galleryImages = [... tempGallery];
+    this.galleryImages = [...tempGallery];
   }
 
   onParkUnit() {

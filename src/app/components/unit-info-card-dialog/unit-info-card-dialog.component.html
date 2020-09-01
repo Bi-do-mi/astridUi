@@ -22,7 +22,7 @@
           <div *ngIf="unit.paid">&bull;Оплачен до: {{unit.paidUntil !==null ?
             (unit.paidUntil | dateToLocaleString | async): '-'}}
           </div>
-          <div>&bull; Виден другим пользователям: {{unit.enabled}}</div>
+          <div>&bull; Виден другим пользователям: {{unit.enabled?'да':'нет'}}</div>
           <div>&bull; Дата создания: {{unit.createdOn | dateToLocaleString | async}}
           </div>
           <div>&bull; Дата последнего редактирования: {{unit.lastUpdate | dateToLocaleString | async}}

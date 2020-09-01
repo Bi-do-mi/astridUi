@@ -2,7 +2,7 @@
   <table class="filtered-users-list-in-sidebar" mat-table matSort [dataSource]="dataSource">
 
     <ng-container matColumnDef="name">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header>Модель</th>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Парк</th>
       <td mat-cell *matCellDef="let user" fxLayout="row" fxLayoutAlign="space-between stretch">
         <div fxFlex="20%" fxLayout="column" fxLayoutAlign="center center">
           <img class="filtered-img-size" src="{{user | loadUserImg | async}}">

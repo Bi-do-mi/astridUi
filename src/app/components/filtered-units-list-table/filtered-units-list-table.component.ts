@@ -32,7 +32,7 @@ export class FilteredUnitsListTableComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.dataSource = new UnitDataSource(
-      this.searchService.filteredUnits, this.paginator, this.sort);
+      this.searchService.filteredAllUnits, this.paginator, this.sort);
   }
 
   ngOnDestroy() {

@@ -9,4 +9,8 @@
 .filtered-cursor-pointer {
   cursor: pointer; }
 
+.mat-icon {
+  font-size: 15px;
+  vertical-align: middle; }
+
 /*# sourceMappingURL=filtered-users-list-table.component.css.map */
