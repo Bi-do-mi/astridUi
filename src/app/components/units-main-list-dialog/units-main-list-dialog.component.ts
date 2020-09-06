@@ -17,6 +17,7 @@ import {SnackBarService} from '../../_services/snack-bar.service';
 import {NgxSpinnerService} from 'ngx-spinner';
 import {User} from '../../_model/User';
 import {BehaviorSubject, Observable} from 'rxjs';
+import {SearchService} from '../../_services/search.service';
 
 
 @Component({
@@ -42,11 +43,19 @@ export class UnitsMainListDialogComponent implements OnInit, OnDestroy {
     private mapServ: MapService,
     private parkService: ParkService,
     private spinner: NgxSpinnerService,
-    private snackbarService: SnackBarService) {
-    // console.log('data: ', this.data.user);
-    if (this.data.user.units) {
-      this.userUnits$.next(this.data.user.units);
-    }
+    private snackbarService: SnackBarService,
+    private searchService: SearchService) {
+
+    this.searchService.filteredAllUnits.pipe(untilDestroyed(this), first())
+      .subscribe(units => {
+        if (units && units.length) {
+          this.userUnits$.next(units.filter(u => u.ownerId === this.data.user.id));
+        } else {
+          if (this.data.user.units) {
+            this.userUnits$.next(this.data.user.units);
+          }
+        }
+      });
   }
 
   ngOnInit() {

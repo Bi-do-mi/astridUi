@@ -28,6 +28,7 @@ import {SearchComponent} from '../search/search.component';
 import {MatSidenav} from '@angular/material/sidenav';
 import {MatDialog} from '@angular/material/dialog';
 import {OpenParkListService} from '../../_services/open-park-list.service';
+import {SearchService} from '../../_services/search.service';
 
 @Component({
   selector: 'app-main-nav',
@@ -60,6 +61,7 @@ export class MainNavComponent implements OnInit, OnDestroy {
               private snackBarService: SnackBarService,
               private dialog: MatDialog,
               private unitInfoDialog: MatDialog,
+              public searchService: SearchService,
               private userInfoDialog: MatDialog,
               private setLocationService: SetLocationCallService,
               private openUnitInfoService: OpenUnitInfoService,
@@ -310,6 +312,7 @@ export class MainNavComponent implements OnInit, OnDestroy {
   }
 
   toggleParkBar(hasBackdrop?: boolean) {
+    this.searchService.fillSearchResList();
     if (this.sidenavService.parkContent) {
       this.leftDrawer.close();
       this.sidenavService.parkContent = false;

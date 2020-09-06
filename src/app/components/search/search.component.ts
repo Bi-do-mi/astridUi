@@ -18,13 +18,8 @@ export class SearchComponent implements OnInit, OnDestroy {
   searchCtrl = new FormControl();
   searchOptions = new Array<string>();
   modelCtrl = new FormControl();
-  modelOptions = new Array<string>();
-  userCtrl = new FormControl();
-  userOptions = new Array<User>();
   FilteredUnitsListTableComponent = FilteredUnitsListTableComponent;
   FilteredUsersListTableComponent = FilteredUsersListTableComponent;
-  showFiltUnList = false;
-  showFiltUsList = false;
   @ViewChild(MatAutocompleteTrigger) autocomplete: MatAutocompleteTrigger;
 
   constructor(
@@ -35,21 +30,20 @@ export class SearchComponent implements OnInit, OnDestroy {
       map((state: string) => {
         const searchResults: Array<string>
           = [... this.searchService.mainFilter(state)];
-        this.showFiltUnList = false;
-        this.showFiltUsList = false;
+        // this.showFiltUnList = false;
+        // this.showFiltUsList = false;
         if (searchResults.length) {
           if (this.searchService.searchUnits) {
-            this.showFiltUnList = true;
+            // this.showFiltUnList = true;
           }
           if (!this.searchService.searchUnits) {
-            this.showFiltUsList = true;
+            // this.showFiltUsList = true;
           }
         }
-        return state ? searchResults : null;
+        return state ? searchResults : new Array<string>();
       })
     ).subscribe((options: Array<string>) => {
-      options ? this.searchOptions = options
-        : this.searchOptions.length = 0;
+      this.searchOptions = options;
     });
   }
 
@@ -64,9 +58,7 @@ export class SearchComponent implements OnInit, OnDestroy {
   }
 
   search() {
-    if (this.searchCtrl.value) {
       this.autocomplete.closePanel();
-      this.searchService.fillList(this.searchCtrl.value);
+      this.searchService.fillSearchResListWithIsThereResTriggering(this.searchCtrl.value);
     }
-  }
 }

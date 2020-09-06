@@ -36,6 +36,7 @@ export class FilteredUnitsListTableComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
+    // console.log('ngOnDestroy');
   }
 
   flyToUnit(unit: Unit) {

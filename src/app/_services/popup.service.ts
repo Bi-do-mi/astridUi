@@ -57,7 +57,8 @@ export class PopupService implements OnInit, OnDestroy {
   ngOnDestroy() {
   }
 
-  tunePopup(map: mapboxgl.Map, layer_?: string, clusterLayer?: string, sourceId?: string) {
+  tunePopup(map: mapboxgl.Map, layer_?: string, clusterLayer?: string,
+            sourceId?: string, unitsInParkIdes?: Array<number>) {
     let popupTimer: any;
     let unit: Unit;
     let user: User;
@@ -78,13 +79,16 @@ export class PopupService implements OnInit, OnDestroy {
       }
 
       // unitsLayer
-      if (layer_ === 'unitsLayer') {
-        unit = this.parkService.units.get(<number> e.features[0].id);
+      if ((layer_ === 'unitsLayer') || (layer_ === 'searchResUnitsLayer')
+        || (layer_ === 'searchResUnitsInParkLayer')) {
+        unit = (layer_ === 'searchResUnitsInParkLayer') ?
+          this.parkService.unitsInPark.get(<number> e.features[0].id) :
+          this.parkService.units.get(<number> e.features[0].id);
         this.setUnitPopupContent(unit, map);
       }
 
       // usersLayer
-      if (layer_ === 'usersLayer') {
+      if ((layer_ === 'usersLayer') || (layer_ === 'searchResUsersLayer')) {
         user = this.usersCache_.filter((u, i, arr) => {
           if (u.id === e.features[0].id) {
             return true;
@@ -96,6 +100,7 @@ export class PopupService implements OnInit, OnDestroy {
               user.image = data.image;
             });
           }
+          const unitsIdes = new Array<number>();
           const usersPopupEl: NgElement & WithProperties<UsersPopupComponent> =
             this.renderer.createElement('users-popup') as any;
           usersPopupEl.user = user;

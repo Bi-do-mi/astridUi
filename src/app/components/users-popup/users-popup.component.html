@@ -41,7 +41,7 @@
       <div class="indicator" fxFlex=""></div>
     </div>
     <div fxFlex="" fxLayout="row" fxLayoutAlign="center center" class="tab-unit"
-    *ngIf="user?.units?.length > 5">
+    *ngIf="user?.units?.length > 5" (click)="showUnitsList()">
       <div>>></div>
     </div>
   </div>

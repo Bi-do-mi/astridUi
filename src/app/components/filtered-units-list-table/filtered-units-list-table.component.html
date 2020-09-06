@@ -19,7 +19,10 @@
           <button type="button" matTooltip="Местоположение на карте" tabindex="-1"
                   matTooltipPosition="above" aria-label="Toggle edit unit location"
                   mat-icon-button (click)="flyToUnit(unit)">
-            <mat-icon aria-label="Edit toggle icon">gps_fixed</mat-icon>
+            <mat-icon aria-label="Edit toggle icon"
+            *ngIf="!unit.workEnd">local_parking</mat-icon>
+            <mat-icon aria-label="Edit toggle icon"
+            *ngIf="unit.workEnd">gps_fixed</mat-icon>
           </button>
         </div>
       </td>

@@ -50,11 +50,15 @@
       </mat-expansion-panel>
     </mat-accordion>
   </div>
-  <div class="filtered-units-list-container" *ngIf="showFiltUnList && searchService.searchUnits &&
+  <div class="mt-3" *ngIf="((!searchService.isThereResult) && (searchService.isThereResult !== undefined))">
+    Нет результатов. Попробуйте расширить зону поиска.</div>
+  <div class="filtered-units-list-container" *ngIf="FilteredUnitsListTableComponent
+   && searchService.searchUnits &&
    ((searchService?.filteredAllUnits | async)?.length>0)">
     <ng-container *ngComponentOutlet="FilteredUnitsListTableComponent"></ng-container>
   </div>
-  <div class="filtered-users-list-container" *ngIf="showFiltUsList && !searchService.searchUnits &&
+  <div class="filtered-users-list-container" *ngIf="FilteredUsersListTableComponent
+   && !searchService.searchUnits &&
    ((searchService?.filteredUsers | async)?.length>0)">
     <ng-container *ngComponentOutlet="FilteredUsersListTableComponent"></ng-container>
   </div>
