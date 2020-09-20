@@ -4,6 +4,7 @@ import {MapService} from '../../_services/map.service';
 import {NGXLogger} from 'ngx-logger';
 import {SnackBarService} from '../../_services/snack-bar.service';
 import {FeatureCollection, GeoJson} from '../../_model/MarkerSourceModel';
+import {Title} from '@angular/platform-browser';
 
 
 @Component({
@@ -15,11 +16,13 @@ import {FeatureCollection, GeoJson} from '../../_model/MarkerSourceModel';
 export class MapBoxComponent implements OnInit, OnDestroy {
 
   constructor(private mapService: MapService, private logger: NGXLogger,
-              public snackBarService: SnackBarService) {
+              public snackBarService: SnackBarService,
+              private titleService: Title) {
   }
 
   ngOnInit() {
     this.mapService.mapTemplateId$ = 'map_container';
+    this.titleService.setTitle('"Технокарта" - бесплатный онлайн-сервис по поиску спецтехники в аренду');
   }
 
   ngOnDestroy() {

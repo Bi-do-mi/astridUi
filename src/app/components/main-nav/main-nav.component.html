@@ -205,8 +205,8 @@
         <div fxFlex="" fxLayout="column" class="ml-4 mr-4" [ngClass]="{'footer-opened': isFooterOpened,
              'footer-closed': !isFooterOpened}">
           <div fxFlex="" fxLayout="row wrap" fxLayoutAlign="center center">
-            <a class="a-ref" routerLink="/about-service">О сервисе</a>
-            <a class="a-ref" routerLink="/contacts">Контакты</a>
+            <a class="a-ref" (click)="footerToggle()" routerLink="/about-service">О сервисе</a>
+            <a class="a-ref" (click)="footerToggle()" routerLink="/contacts">Контакты</a>
           </div>
           <div fxFlexAlign="center">&copy; BIDOMI, 2020
           </div>

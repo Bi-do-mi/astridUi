@@ -5,7 +5,7 @@ import {filter, finalize, first, map} from 'rxjs/operators';
 import {User} from '../../_model/User';
 import {UserService} from '../../_services/user.service';
 import {NGXLogger} from 'ngx-logger';
-import {NavigationEnd, Router} from '@angular/router';
+import {ActivatedRoute, NavigationEnd, Router} from '@angular/router';
 import {SidenavService} from '../../_services/sidenav.service';
 import {UserOptionsDialogComponent} from '../user-options-dialog/user-options-dialog.component';
 import {SnackBarService} from '../../_services/snack-bar.service';
@@ -29,6 +29,7 @@ import {MatSidenav} from '@angular/material/sidenav';
 import {MatDialog} from '@angular/material/dialog';
 import {OpenParkListService} from '../../_services/open-park-list.service';
 import {SearchService} from '../../_services/search.service';
+import {Meta, Title} from '@angular/platform-browser';
 
 @Component({
   selector: 'app-main-nav',
@@ -56,9 +57,12 @@ export class MainNavComponent implements OnInit, OnDestroy {
               private router: Router,
               public sidenavService: SidenavService,
               public uService: UserService,
+              private activatedRoute: ActivatedRoute,
               private logger: NGXLogger,
               public mapService: MapService,
               private parkService: ParkService,
+              private titleService: Title,
+              private metaService: Meta,
               private snackBarService: SnackBarService,
               private dialog: MatDialog,
               private unitInfoDialog: MatDialog,
@@ -78,9 +82,30 @@ export class MainNavComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    const appTitle = this.titleService.getTitle();
     this.router.events.pipe(
-      filter(a => a instanceof NavigationEnd), untilDestroyed(this)
-    ).subscribe(_ => {
+      filter(a => a instanceof NavigationEnd), untilDestroyed(this),
+      map(() => {
+        let child = this.activatedRoute.firstChild;
+        this.metaService.removeTag('robots');
+        while (child.firstChild) {
+          child = child.firstChild;
+        }
+        if (child.snapshot.data['title']) {
+          this.titleService.setTitle(child.snapshot.data['title']);
+        }
+        if (child.snapshot.data['description']) {
+          this.metaService.updateTag({name: 'description', content: child.snapshot.data['description']});
+        }
+       if (child.snapshot.data['keywords']) {
+          this.metaService.updateTag({name: 'keywords', content: child.snapshot.data['description']});
+        }
+       if (child.snapshot.data['robots']) {
+          this.metaService.updateTag({name: 'robots', content: child.snapshot.data['robots']});
+        }
+        return;
+      })
+    ).subscribe(() => {
       this.rightDrawer.close();
       this.url = this.router.routerState.snapshot.url.split(/[;?]/)[0];
       // this.logger.info(environment);

@@ -1,4 +1,4 @@
-import {BrowserModule} from '@angular/platform-browser';
+import {BrowserModule, Title} from '@angular/platform-browser';
 import {NgModule} from '@angular/core';
 
 import {AppComponent} from './app.component';
@@ -183,6 +183,7 @@ export const httpInterceptorProviders = [
   //   FilteredUsersListTableComponent
   // ],
   providers: [AuthGuard, httpInterceptorProviders, LoadUnitImagePipe,
+    Title,
     {
       provide: STEPPER_GLOBAL_OPTIONS,
       useValue: { displayDefaultIndicatorType: false }

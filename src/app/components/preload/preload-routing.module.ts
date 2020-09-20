@@ -5,9 +5,21 @@ import {RegisterComponent} from './register/register.component';
 import {InfoCardComponent} from './info-card/info-card.component';
 
 const routes: Routes = [
-  {path: 'login', component: LoginComponent},
-  {path: 'register', component: RegisterComponent},
-  {path: 'info', component: InfoCardComponent}
+  {path: 'login', component: LoginComponent,
+    data: {
+      title: 'Вход',
+      robots: 'noindex'
+  }},
+  {path: 'register', component: RegisterComponent,
+    data: {
+      title: 'Регистрация',
+      robots: 'noindex'
+    }},
+  {path: 'info', component: InfoCardComponent,
+    data: {
+      title: 'Важное сообщение',
+      robots: 'noindex'
+    }}
 ];
 
 @NgModule({
