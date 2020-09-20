@@ -1,0 +1,29 @@
+
+.contacts_div{
+  min-width: 100%;
+  min-height: 100%;
+  position: absolute;
+}
+mat-card{
+  max-width: 90%;
+  max-height: 90%;
+}
+img{
+  max-height: 600px;
+  max-width: 100%;
+  display: block;
+}
+.box{
+  top: 30px;
+  left: 30px;
+  position: absolute;
+  width: 60%;
+}
+.box-min{
+  padding: 10px;
+  background-color: white;
+}
+.cont{
+  max-height: 100%;
+  max-width: 100%;
+}

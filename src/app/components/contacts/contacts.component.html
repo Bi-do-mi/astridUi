@@ -1,0 +1,28 @@
+<div class="leanerBack1 contacts_div" fxLayout="column" fxLayoutAlign="center center">
+  <mat-card>
+    <mat-card-content>
+      <div class="cont" fxLayout="column">
+        <div [ngClass]="{'box':!(isHandset$ | async), 'box-min':(isHandset$|async)}"
+             fxLayout="column" fxFlexAlign="start start">
+          <h5 align="left">
+            Контакты
+          </h5>
+          <p align="left">
+            Мы будем рады любому вашему отклику. Напишите нам о своем опыте работы с сервисом,
+            предложениях и идеях. Как и в каком направлении вы хотели бы видеть развитие "Технокарты"?<br>
+            Наш электронный адрес: <b>bidomi@mail.ru</b>
+          </p>
+          <div fxLayout="row" fxLayoutAlign="start start">
+            <button mat-raised-button="" tabindex="-1" routerLink="/"
+                    color="accent" matTooltipPosition="above">На главную
+            </button>
+          </div>
+        </div>
+        <img fxFlex="" alt="contacts" src="assets/pics/contacts.jpg">
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>
+
+
+

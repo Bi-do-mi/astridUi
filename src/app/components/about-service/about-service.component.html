@@ -1,0 +1,27 @@
+<div class="leanerBack1 about_div" fxLayout="column" fxLayoutAlign="center center">
+    <mat-card>
+      <mat-card-content>
+        <div class="cont" fxLayout="column">
+          <div [ngClass]="{'box':!(isHandset$ | async), 'box-min':(isHandset$|async)}"
+               fxLayout="column" fxFlexAlign="start start">
+            <h5 align="left">
+              О сервисе
+            </h5>
+            <p align="left">
+              <b>«Технокарта»</b> – это бесплатный онлайн-сервис по поиску спецтехники в аренду.
+              Если вы владеете, например погрузчиком или экскаватором, и желаете сдать свою технику в аренду,
+              откройте здесь представительство своего автопарка. Заказчики легко найдут вас по геолокации и
+              параметрам. Ваш контакт состоится без лишних прокладок и совершенно бесплатно!
+            </p>
+            <div fxLayout="row" fxLayoutAlign="start start">
+              <button mat-raised-button="" tabindex="-1" routerLink="/"
+                      color="accent" matTooltipPosition="above">На главную
+              </button>
+            </div>
+          </div>
+          <img fxFlex="" alt="excavator" src="assets/pics/excavator.jpg">
+        </div>
+      </mat-card-content>
+    </mat-card>
+</div>
+
