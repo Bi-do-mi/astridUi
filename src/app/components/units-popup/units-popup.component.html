@@ -7,9 +7,13 @@
     <mat-spinner class="mat-accent" [diameter]="20"
                  *ngIf="(unit.images[0] && !unit.images[0].value)"></mat-spinner>
   </div>
-  <div fxLayout="row" fxLayoutAlign="center center">
+ <div fxLayout="column">
+   <div fxLayout="row" fxLayoutAlign="center center">
     {{unit.model}}
   </div>
+  <div fxLayout="row" fxLayoutAlign="start center">
+    Тип: {{unit.type}}
+  </div></div>
 </div>
 <div fxLayout="row" fxLayoutAlign="center center" *ngIf="unit.workEnd">
   <mat-icon>access_time</mat-icon>

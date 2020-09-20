@@ -49,6 +49,7 @@ export class MainNavComponent implements OnInit, OnDestroy {
   UnitsListComponent = UnitsListTableComponent;
   SearchComponent = SearchComponent;
   setPointMode = false;
+  isFooterOpened = false;
 
 
   constructor(private breakpointObserver: BreakpointObserver,
@@ -334,4 +335,8 @@ export class MainNavComponent implements OnInit, OnDestroy {
     }
   }
 
+  footerToggle() {
+    this.mapService.hideScaleControl(!this.isFooterOpened);
+    this.isFooterOpened = !this.isFooterOpened;
+  }
 }

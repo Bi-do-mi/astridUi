@@ -120,11 +120,12 @@
   <!--основной контент-->
   <mat-sidenav-content role="main">
     <div id="a-canvas" fxLayout="column">
-      <div fxLayout="row">
+      <header fxLayout="row">
         <mat-toolbar color="primary" class="mat-elevation-z6" fxLayout="row">
-          <a tabindex="-1" *ngIf="!setPointMode" [ngStyle]="{'text-decoration': 'none','color': 'white'}"
-             href="" [routerLink]="['/']">Технокарта</a>
-          <span *ngIf="setPointMode">Астрид</span>
+          <a tabindex="-1" [ngStyle]="{'text-decoration': 'none','color': 'white'}"
+             href="" [routerLink]="['/']">
+            <img src="/assets/icons/logo.png" height="50px" alt="logo technokarta">
+            Технокарта</a>
           <div fxFlex></div>
           <a mat-button (click)="routingToLoginPage()" *ngIf="currentUser&&
           !currentUser?.name && !(isHandset$ | async)
@@ -154,7 +155,7 @@
             <mat-icon aria-label="Side end nav toggle icon">menu</mat-icon>
           </button>
         </mat-toolbar>
-      </div>
+      </header>
       <!-- Add Content Here -->
       <!--<div id="map_div" class="map-row" fxLayout="row" fxFlex="100" *ngIf="!'ng_content'">-->
       <!--<app-map-box fxFlex="100"></app-map-box>-->
@@ -163,7 +164,8 @@
         <ng-content></ng-content>
 
         <!--toolbar-->
-        <div fxLayout="row" fxLayoutAlign="center" class="tools-bar" fxFlex>
+        <div fxLayout="row" fxLayoutAlign="center" class="tools-bar" fxFlex
+             *ngIf="url == '/'">
           <!--кнопка поиска-->
           <div class="button-div">
             <button
@@ -193,6 +195,23 @@
           </div>
         </div>
       </div>
+      <footer fxLayout="column" fxLayoutAlign="center center" class="footer-div"
+              *ngIf="url == '/'" [ngStyle]="{'min-height': isFooterOpened ? '90px' : '0'}">
+        <div class="footer-arrow" fxLayout="column" fxLayoutAlign="center center"
+             (click)="footerToggle()">
+          <mat-icon aria-label="Footer toggle" *ngIf="!isFooterOpened">keyboard_arrow_up</mat-icon>
+          <mat-icon aria-label="Footer toggle" *ngIf="isFooterOpened">keyboard_arrow_down</mat-icon>
+        </div>
+        <div fxFlex="" fxLayout="column" class="ml-4 mr-4" [ngClass]="{'footer-opened': isFooterOpened,
+             'footer-closed': !isFooterOpened}">
+          <div fxFlex="" fxLayout="row wrap" fxLayoutAlign="center center">
+            <a class="a-ref" routerLink="/about-service">О сервисе</a>
+            <a class="a-ref" routerLink="/contacts">Контакты</a>
+          </div>
+          <div fxFlexAlign="center">&copy; BIDOMI, 2020
+          </div>
+        </div>
+      </footer>
     </div>
   </mat-sidenav-content>
 </mat-sidenav-container>

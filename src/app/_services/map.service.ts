@@ -67,6 +67,7 @@ export class MapService implements OnInit, OnDestroy {
   private viewportMultiPolygons: Feature<MultiPolygon> = turf.multiPolygon([]);
   private queryPolygon: Feature<MultiPolygon>;
   private isViewportFirstLoading = true;
+  private scaleControl = new mapboxgl.ScaleControl();
 
 
   constructor(private logger: NGXLogger,
@@ -123,7 +124,7 @@ export class MapService implements OnInit, OnDestroy {
           this._map.addControl(new mapboxgl.GeolocateControl({
             positionOptions: {enableHighAccuracy: true}
           }));
-          this._map.addControl(new mapboxgl.ScaleControl());
+          this._map.addControl(this.scaleControl);
           this._map.addControl(new mapboxgl.FullscreenControl());
 
           // map click listener
@@ -232,9 +233,9 @@ export class MapService implements OnInit, OnDestroy {
         if (this.searchResUnitsInParkSource) {
           this.searchResUnitsInParkSource.setData(this.getUnitsGeoJsonSource(inPark));
         }
-         if (this.searchResUnitsSource || this.searchResUnitsInParkSource) {
-           // console.log('this.searchResUnitsSource: \n', this.searchResUnitsSource._data.features);
-           if ((inField.length !== 0) || (inPark.length !== 0)) {
+        if (this.searchResUnitsSource || this.searchResUnitsInParkSource) {
+          // console.log('this.searchResUnitsSource: \n', this.searchResUnitsSource._data.features);
+          if ((inField.length !== 0) || (inPark.length !== 0)) {
             this.showOnlySearchRes(true);
           } else {
             if (this.searchResUsersSource._data.features.length === 0) {
@@ -243,6 +244,13 @@ export class MapService implements OnInit, OnDestroy {
           }
         }
       });
+    // this.searchService.searchProcess.pipe(untilDestroyed(this))
+    //   .subscribe((process: boolean) => {
+    //     if (!process) {
+    //       console.log('!!!');
+    //       this.zoomOutForSearch();
+    //     }
+    //   });
   }
 
   private navigatorCheck() {
@@ -359,8 +367,10 @@ export class MapService implements OnInit, OnDestroy {
     const layers = ['unitsLayer', 'unitsLayerClusters', 'unitsLayerClusterCount',
       'usersLayer', 'usersLayerClusters', 'usersLayerClusterCount'];
     layers.forEach(layer => {
-      this.map.setLayoutProperty(layer, 'visibility',
-        show ? 'none' : 'visible');
+      if (this.map.getLayer(layer)) {
+        this.map.setLayoutProperty(layer, 'visibility',
+          show ? 'none' : 'visible');
+      }
     });
   }
 
@@ -1007,7 +1017,7 @@ export class MapService implements OnInit, OnDestroy {
           'circle-color': ['case',
             ['case',
               ['has', 'paid'], ['get', 'paid'],
-              false], '#e61120',
+              false], this.colors[3],
             this.colors[2]],
           'circle-radius': 4,
           'circle-stroke-width': 2,
@@ -1062,7 +1072,7 @@ export class MapService implements OnInit, OnDestroy {
           'circle-color': ['case',
             ['case',
               ['has', 'paid'], ['get', 'paid'],
-              false], '#8ba8fa',
+              false], this.colors[3],
             this.colors[2]],
           'circle-radius': 4,
           'circle-stroke-width': 2,
@@ -1171,7 +1181,7 @@ export class MapService implements OnInit, OnDestroy {
           'text-size': 14
         },
         paint: {
-          'text-color': '#8ba8fa',
+          'text-color': '#0dea18',
           'text-halo-color': '#212121',
           'text-halo-width': 1
         }
@@ -1239,5 +1249,33 @@ export class MapService implements OnInit, OnDestroy {
     }
   }
 
+  zoomOutForSearch() {
+    if (!turf.booleanEqual(this.viewportMultiPolygons, <Feature<MultiPolygon>> turf.multiPolygon(
+      [this.getCurrentViewportFromMap().geometry.coordinates]))) {
+      const bounds = new mapboxgl.LngLatBounds();
+      this.viewportMultiPolygons.geometry.coordinates.forEach(mpoly => {
+        mpoly.forEach(poly => {
+          poly.forEach(point_ => {
+            bounds.extend(new LngLat(point_[0], point_[1]));
+          });
+        });
+      });
+      this.map.fitBounds(bounds);
+    }
+    if (this.map.getZoom() > 2) {
+      setTimeout(() => {
+        if (!this.searchService.isThereResult) {
+          this.map.zoomTo((this.map.getZoom() - 1), {
+            duration: 2000,
+            offset: [100, 50]
+          });
+        }
+      }, 2000);
+    }
+  }
+
+  hideScaleControl(hide: boolean) {
+    !hide ? this.map.addControl(this.scaleControl) : this.map.removeControl(this.scaleControl);
+  }
 }
 

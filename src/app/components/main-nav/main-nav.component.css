@@ -2445,4 +2445,49 @@ textarea.cdk-textarea-autosize-measuring-firefox {
   max-width: 250px;
   border: 1px solid #212121; }
 
+.footer-div {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: #212121; }
+
+.footer-closed {
+  display: block;
+  overflow: hidden;
+  line-height: 0; }
+
+.footer-opened {
+  color: #8e928c; }
+
+.footer-arrow {
+  cursor: pointer;
+  position: absolute;
+  top: -30px;
+  left: calc(100vw / 2 + 85px);
+  border-radius: 10px 10px 0 0;
+  width: 35px;
+  height: 30px;
+  background-color: #212121;
+  color: #fbc02d; }
+
+.a-ref {
+  margin: 8px;
+  outline: none;
+  text-decoration: none;
+  padding: 2px 1px 0; }
+
+.a-ref:link {
+  color: #fbc02d; }
+
+.a-ref:visi {
+  color: #fbc02d; }
+
+.a-ref:focus {
+  border-bottom: 1px solid; }
+
+.a-ref:hover {
+  border-bottom: 1px solid;
+  color: #fbc911; }
+
 /*# sourceMappingURL=main-nav.component.css.map */

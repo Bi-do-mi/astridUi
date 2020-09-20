@@ -14,14 +14,6 @@ html, body {
   min-height: 100%;
   position: absolute; }
 
-.office_marker {
-  border: none;
-  cursor: pointer;
-  height: 45px;
-  width: 30px;
-  background-image: url(assets/icons/office.png);
-  background-color: rgba(0, 0, 0, 0); }
-
 .private_unit_marker_out {
   height: 17px;
   width: 17px;

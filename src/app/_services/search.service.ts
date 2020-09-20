@@ -26,6 +26,8 @@ export class SearchService implements OnDestroy {
   public filteredUsers$ = new BehaviorSubject<Array<User>>(new Array<User>());
   public filteredUsers = this.filteredUsers$.asObservable();
   isThereResult: boolean;
+  public searchProcess$ = new BehaviorSubject<boolean>(true);
+  public searchProcess = this.searchProcess$.asObservable();
 
   constructor(
     private parkService: ParkService
@@ -54,6 +56,7 @@ export class SearchService implements OnDestroy {
   }
 
   fillSearchResListWithIsThereResTriggering(q?: string) {
+    // console.log('fillSearchResListWithIsThereResTriggering');
     if (this.isThereResult === undefined) {
       this.isThereResult = false;
     }
@@ -97,7 +100,7 @@ export class SearchService implements OnDestroy {
             || u.brand.toUpperCase().includes(query_)
             || u.model.toUpperCase().includes(query_));
         }),
-          ... unitsArrayForMap
+          ...unitsArrayForMap
         ];
         unitsMap.forEach((unitsArr, userId, m) => {
           if (unitsArr.length > 1) {
@@ -116,7 +119,7 @@ export class SearchService implements OnDestroy {
             || u.brand.toUpperCase().includes(query_)
             || u.model.toUpperCase().includes(query_));
         }),
-          ... unitsArrayForMap];
+          ...unitsArrayForMap];
         this.filteredAllUnits$.next(responseUnitsList);
         this.filteredUnitsForMap$.next(unitsArrayForMap);
         this.filteredUsers$.next(responseUsersList);
@@ -125,6 +128,9 @@ export class SearchService implements OnDestroy {
     if (this.isThereResult !== undefined) {
       this.isThereResult = (((responseUsersList !== undefined) && responseUsersList.length > 0)
         || ((responseUnitsList !== undefined) && responseUnitsList.length > 0));
+      // if (_query && (this.searchType === this.searchTypes[1])) {
+      //   this.searchProcess$.next(this.isThereResult);
+      // }
     }
   }
 

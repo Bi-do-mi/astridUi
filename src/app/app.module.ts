@@ -71,6 +71,8 @@ import {MAT_MOMENT_DATE_ADAPTER_OPTIONS, MAT_MOMENT_DATE_FORMATS, MomentDateAdap
 import {MatProgressBarModule} from '@angular/material/progress-bar';
 import { UnitsInParkMarkerContainerComponent } from './components/units-in-park-marker-container/units-in-park-marker-container.component';
 import {MatExpansionModule} from '@angular/material/expansion';
+import { AboutServiceComponent } from './components/about-service/about-service.component';
+import { ContactsComponent } from './components/contacts/contacts.component';
 
 // import {registerLocaleData} from '@angular/common';
 // import localeRu from '@angular/common/locales/ru';
@@ -108,7 +110,9 @@ export const httpInterceptorProviders = [
     FilteredUnitsListTableComponent,
     FilteredUsersListTableComponent,
     DateToLocalStringPipe,
-    UnitsInParkMarkerContainerComponent
+    UnitsInParkMarkerContainerComponent,
+    AboutServiceComponent,
+    ContactsComponent
   ],
   imports: [
     BrowserModule,

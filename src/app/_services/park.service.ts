@@ -246,7 +246,9 @@ export class ParkService implements OnDestroy {
                 });
                 this.usersCacheFiltered$.next(Array.from(this.users.values()));
               }
-              this.filterUnits(data[1], full);
+              if (data[1].length > 0) {
+                this.filterUnits(data[1], full);
+              }
             }
 
           },
