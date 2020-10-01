@@ -39,14 +39,14 @@
           </mat-radio-button>
           <mat-radio-button [value]="false">искать владельцев</mat-radio-button>
         </mat-radio-group>
-        <div class="divcolor"></div>
+        <!--<div class="divcolor"></div>-->
         <!--как искать-->
-        <mat-radio-group aria-label="Select a search type" [(ngModel)]="searchService.searchType">
-          <mat-radio-button class="mr-4" *ngFor="let _searchType of searchService.searchTypes"
-                            [value]="_searchType" [checked]="searchService.searchType === value">
-            {{_searchType}}
-          </mat-radio-button>
-        </mat-radio-group>
+        <!--<mat-radio-group aria-label="Select a search type" [(ngModel)]="searchService.searchType">-->
+          <!--<mat-radio-button class="mr-4" *ngFor="let _searchType of searchService.searchTypes"-->
+                            <!--[value]="_searchType" [checked]="searchService.searchType === value">-->
+            <!--{{_searchType}}-->
+          <!--</mat-radio-button>-->
+        <!--</mat-radio-group>-->
       </mat-expansion-panel>
     </mat-accordion>
   </div>

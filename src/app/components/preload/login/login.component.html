@@ -63,11 +63,14 @@
 
             <mat-form-field class="example-full-width">
               <input matInput placeholder="email" required formControlName="login">
-              <mat-error *ngIf="submitted && f.login.hasError('required')">
+              <mat-error *ngIf="submitted && r.login.hasError('required')">
                 введите email
               </mat-error>
-              <mat-error *ngIf="(f.login.hasError('email'))">
+              <mat-error *ngIf="(r.login.hasError('email'))">
                 ввод некоректен
+              </mat-error>
+              <mat-error *ngIf="r.login.hasError('not_registered')">
+                email не зарегестрирован
               </mat-error>
             </mat-form-field>
 

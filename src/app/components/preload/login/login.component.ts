@@ -1,7 +1,7 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {ActivatedRoute, NavigationStart, Router} from '@angular/router';
-import {filter, first} from 'rxjs/operators';
+import {delay, filter, first} from 'rxjs/operators';
 import {NgxSpinnerService} from 'ngx-spinner';
 import {NGXLogger} from 'ngx-logger';
 import {HttpErrorResponse} from '@angular/common/http';
@@ -140,30 +140,48 @@ export class LoginComponent implements OnInit, OnDestroy {
       return;
     }
     this.loading = true;
-    this.userService.setUserToken(this.r.login.value)
-      .pipe(first(), untilDestroyed(this))
-      .subscribe(
-        data => {
-          if (data === 'set_user_token true') {
-            this.loading = false;
-            this.changeTab();
-            this.messageService.add(['Смена пароля', 'Для завершения' +
-            ' процесса изменения пароля, пожалуйста, проверьте свой электронный ' +
-            'почтовый ящик. Пройдите по ссылке, которую мы выслали Вам в письме.']);
-            this.router.navigate(['/preload/info']);
-          }
-          if (data === 'No value present') {
-            this.loading = false;
-            this.snackBarService.error('Этот логин не зарегистрирован.');
-          }
-        },
-        error => {
-          this.loading = false;
-          if (error instanceof HttpErrorResponse && error.status === 401) {
-            this.snackBarService.error('Этот логин не зарегистрирован.');
-          }
-        }
-      );
+
+    if (this.r.login.value) {
+      this.userService.getByName(this.r.login.value)
+        .pipe(first(), delay(1000), untilDestroyed(this))
+        .subscribe(checkData => {
+            if (this.r.login.value !== checkData) {
+              this.r.login.setErrors({not_registered: true});
+              this.loading = false;
+            } else {
+              this.r.login.setErrors({not_registered: false});
+              this.r.login.updateValueAndValidity();
+
+              this.userService.setUserToken(this.r.login.value)
+                .pipe(first(), untilDestroyed(this))
+                .subscribe(
+                  data => {
+                    if (data === 'set_user_token true') {
+                      this.loading = false;
+                      this.changeTab();
+                      this.messageService.add(['Смена пароля', 'Для завершения' +
+                      ' процесса изменения пароля, пожалуйста, проверьте свой электронный ' +
+                      'почтовый ящик. Пройдите по ссылке, которую мы выслали Вам в письме.']);
+                      this.router.navigate(['/preload/info']);
+                    }
+                    if (data === 'No value present') {
+                      this.loading = false;
+                      this.snackBarService.error('Этот логин не зарегистрирован.');
+                    }
+                  },
+                  error => {
+                    this.loading = false;
+                    if (error instanceof HttpErrorResponse && error.status === 401) {
+                      this.snackBarService.error('Этот логин не зарегистрирован.');
+                    }
+                  }
+                );
+            }
+          },
+          error => {
+            // this.logger.info(error);
+          });
+    }
   }
 
   enableUser(credentials, token: string) {

@@ -81,20 +81,21 @@ export class RegisterComponent implements OnInit, OnDestroy {
   }
 
   checkUserName(user_name: string) {
-    // this.logger.info(this.registerForm.controls['login'].errors);
-    this.userService.getByName(user_name)
-      .pipe(first(), delay(1000), untilDestroyed(this))
-      .subscribe(data => {
-          if (user_name === data) {
-            this.registerForm.controls['login'].setErrors({occupied: true});
-          } else {
-            this.registerForm.controls['login'].setErrors({occupied: false});
-            this.registerForm.controls['login'].updateValueAndValidity();
-          }
-        },
-        error => {
-          // this.logger.info(error);
-        });
+    if (user_name) {
+      this.userService.getByName(user_name)
+        .pipe(first(), delay(1000), untilDestroyed(this))
+        .subscribe(data => {
+            if (user_name === data) {
+              this.registerForm.controls['login'].setErrors({occupied: true});
+            } else {
+              this.registerForm.controls['login'].setErrors({occupied: false});
+              this.registerForm.controls['login'].updateValueAndValidity();
+            }
+          },
+          error => {
+            // this.logger.info(error);
+          });
+    }
   }
 
   onSubmit() {
