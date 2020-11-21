@@ -1,0 +1,61 @@
+<!--что искать-->
+<mat-radio-group aria-label="Select a search option"
+                 [(ngModel)]="searchService.searchUnits">
+  <mat-radio-button class="mr-4" [value]="true"
+                    [checked]="searchService.searchUnits">искать технику
+  </mat-radio-button>
+  <mat-radio-button [value]="false">искать владельцев</mat-radio-button>
+</mat-radio-group>
+<div *ngIf="searchService.searchUnits">
+  <div *ngIf="searchService.unitTypeFilterOption.size>1">
+    <h6>Тип техники</h6>
+    <ul>
+      <li *ngFor="let type of searchService.unitTypeFilterOption | keyvalue">
+        <div fxLayout="row">
+          <div>
+            <mat-checkbox aria-label="type" [(ngModel)]=type.value[0]
+                          [disabled]="type.value[1]"
+                          (change)="changeOptionStatus($event, type.key)">
+            </mat-checkbox>
+          </div>
+          <div class="ml-2 mb-2">{{type.key}}</div>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div *ngIf="searchService.unitBrandFilterOption.size>1">
+    <h6>Марка</h6>
+    <ul>
+      <li *ngFor="let brand of searchService.unitBrandFilterOption | keyvalue">
+        <div fxLayout="row">
+          <div>
+            <mat-checkbox aria-label="brand" [(ngModel)]=brand.value[0]
+                          [disabled]="brand.value[1]"
+                          (change)="changeOptionStatus($event,  brand.key)">
+            </mat-checkbox>
+          </div>
+          <div class="ml-2 mb-2">{{brand.key}}</div>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div *ngIf="searchService.unitModelFilterOption.size>1">
+    <h6>Модель</h6>
+    <ul>
+      <li *ngFor="let model of searchService.unitModelFilterOption | keyvalue">
+        <div fxLayout="row">
+          <div>
+            <mat-checkbox aria-label="model" [(ngModel)]=model.value[0]
+                          [disabled]="model.value[1]"
+                          (change)="changeOptionStatus($event, model.key)">
+            </mat-checkbox>
+          </div>
+          <div class="ml-2 mb-2">{{model.key}}</div>
+        </div>
+      </li>
+    </ul>
+  </div>
+</div>
+<div mat-dialog-actions fxLayout="row" fxLayoutAlign="end">
+  <button mat-raised-button="" color="accent" (click)="onClose()">OK</button>
+</div>

@@ -26,8 +26,12 @@ export class SearchService implements OnDestroy {
   public filteredUsers$ = new BehaviorSubject<Array<User>>(new Array<User>());
   public filteredUsers = this.filteredUsers$.asObservable();
   isThereResult: boolean;
-  public searchProcess$ = new BehaviorSubject<boolean>(true);
-  public searchProcess = this.searchProcess$.asObservable();
+  // filter elements:
+  public wordKeyFilteredAllUnits = new Array<Unit>();
+  public wordKeyFilteredUnitsForMap = new Array<Unit>();
+  public unitTypeFilterOption = new Map<string, [boolean, boolean]>();
+  public unitBrandFilterOption = new Map<string, [boolean, boolean]>();
+  public unitModelFilterOption = new Map<string, [boolean, boolean]>();
 
   constructor(
     private parkService: ParkService
@@ -64,10 +68,14 @@ export class SearchService implements OnDestroy {
   }
 
   fillSearchResList(_query?: string) {
-    // console.log('fillSearchResList');
-    this.filteredUsers$.next(new Array<User>());
-    this.filteredAllUnits$.next(new Array<Unit>());
-    this.filteredUnitsForMap$.next(new Array<Unit>());
+    // console.log('_query: ', _query);
+    // console.log('this.searchQuery: ', this.searchQuery);
+    if ((this.searchQuery !== _query)) {
+      this.clearFilterOptions();
+      this.filteredUsers$.next(new Array<User>());
+      this.filteredAllUnits$.next(new Array<Unit>());
+      this.filteredUnitsForMap$.next(new Array<Unit>());
+    }
     let responseUsersList = new Array<User>();
     let responseUnitsList = new Array<Unit>();
 
@@ -120,27 +128,30 @@ export class SearchService implements OnDestroy {
             || u.model.toUpperCase().includes(query_));
         }),
           ...unitsArrayForMap];
-        this.filteredAllUnits$.next(responseUnitsList);
-        this.filteredUnitsForMap$.next(unitsArrayForMap);
+        this.wordKeyFilteredAllUnits = [...responseUnitsList];
+        this.wordKeyFilteredUnitsForMap = [...unitsArrayForMap];
+        // this.setFilterOptionsByType(this.filterByOptions([...responseUnitsList,
+        //   ...unitsArrayForMap]));
+        this.filteredAllUnits$.next(this.filterByOptions(responseUnitsList));
+        this.filteredUnitsForMap$.next(this.filterByOptions(unitsArrayForMap));
         this.filteredUsers$.next(responseUsersList);
       }
     }
     if (this.isThereResult !== undefined) {
       this.isThereResult = (((responseUsersList !== undefined) && responseUsersList.length > 0)
         || ((responseUnitsList !== undefined) && responseUnitsList.length > 0));
-      // if (_query && (this.searchType === this.searchTypes[1])) {
-      //   this.searchProcess$.next(this.isThereResult);
-      // }
     }
+    this.searchQuery = _query;
   }
 
-  mainFilter(query_: string): Array<string> {
-    this.searchQuery = query_;
-    return this.searchUnits ? this.filterUnits(query_.toUpperCase())
-      : this.filterUsers(query_.toUpperCase());
+  // retrive options from filtered items to fill input options list
+  mainOptionsFilter(query_: string): Array<string> {
+    // this.searchQuery = query_;
+    return this.searchUnits ? this.filterUnitsOptions(query_.toUpperCase())
+      : this.filterUsersOptions(query_.toUpperCase());
   }
 
-  filterUsers(query_: string): Array<string> {
+  filterUsersOptions(query_: string): Array<string> {
     const response: Array<string> = [];
     this.usersCache.forEach(u => {
       if (u.name.toUpperCase().includes(query_)) {
@@ -153,7 +164,7 @@ export class SearchService implements OnDestroy {
     return response;
   }
 
-  filterUnits(query_: string): Array<string> {
+  filterUnitsOptions(query_: string): Array<string> {
     const response: Array<string> = [];
     this.unitsCache.filter(u => {
       if (u.type.toUpperCase().includes(query_)) {
@@ -181,8 +192,144 @@ export class SearchService implements OnDestroy {
   }
 
   reSearch() {
-    // console.log('reSearch');
-    this.filterUnits(this.searchQuery);
-    this.fillSearchResList(this.searchQuery);
+    if (this.searchQuery) {
+      this.mainOptionsFilter(this.searchQuery);
+      this.fillSearchResList(this.searchQuery);
+    }
+  }
+
+  clearFilterOptions() {
+    this.wordKeyFilteredAllUnits.splice(0);
+    this.wordKeyFilteredUnitsForMap.splice(0);
+    this.unitTypeFilterOption.clear();
+    this.unitBrandFilterOption.clear();
+    this.unitModelFilterOption.clear();
+  }
+
+  initFilterOptions() {
+    if (this.searchUnits) {
+      if (this.wordKeyFilteredAllUnits.length > 0) {
+        this.wordKeyFilteredAllUnits.forEach((unit: Unit) => {
+          if (!this.unitTypeFilterOption.has(unit.type)) {
+            this.unitTypeFilterOption.set(unit.type, [false, false]);
+          }
+          if (!this.unitBrandFilterOption.has(unit.brand)) {
+            this.unitBrandFilterOption.set(unit.brand, [false, false]);
+          }
+          if (!this.unitModelFilterOption.has(unit.model)) {
+            this.unitModelFilterOption.set(unit.model, [false, false]);
+          }
+        });
+      }
+      if (this.wordKeyFilteredUnitsForMap.length > 0) {
+        this.wordKeyFilteredUnitsForMap.forEach(unit => {
+          if (!this.unitTypeFilterOption.has(unit.type)) {
+            this.unitTypeFilterOption.set(unit.type, [false, false]);
+          }
+          if (!this.unitBrandFilterOption.has(unit.brand)) {
+            this.unitBrandFilterOption.set(unit.brand, [false, false]);
+          }
+          if (!this.unitModelFilterOption.has(unit.model)) {
+            this.unitModelFilterOption.set(unit.model, [false, false]);
+          }
+        });
+      }
+    }
+  }
+
+  setFilterOptionsByType() {
+    const allUnits: Array<Unit> = [...this.wordKeyFilteredAllUnits]
+      .filter(unit => {
+        return this.unitTypeFilterOption.get(unit.type)[0]
+          || ([...this.unitTypeFilterOption.values()].map(v => v[0]).every(v => !v)
+            && (this.unitBrandFilterOption.get(unit.brand)[0] || this.unitModelFilterOption.get(unit.model)[0]))
+          || this.isFiltListClear();
+      });
+    [...this.unitBrandFilterOption.entries()].forEach((v, i, a) => {
+      this.unitBrandFilterOption.get(v[0])[1] = !(allUnits.map(u => u.brand).indexOf(v[0]) >= 0);
+    });
+    [...this.unitModelFilterOption.entries()].forEach((v, i, a) => {
+      this.unitModelFilterOption.get(v[0])[1] = !(allUnits.map(u => u.model).indexOf(v[0]) >= 0);
+    });
+    if (allUnits.every(un => this.unitTypeFilterOption.get(un.type)[1]) || this.isFiltListClear()) {
+      [...this.unitTypeFilterOption.entries()].forEach((v, i, a) => {
+        this.unitTypeFilterOption.get(v[0])[1] = !(allUnits.map(u => u.type).indexOf(v[0]) >= 0);
+      });
+    }
+    this.filteredAllUnits$.next(allUnits);
+    this.filteredUnitsForMap$.next(allUnits.filter(unit => (this.wordKeyFilteredUnitsForMap.indexOf(unit)) >= 0));
+  }
+
+  setFilterOptionsByBrand() {
+    const allUnits: Array<Unit> = [...this.wordKeyFilteredAllUnits]
+      .filter(unit => {
+        return this.unitBrandFilterOption.get(unit.brand)[0]
+          || ([...this.unitBrandFilterOption.values()].map(v => v[0]).every(v => !v)
+            && (this.unitTypeFilterOption.get(unit.type)[0] || this.unitModelFilterOption.get(unit.model)[0]))
+          || this.isFiltListClear();
+      });
+    [...this.unitTypeFilterOption.entries()].forEach((v, i, a) => {
+      this.unitTypeFilterOption.get(v[0])[1] = !(allUnits.map(u => u.type).indexOf(v[0]) >= 0);
+    });
+    [...this.unitModelFilterOption.entries()].forEach((v, i, a) => {
+      this.unitModelFilterOption.get(v[0])[1] = !(allUnits.map(u => u.model).indexOf(v[0]) >= 0);
+    });
+    if (allUnits.every(un => this.unitBrandFilterOption.get(un.brand)[1]) || this.isFiltListClear()) {
+      [...this.unitBrandFilterOption.entries()].forEach((v, i, a) => {
+        this.unitBrandFilterOption.get(v[0])[1] = !(allUnits.map(u => u.brand).indexOf(v[0]) >= 0);
+      });
+    }
+    this.filteredAllUnits$.next(allUnits);
+    this.filteredUnitsForMap$.next(allUnits.filter(unit => (this.wordKeyFilteredUnitsForMap.indexOf(unit)) >= 0));
+  }
+
+  setFilterOptionsByModel() {
+    const allUnits: Array<Unit> = [...this.wordKeyFilteredAllUnits]
+      .filter(unit => {
+        return this.unitModelFilterOption.get(unit.model)[0]
+          || ([...this.unitModelFilterOption.values()].map(v => v[0]).every(v => !v)
+            && (this.unitTypeFilterOption.get(unit.type)[0] || this.unitBrandFilterOption.get(unit.brand)[0]))
+          || this.isFiltListClear();
+      });
+    [...this.unitTypeFilterOption.entries()].forEach((v, i, a) => {
+      this.unitTypeFilterOption.get(v[0])[1] = !(allUnits.map(u => u.type).indexOf(v[0]) >= 0);
+    });
+    [...this.unitBrandFilterOption.entries()].forEach((v, i, a) => {
+      this.unitBrandFilterOption.get(v[0])[1] = !(allUnits.map(u => u.brand).indexOf(v[0]) >= 0);
+    });
+    if (allUnits.every(un => this.unitModelFilterOption.get(un.model)[1]) || this.isFiltListClear()) {
+      [...this.unitModelFilterOption.entries()].forEach((v, i, a) => {
+        this.unitModelFilterOption.get(v[0])[1] = !(allUnits.map(u => u.model).indexOf(v[0]) >= 0);
+      });
+    }
+    this.filteredAllUnits$.next(allUnits);
+    this.filteredUnitsForMap$.next(allUnits.filter(unit => (this.wordKeyFilteredUnitsForMap.indexOf(unit)) >= 0));
+  }
+
+  isFiltListClear() {
+    return ([...this.unitTypeFilterOption.values()].map(v => v[0]).every(v => !v)
+      && [...this.unitBrandFilterOption.values()].map(v => v[0]).every(v => !v)
+      && [...this.unitModelFilterOption.values()].map(v => v[0]).every(v => !v));
+  }
+
+  filterByOptions(array: Array<Unit>): Array<Unit> {
+    let result = new Array<Unit>();
+    if (this.unitTypeFilterOption.size > 1
+      && (![... this.unitTypeFilterOption.values()].every(v => v[0]))
+      || this.unitBrandFilterOption.size > 1
+      && (![... this.unitBrandFilterOption.values()].every(v => v[0]))
+      || this.unitModelFilterOption.size > 1
+      && (![... this.unitModelFilterOption.values()].every(v => v[0]))
+    ) {
+      result = array.filter((unit, index, arr) => {
+        return ((this.unitTypeFilterOption.has(unit.type) && this.unitTypeFilterOption.get(unit.type)[0])
+          || (this.unitBrandFilterOption.has(unit.brand) && this.unitBrandFilterOption.get(unit.brand)[0])
+          || (this.unitModelFilterOption.has(unit.model) && this.unitModelFilterOption.get(unit.model)[0]))
+          ? true : false;
+      });
+      return result.length > 0 ? result : array;
+    } else {
+      return array;
+    }
   }
 }

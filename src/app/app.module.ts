@@ -73,6 +73,7 @@ import { UnitsInParkMarkerContainerComponent } from './components/units-in-park-
 import {MatExpansionModule} from '@angular/material/expansion';
 import { AboutServiceComponent } from './components/about-service/about-service.component';
 import { ContactsComponent } from './components/contacts/contacts.component';
+import { SearchFilterDialogComponent } from './components/search-filter-dialog/search-filter-dialog.component';
 
 // import {registerLocaleData} from '@angular/common';
 // import localeRu from '@angular/common/locales/ru';
@@ -112,7 +113,8 @@ export const httpInterceptorProviders = [
     DateToLocalStringPipe,
     UnitsInParkMarkerContainerComponent,
     AboutServiceComponent,
-    ContactsComponent
+    ContactsComponent,
+    SearchFilterDialogComponent
   ],
   imports: [
     BrowserModule,

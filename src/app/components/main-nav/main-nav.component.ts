@@ -338,7 +338,7 @@ export class MainNavComponent implements OnInit, OnDestroy {
   }
 
   toggleParkBar(hasBackdrop?: boolean) {
-    this.searchService.fillSearchResList();
+    this.searchService.reSearch();
     if (this.sidenavService.parkContent) {
       this.leftDrawer.close();
       this.sidenavService.parkContent = false;

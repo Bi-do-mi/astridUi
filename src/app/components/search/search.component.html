@@ -7,10 +7,10 @@
           <input #autoCompleteInput type="text" aria-label="Model"
                  matInput [formControl]="searchCtrl" [matAutocomplete]="searchCmplt">
           <button class="button-color"
-          type="button" matTooltip="Искать" tabindex="-1"
-          matTooltipPosition="above"
-          mat-icon-button type="submit">
-          <mat-icon aria-label="Search icon">search</mat-icon>
+                  type="button" matTooltip="Искать" tabindex="-1"
+                  matTooltipPosition="above"
+                  mat-icon-button type="submit">
+            <mat-icon aria-label="Search icon">search</mat-icon>
           </button>
         </div>
         <mat-autocomplete #searchCmplt="matAutocomplete" (optionSelected)="search()">
@@ -22,36 +22,24 @@
     </form>
   </div>
   <div>
-    <mat-accordion>
-      <mat-expansion-panel>
-        <mat-expansion-panel-header>
-          <mat-panel-title>
-            Настройки поиска
-          </mat-panel-title>
-        </mat-expansion-panel-header>
-        <!--что искать-->
-        <mat-radio-group aria-label="Select a search option"
-                         (change)="searchCtrl.setValue(searchCtrl.value);
-                         autoCompleteInput.focus()"
-                         [(ngModel)]="searchService.searchUnits">
-          <mat-radio-button class="mr-4" [value]="true"
-                            [checked]="searchService.searchUnits">искать технику
-          </mat-radio-button>
-          <mat-radio-button [value]="false">искать владельцев</mat-radio-button>
-        </mat-radio-group>
-        <!--<div class="divcolor"></div>-->
-        <!--как искать-->
-        <!--<mat-radio-group aria-label="Select a search type" [(ngModel)]="searchService.searchType">-->
-          <!--<mat-radio-button class="mr-4" *ngFor="let _searchType of searchService.searchTypes"-->
-                            <!--[value]="_searchType" [checked]="searchService.searchType === value">-->
-            <!--{{_searchType}}-->
-          <!--</mat-radio-button>-->
-        <!--</mat-radio-group>-->
-      </mat-expansion-panel>
-    </mat-accordion>
+    <div fxLayout="column" fxLayoutAlign=" stretch">
+      <div fxLayout="row" fxLayoutAlign="center center">
+        <button mat-raised-button="" fxFlex="" tabindex="-1" (click)="openFilters()"
+                matTooltip="Редактировать фильтр поиска"
+                matTooltipPosition="above">Фильтр
+        </button>
+        <button mat-raised-button="" tabindex="-1" (click)="clearFilters()"
+                class="ml-1" matTooltip="Очистить фильтр"
+                *ngIf="searchService.unitTypeFilterOption.size || searchService.unitBrandFilterOption.size
+                || searchService.unitModelFilterOption.size" matTooltipPosition="above">
+          <mat-icon aria-label="Search icon">clear</mat-icon>
+        </button>
+      </div>
+    </div>
   </div>
   <div class="mt-3" *ngIf="((!searchService.isThereResult) && (searchService.isThereResult !== undefined))">
-    Нет результатов. Попробуйте расширить зону поиска.</div>
+    Нет результатов. Попробуйте расширить зону поиска.
+  </div>
   <div class="filtered-units-list-container" *ngIf="FilteredUnitsListTableComponent
    && searchService.searchUnits &&
    ((searchService?.filteredAllUnits | async)?.length>0)">

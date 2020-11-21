@@ -7,6 +7,8 @@ import {FilteredUnitsListTableComponent} from '../filtered-units-list-table/filt
 import {FilteredUsersListTableComponent} from '../filtered-users-list-table/filtered-users-list-table.component';
 import {untilDestroyed} from 'ngx-take-until-destroy';
 import {MatAutocompleteTrigger} from '@angular/material/autocomplete';
+import {MatDialog} from '@angular/material/dialog';
+import {SearchFilterDialogComponent} from '../search-filter-dialog/search-filter-dialog.component';
 
 @Component({
   selector: 'app-search',
@@ -23,13 +25,14 @@ export class SearchComponent implements OnInit, OnDestroy {
   @ViewChild(MatAutocompleteTrigger) autocomplete: MatAutocompleteTrigger;
 
   constructor(
-    public searchService: SearchService) {
+    public searchService: SearchService,
+    public filterDialog: MatDialog) {
 
     // фильтрация по поисковой строке
     this.searchCtrl.valueChanges.pipe(debounceTime(500), untilDestroyed(this),
       map((state: string) => {
         const searchResults: Array<string>
-          = [... this.searchService.mainFilter(state)];
+          = [... this.searchService.mainOptionsFilter(state)];
         // this.showFiltUnList = false;
         // this.showFiltUsList = false;
         if (searchResults.length) {
@@ -58,7 +61,31 @@ export class SearchComponent implements OnInit, OnDestroy {
   }
 
   search() {
-      this.autocomplete.closePanel();
-      this.searchService.fillSearchResListWithIsThereResTriggering(this.searchCtrl.value);
-    }
+    this.autocomplete.closePanel();
+    this.searchService.fillSearchResListWithIsThereResTriggering(this.searchCtrl.value);
+  }
+
+  openFilters() {
+    this.filterDialog.open(SearchFilterDialogComponent,
+      {
+        disableClose: true,
+        maxHeight: '90vh'
+      });
+  }
+
+  clearFilters() {
+    this.searchService.unitTypeFilterOption.forEach(v => {
+      v[0] = false;
+      v[1] = false;
+    });
+    this.searchService.unitBrandFilterOption.forEach(v => {
+      v[0] = false;
+      v[1] = false;
+    });
+    this.searchService.unitModelFilterOption.forEach(v => {
+      v[0] = false;
+      v[1] = false;
+    });
+    this.searchService.reSearch();
+  }
 }
