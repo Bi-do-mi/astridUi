@@ -165,12 +165,12 @@
 
         <!--toolbar-->
         <div fxLayout="row" fxLayoutAlign="center" class="tools-bar" fxFlex
-             *ngIf="url == '/'">
+             *ngIf="router.url === '/'">
           <!--кнопка поиска-->
           <div class="button-div">
             <button
               type="button" class="tool-button" matTooltip="Искать технику" tabindex="-1"
-              matTooltipPosition="above" *ngIf="!setPointMode && url == '/'" aria-label="Toggle start_sidenav"
+              matTooltipPosition="above" *ngIf="!setPointMode && router.url === '/'" aria-label="Toggle start_sidenav"
               mat-icon-button (click)="toggleSearchBar()">
               <mat-icon aria-label="Search nav toggle icon">search</mat-icon>
             </button>
@@ -179,7 +179,7 @@
           <div class="button-div">
             <button
               type="button" class="tool-button" matTooltip="Мой технопарк" tabindex="-1"
-              matTooltipPosition="above" *ngIf="!setPointMode && url == '/'" aria-label="Toggle start_sidenav"
+              matTooltipPosition="above" *ngIf="!setPointMode && router.url === '/'" aria-label="Toggle start_sidenav"
               mat-icon-button (click)="toggleParkBar()">
               <mat-icon aria-label="Park nav toggle icon">local_parking</mat-icon>
             </button>
@@ -188,7 +188,7 @@
           <div class="button-div">
             <button
               type="button" class="tool-button" matTooltip="Обновить данные" tabindex="-1"
-              matTooltipPosition="above" *ngIf="!setPointMode && url == '/'" aria-label="Toggle start_sidenav"
+              matTooltipPosition="above" *ngIf="!setPointMode && router.url === '/'" aria-label="Toggle start_sidenav"
               mat-icon-button (click)="mapService.refreshData()">
               <mat-icon aria-label="Refresh icon">refresh</mat-icon>
             </button>
@@ -196,7 +196,7 @@
         </div>
       </div>
       <footer fxLayout="column" fxLayoutAlign="center center" class="footer-div"
-              *ngIf="url == '/'" [ngStyle]="{'min-height': isFooterOpened ? '90px' : '0'}">
+              *ngIf="router.url === '/'" [ngStyle]="{'min-height': isFooterOpened ? '90px' : '0'}">
         <div class="footer-arrow" fxLayout="column" fxLayoutAlign="center center"
              (click)="footerToggle()">
           <mat-icon aria-label="Footer toggle" *ngIf="!isFooterOpened">keyboard_arrow_up</mat-icon>

@@ -2,6 +2,7 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import {fromEvent, Observable, Subscription} from 'rxjs';
 import {Router} from '@angular/router';
 import {SnackBarService} from './_services/snack-bar.service';
+import {SwitchAppService} from './_services/switch-app.service';
 
 @Component({
   selector: 'app-root',
@@ -17,7 +18,9 @@ export class AppComponent implements OnInit, OnDestroy {
   subscriptions: Subscription[] = [];
 
   constructor(private router: Router,
-              private snackBarService: SnackBarService) {
+              private snackBarService: SnackBarService,
+              public switchAppService: SwitchAppService) {
+    console.log('AppComponent');
   }
 
   ngOnInit(): void {
@@ -41,4 +44,3 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 }
 
-// todo сделать фильтр с отображением на карте юнитов с ценами, другими характеристиками, например длина стрелы

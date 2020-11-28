@@ -1,9 +1,7 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import * as mapboxgl from 'mapbox-gl';
 import {MapService} from '../../_services/map.service';
 import {NGXLogger} from 'ngx-logger';
 import {SnackBarService} from '../../_services/snack-bar.service';
-import {FeatureCollection, GeoJson} from '../../_model/MarkerSourceModel';
 import {Title} from '@angular/platform-browser';
 
 
@@ -22,7 +20,7 @@ export class MapBoxComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.mapService.mapTemplateId$ = 'map_container';
-    this.titleService.setTitle('"Технокарта" - бесплатный онлайн-сервис по поиску спецтехники в аренду');
+    this.titleService.setTitle('"Технокарта" - бесплатный онлайн-сервис поиска спецтехники в аренду');
   }
 
   ngOnDestroy() {

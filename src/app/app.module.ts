@@ -169,21 +169,6 @@ export const httpInterceptorProviders = [
     AppRoutingModule
     // ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production })
   ],
-  // entryComponents: [
-  //   UserOptionsDialogComponent,
-  //   DeleteUserDialogComponent,
-  //   DeleteUnitDialogComponent,
-  //   UnitCreateDialogComponent,
-  //   UnitsListTableComponent,
-  //   UnitsMainListDialogComponent,
-  //   UnitInfoCardDialogComponent,
-  //   UnitsPopupComponent,
-  //   UsersPopupComponent,
-  //   UserInfoCardDialogComponent,
-  //   SearchComponent,
-  //   FilteredUnitsListTableComponent,
-  //   FilteredUsersListTableComponent
-  // ],
   providers: [AuthGuard, httpInterceptorProviders, LoadUnitImagePipe,
     Title,
     {

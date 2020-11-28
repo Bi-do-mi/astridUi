@@ -30,6 +30,7 @@ import {MatDialog} from '@angular/material/dialog';
 import {OpenParkListService} from '../../_services/open-park-list.service';
 import {SearchService} from '../../_services/search.service';
 import {Meta, Title} from '@angular/platform-browser';
+import {SwitchAppService} from '../../_services/switch-app.service';
 
 @Component({
   selector: 'app-main-nav',
@@ -54,7 +55,7 @@ export class MainNavComponent implements OnInit, OnDestroy {
 
 
   constructor(private breakpointObserver: BreakpointObserver,
-              private router: Router,
+              public router: Router,
               public sidenavService: SidenavService,
               public uService: UserService,
               private activatedRoute: ActivatedRoute,
@@ -72,7 +73,8 @@ export class MainNavComponent implements OnInit, OnDestroy {
               private openUnitInfoService: OpenUnitInfoService,
               private openUserInfoService: OpenUserInfoService,
               private openParkList: OpenParkListService,
-              private injector: Injector) {
+              private injector: Injector,
+              public switchAppService: SwitchAppService) {
     // Convert `PopupComponent` to a custom element.
     const UnitsPopup = createCustomElement(UnitsPopupComponent, {injector});
     const UsersPopup = createCustomElement(UsersPopupComponent, {injector});
@@ -97,10 +99,10 @@ export class MainNavComponent implements OnInit, OnDestroy {
         if (child.snapshot.data['description']) {
           this.metaService.updateTag({name: 'description', content: child.snapshot.data['description']});
         }
-       if (child.snapshot.data['keywords']) {
+        if (child.snapshot.data['keywords']) {
           this.metaService.updateTag({name: 'keywords', content: child.snapshot.data['description']});
         }
-       if (child.snapshot.data['robots']) {
+        if (child.snapshot.data['robots']) {
           this.metaService.updateTag({name: 'robots', content: child.snapshot.data['robots']});
         }
         return;
