@@ -117,13 +117,15 @@ export class UserOptionsDialogComponent implements OnInit, OnDestroy {
       }
     }
     this.ngxPicaService.resizeImages(files, 300, 150,
-      {aspectRatio: {keepAspectRatio: true, forceMinDimensions: true}})
+      {
+        exifOptions: {forceExifOrientation: false},
+        aspectRatio: {keepAspectRatio: true, forceMinDimensions: true}})
       .pipe(first(), untilDestroyed(this), finalize(() => {
         this.loading = false;
       }))
       .subscribe((imageResized?: File) => {
           const reader: FileReader = new FileReader();
-          reader.addEventListener('load', (evnt: any) => {
+          reader.addEventListener('load', () => {
             this.user.image = {
               filename: 'usrImg' + imageResized.name.slice(
                 imageResized.name.lastIndexOf('.')),
@@ -141,12 +143,8 @@ export class UserOptionsDialogComponent implements OnInit, OnDestroy {
 
   validateFile(name: String) {
     const ext = name.substring(name.lastIndexOf('.') + 1);
-    if (ext.toLowerCase() === 'jpg' ||
-      ext.toLowerCase() === 'jpeg') {
-      return true;
-    } else {
-      return false;
-    }
+    return ext.toLowerCase() === 'jpg' ||
+      ext.toLowerCase() === 'jpeg';
   }
 
   deleteImage() {

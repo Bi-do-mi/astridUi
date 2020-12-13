@@ -12,7 +12,7 @@ import {untilDestroyed} from 'ngx-take-until-destroy';
 import {DateDeserializerService} from './date-deserializer.service';
 import {SnackBarService} from './snack-bar.service';
 import {ZonedDateTime} from '@js-joda/core';
-import {environment} from '../../environments/environment.prod';
+import {environment} from '../../environments/environment';
 import {Feature} from '@turf/helpers';
 import {MultiPolygon} from '@turf/helpers';
 
@@ -219,7 +219,7 @@ export class ParkService implements OnDestroy {
           this.onMoveEndRequest(polygon);
         })).subscribe(() => {
       }, error1 => {
-        // console.log('Error resived!');
+        console.log('Error resived!' + error1.getMessage());
       });
     } else {
       this.onMoveEndRequest(polygon, full);
@@ -253,8 +253,8 @@ export class ParkService implements OnDestroy {
 
           },
           error1 => {
-            // console.log('loadDataOnMoveEnd ERROR: \n' + JSON.stringify(error1) + 'poly: \n'
-            //   + JSON.stringify(polygon));
+            console.log('loadDataOnMoveEnd ERROR: \n' + JSON.stringify(error1) + 'poly: \n'
+              + JSON.stringify(polygon));
           });
       }
     }

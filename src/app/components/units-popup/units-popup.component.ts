@@ -2,7 +2,7 @@ import {Component, Input, OnInit} from '@angular/core';
 import {Unit} from '../../_model/Unit';
 import {ParkService} from '../../_services/park.service';
 import {Duration, ZonedDateTime} from '@js-joda/core';
-import {environment} from '../../../environments/environment.prod';
+import {environment} from '../../../environments/environment';
 import {first} from 'rxjs/operators';
 
 @Component({

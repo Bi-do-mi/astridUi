@@ -1,6 +1,6 @@
 import {Injectable, OnDestroy, OnInit, Renderer2, RendererFactory2} from '@angular/core';
 import * as mapboxgl from 'mapbox-gl';
-import {AnySourceData, AnySourceImpl, LngLat, Marker} from 'mapbox-gl';
+import {LngLat, Marker} from 'mapbox-gl';
 import {NGXLogger} from 'ngx-logger';
 import {BehaviorSubject, Observable, Subject, Subscription} from 'rxjs';
 import {HttpClient} from '@angular/common/http';
@@ -14,10 +14,10 @@ import {first} from 'rxjs/operators';
 import {GeoCode} from '../_model/GeoCode';
 import {SidenavService} from './sidenav.service';
 import {Unit} from '../_model/Unit';
-import {environment} from '../../environments/environment.prod';
+import {environment} from '../../environments/environment';
 import {ParkService} from './park.service';
 import * as _helpers from '@turf/helpers';
-import {Feature, FeatureCollection, MultiPolygon, Polygon} from '@turf/helpers';
+import {Feature, MultiPolygon, Polygon} from '@turf/helpers';
 import * as turf from '@turf/turf';
 import {PopupService} from './popup.service';
 import {SearchService} from './search.service';
@@ -330,7 +330,6 @@ export class MapService implements OnInit, OnDestroy {
   }
 
   flyTo(data: GeoJson) {
-    const pointer = new Marker();
     this.map.flyTo({
       center: [data.geometry.coordinates[0], data.geometry.coordinates[1]],
       zoom: 9

@@ -23,8 +23,8 @@ import {BreakpointObserver, Breakpoints} from '@angular/cdk/layout';
 import * as moment from 'moment';
 import {Moment} from 'moment';
 import {MatDatepickerInputEvent} from '@angular/material/datepicker';
-import {DateTimeFormatter, ZonedDateTime} from '@js-joda/core';
-import {environment} from '../../../environments/environment.prod';
+import {ZonedDateTime} from '@js-joda/core';
+import {environment} from '../../../environments/environment';
 import {UnitImage} from '../../_model/UnitImage';
 
 @Component({
@@ -54,7 +54,7 @@ export class UnitCreateDialogComponent implements OnInit, AfterViewInit, OnDestr
   optForm: FormGroup;
   unitOptions: UnitOptionModel<any>[] = [];
   isHandset$: Observable<boolean> = this.breakpointObserver.observe(
-    Breakpoints.Handset).pipe(map(result => result.matches));
+    Breakpoints.Handset).pipe(map((result: any) => result.matches));
   minDate: Moment;
   maxDate: Moment;
   public inputValue = '';
@@ -329,7 +329,9 @@ export class UnitCreateDialogComponent implements OnInit, AfterViewInit, OnDestr
       }
     }
     this.ngxPicaService.resizeImages(files, 1500, 1000,
-      {aspectRatio: {keepAspectRatio: true, forceMinDimensions: true}})
+      {
+        exifOptions: {forceExifOrientation: false},
+        aspectRatio: {keepAspectRatio: true, forceMinDimensions: true}})
       .pipe(first(), untilDestroyed(this), finalize(() => {
         this.loading = false;
         this.inputValue = '';
@@ -368,12 +370,8 @@ export class UnitCreateDialogComponent implements OnInit, AfterViewInit, OnDestr
 
   validateFile(name: string) {
     const ext = name.substring(name.lastIndexOf('.') + 1);
-    if (ext.toLowerCase() === 'jpg' ||
-      ext.toLowerCase() === 'jpeg') {
-      return true;
-    } else {
-      return false;
-    }
+    return ext.toLowerCase() === 'jpg' ||
+      ext.toLowerCase() === 'jpeg';
   }
 
   deleteImage(ind: number) {

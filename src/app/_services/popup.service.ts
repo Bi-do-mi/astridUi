@@ -11,14 +11,11 @@ import {UserService} from './user.service';
 import {ParkService} from './park.service';
 import {OpenUnitInfoService} from './open-unit-info.service';
 import {first} from 'rxjs/operators';
-import {olx} from 'openlayers';
 import {OpenUserInfoService} from './open-user-info.service';
 import {SidenavService} from './sidenav.service';
-import {GeoJson} from '../_model/MarkerSourceModel';
-import {environment} from '../../environments/environment.prod';
 import * as FCollModel from '../_model/MarkerSourceModel';
-import {BehaviorSubject, Subject} from 'rxjs';
-import {UnitsInParkMarkerContainerComponent} from '../components/units-in-park-marker-container/units-in-park-marker-container.component';
+import {GeoJson} from '../_model/MarkerSourceModel';
+import {environment} from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -58,7 +55,7 @@ export class PopupService implements OnInit, OnDestroy {
   }
 
   tunePopup(map: mapboxgl.Map, layer_?: string, clusterLayer?: string,
-            sourceId?: string, unitsInParkIdes?: Array<number>) {
+            sourceId?: string) {
     let popupTimer: any;
     let unit: Unit;
     let user: User;
@@ -70,12 +67,12 @@ export class PopupService implements OnInit, OnDestroy {
         || layer_ === 'ownUnitsInParkLayer'
         || layer_ === 'ownUnitsNotPaidLayer'
         || layer_ === 'ownUnitsNotEnabledLayer') {
-        unit = this.currentUser.units.filter((u, i, arr) => {
+        unit = this.currentUser.units.filter((u) => {
           if (u.id === e.features[0].id) {
             return true;
           }
         })[0];
-        this.setUnitPopupContent(unit, map);
+        this.setUnitPopupContent(unit);
       }
 
       // unitsLayer
@@ -84,12 +81,12 @@ export class PopupService implements OnInit, OnDestroy {
         unit = (layer_ === 'searchResUnitsInParkLayer') ?
           this.parkService.unitsInPark.get(<number> e.features[0].id) :
           this.parkService.units.get(<number> e.features[0].id);
-        this.setUnitPopupContent(unit, map);
+        this.setUnitPopupContent(unit);
       }
 
       // usersLayer
       if ((layer_ === 'usersLayer') || (layer_ === 'searchResUsersLayer')) {
-        user = this.usersCache_.filter((u, i, arr) => {
+        user = this.usersCache_.filter((u) => {
           if (u.id === e.features[0].id) {
             return true;
           }
@@ -100,7 +97,6 @@ export class PopupService implements OnInit, OnDestroy {
               user.image = data.image;
             });
           }
-          const unitsIdes = new Array<number>();
           const usersPopupEl: NgElement & WithProperties<UsersPopupComponent> =
             this.renderer.createElement('users-popup') as any;
           usersPopupEl.user = user;
@@ -149,7 +145,7 @@ export class PopupService implements OnInit, OnDestroy {
       }
     });
 
-    map.on('mouseleave', layer_, (e) => {
+    map.on('mouseleave', layer_, () => {
       map.getCanvas().style.cursor = '';
       if (!this.unitPopup.isOpen()) {
         clearTimeout(popupTimer);
@@ -194,7 +190,7 @@ export class PopupService implements OnInit, OnDestroy {
 
     let timer: any;
     const popup = new mapboxgl.Popup({closeButton: false, offset: 10});
-    popup.on('open', e => {
+    popup.on('open', () => {
       this.isPopupOpened = true;
     });
     const markerDiv = this.renderer.createElement('div');
@@ -237,7 +233,7 @@ export class PopupService implements OnInit, OnDestroy {
 
     // adding click listener
     markerDiv.addEventListener('click', () => {
-      this.toggleParkBar(true);
+      this.toggleParkBar();
     });
 
     // adding mouseleave listener
@@ -276,7 +272,7 @@ export class PopupService implements OnInit, OnDestroy {
     }
   }
 
-  setUnitPopupContent(unit: Unit, map: mapboxgl.Map) {
+  setUnitPopupContent(unit: Unit) {
     const unitsPopupEl: NgElement & WithProperties<UnitsPopupComponent> =
       this.renderer.createElement('units-popup') as any;
     if (unit) {
@@ -297,7 +293,7 @@ export class PopupService implements OnInit, OnDestroy {
     }
   }
 
-  toggleParkBar(hasBackdrop?: boolean) {
+  toggleParkBar() {
     if (this.sidenavService.parkContent) {
       this.sidenavService.closeLeft();
       this.sidenavService.parkContent = false;
@@ -322,7 +318,7 @@ export class PopupService implements OnInit, OnDestroy {
           un.id,
           {
             paid: environment.testing_paid ? true : un.paid,
-            listLink: i === 4 ? true : false
+            listLink: i === 4
           }));
       }
     });

@@ -6,5 +6,9 @@
   "/logout":{
     "target":"http://localhost:8080/",
     "secure":false
+  },
+  "/static-pages/about.html":{
+    "target":"http://localhost:4200/static-pages/about.html",
+    "secure":false
   }
 }

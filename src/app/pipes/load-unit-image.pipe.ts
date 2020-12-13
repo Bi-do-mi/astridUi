@@ -3,7 +3,7 @@ import {ParkService} from '../_services/park.service';
 import {map} from 'rxjs/operators';
 import {untilDestroyed} from 'ngx-take-until-destroy';
 import {Unit} from '../_model/Unit';
-import {environment} from '../../environments/environment.prod';
+import {environment} from '../../environments/environment';
 import {of} from 'rxjs';
 
 @Pipe({name: 'loadUnitImg'})
