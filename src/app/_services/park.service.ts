@@ -219,7 +219,7 @@ export class ParkService implements OnDestroy {
           this.onMoveEndRequest(polygon);
         })).subscribe(() => {
       }, error1 => {
-        console.log('Error resived!' + error1.getMessage());
+        console.log('Error resived!' + error1);
       });
     } else {
       this.onMoveEndRequest(polygon, full);

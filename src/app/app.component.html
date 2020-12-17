@@ -9,12 +9,75 @@
     type="ball-atom"
   ></ngx-spinner>
 </div>
-<div *ngIf="switchAppService.staticPages">
-  <span>Привет! Это веб-сервис "Технокарта"</span>
-  <button mat-raised-button="" tabindex="-1" (click)="switchAppService.appOn()"
-          color="accent" matTooltipPosition="above">НАЧАТЬ
-  </button>
-<div>
-  <a href="https://technokarta.ru/static-pages/about.html">О нас</a>
-</div>
+<div *ngIf="switchAppService.staticPages" class="homeBackground">
+  <header fxLayout="row">
+    <mat-toolbar color="primary" class="mat-elevation-z6" fxLayout="row">
+      <a tabindex="-1" [ngStyle]="{'text-decoration': 'none','color': 'white'}"
+         href="" [routerLink]="['/']">
+        <img src="/assets/icons/logo.png" height="50px" alt="logo technokarta">
+        Технокарта</a>
+      <div fxFlex></div>
+    </mat-toolbar>
+  </header>
+  <div class="div1">
+    <div class="div1_1">
+      <div class="div1_2" fxLayout="column" fxLayoutAlign="center start">
+        <div class="div1_4" fxLayout="column">
+          <div [ngClass]="{'welkText_l': !(isHandset$ | async), 'welkText_s': (isHandset$ | async)}">
+            Бесплатный онлайн-сервис<br>поиска спецтехники в аренду.
+          </div>
+          <button mat-raised-button="" tabindex="-1" (click)="switchAppService.appOn()"
+                  [ngClass]="{'btn_l': !(isHandset$ | async), 'btn_s': (isHandset$ | async)}"
+                  color="accent" matTooltipPosition="above">НАЧАТЬ
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="dvider leanerBack1"></div>
+  <!--  first info block-->
+  <div class="div2" fxLayout="row wrap" fxLayoutAlign="center none">
+    <div fxFlex="50" fxLayout="column" fxLayoutAlign="center none"
+         [ngClass]="{'div2_1_l': !(isHandset$ | async), 'div2_1_s': (isHandset$ | async)}">
+      <p>Вы владелец экскаватора или погрузчика? Откройте представительство своего парка техники. Расширяйте свои деловые
+        контакты с помощью сервиса "Технокарта".</p>
+    </div>
+    <div class="div2_2" fxFlex="" fxLayout="column" fxLayoutAlign="center center">
+      <img src="/assets/pics/excavator.jpg" class="div2_2img">
+    </div>
+  </div>
+  <div class="dvider leanerBack1"></div>
+  <!--  second info block-->
+  <div class="div2dark" fxLayout="row wrap" fxLayoutAlign="center none" dir="rtl">
+    <div fxFlex="50" fxLayout="row" fxLayoutAlign="center center" dir="ltr"
+         [ngClass]="{'div2_1_l': !(isHandset$ | async), 'div2_1_s': (isHandset$ | async)}">
+      <p>Ищите специализированную технику в аренду? Оптимизируйте свое время, используйте
+        быстрые и удобные инструменты поиска.</p>
+    </div>
+    <div class="div2_2" fxFlex="" fxLayout="column" fxLayoutAlign="center center">
+      <img src="/assets/pics/crane.jpg" class="div2_2img">
+    </div>
+  </div>
+  <div class="dvider leanerBack1"></div>
+  <!--  third info block-->
+  <div class="div2" fxLayout="row wrap" fxLayoutAlign="center none">
+    <div fxFlex="50" fxLayout="row" fxLayoutAlign="center center"
+         [ngClass]="{'div2_1_l': !(isHandset$ | async), 'div2_1_s': (isHandset$ | async)}">
+      <p>Ваш контакт состоится в считанные секунды, без посредников и абсолютно бесплатно!</p>
+    </div>
+    <div class="div2_2" fxFlex="" fxLayout="column" fxLayoutAlign="center center">
+      <img src="/assets/pics/handshake.jpg" class="div2_2img">
+    </div>
+  </div>
+  <div class="dvider leanerBack1"></div>
+  <footer fxLayout="column" fxLayoutAlign="center center" class="footer-div">
+    <div fxFlex="" fxLayout="column" class="ml-4 mr-4 footer-opened">
+      <div fxFlex="" fxLayout="row wrap" fxLayoutAlign="center center">
+        <a class="a-ref" [href]="env.aboutUrl">О сервисе</a>
+        <a class="a-ref" [href]="env.aboutUrl">О сервисе</a>
+      </div>
+      <div fxFlexAlign="center">&copy; BIDOMI, 2020
+      </div>
+    </div>
+  </footer>
 </div>

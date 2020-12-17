@@ -4,10 +4,23 @@
   margin:0;
   padding:0;
 }
+$color: rgba(251, 192, 45, 1);
+$transparent: rgba(0, 0, 0, 0);
 html, body {
   height: 100%;
   margin: 0;
   padding: 0;
+  //background: linear-gradient(-45deg,
+  //  $transparent 49.9%,
+  //  $color 49.9%, $color 80%,
+  //  $transparent 60%
+  //),
+  //linear-gradient(-45deg,
+  //    $color 20%,
+  //    $transparent 10%
+  //);
+  //background-size: 2em 2em;
+  //background-color: rgba(33, 33, 33, 1);
 }
 #absolute_component{
   min-width: 100%;

@@ -3,6 +3,9 @@ import {fromEvent, Observable, Subscription} from 'rxjs';
 import {Router} from '@angular/router';
 import {SnackBarService} from './_services/snack-bar.service';
 import {SwitchAppService} from './_services/switch-app.service';
+import {environment} from '../environments/environment';
+import {BreakpointObserver, Breakpoints} from '@angular/cdk/layout';
+import {finalize, map} from 'rxjs/operators';
 
 @Component({
   selector: 'app-root',
@@ -11,13 +14,15 @@ import {SwitchAppService} from './_services/switch-app.service';
 })
 export class AppComponent implements OnInit, OnDestroy {
   title = 'Astrid';
-
+  public env = environment;
   onlineEvent: Observable<Event>;
   offlineEvent: Observable<Event>;
-
   subscriptions: Subscription[] = [];
+  isHandset$: Observable<boolean> = this.breakpointObserver.observe(
+    Breakpoints.Handset).pipe(map(result => result.matches));
 
-  constructor(private router: Router,
+  constructor(private breakpointObserver: BreakpointObserver,
+              private router: Router,
               private snackBarService: SnackBarService,
               public switchAppService: SwitchAppService) {
     console.log('AppComponent');
