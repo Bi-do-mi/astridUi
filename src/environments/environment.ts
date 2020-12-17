@@ -14,6 +14,7 @@ export const environment = {
   dateLocal: 'ru-RU',
   workEndPeriod: 360,
   aboutUrl: 'http://localhost:4200/static-pages/about.html',
+  contactsUrl: 'http://localhost:4200/static-pages/contacts.html',
   indexUrl: 'http://localhost:4200/'
 };
 

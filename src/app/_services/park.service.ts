@@ -1,12 +1,12 @@
 import {Injectable, OnDestroy} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {finalize, first, map} from 'rxjs/operators';
+import {catchError, finalize, first, map} from 'rxjs/operators';
 import {UnitBrand, UnitType} from '../_model/UnitTypesModel';
 import {Unit} from '../_model/Unit';
 import {NgxSpinnerService} from 'ngx-spinner';
 import {UserService} from './user.service';
 import * as turf from '@turf/helpers';
-import {BehaviorSubject} from 'rxjs';
+import {BehaviorSubject, of} from 'rxjs';
 import {User} from '../_model/User';
 import {untilDestroyed} from 'ngx-take-until-destroy';
 import {DateDeserializerService} from './date-deserializer.service';
@@ -204,23 +204,25 @@ export class ParkService implements OnDestroy {
     this.ownUnitsInParkCacheFiltered$.next(Array.from(this.ownUnitsInPark.values()));
     this.ownUnitsNotPaidCacheFiltered$.next(Array.from(this.ownUnitsNotPaid.values()));
     this.ownUnitsNotEnabledCacheFiltered$.next(Array.from(this.ownUnitsNotEnabled.values()));
-
     this.loadDataOnMoveEnd(viewPort);
   }
 
   loadDataOnMoveEnd(polygon: turf.Feature<turf.MultiPolygon>, full?: boolean) {
     if (document.cookie.indexOf('XSRF-TOKEN') === -1) {
       this.http.get<any>('/rest/users/hello')
-        .pipe(first(), untilDestroyed(this), finalize(() => {
-          this.users.clear();
-          this.units.clear();
-          this.unitsInPark.clear();
-          this.ownUnitsSourcesRebuild();
-          this.onMoveEndRequest(polygon);
+        .pipe(first(), untilDestroyed(this), catchError((e) => {
+          console.log('Error resived!' + e);
+          if (!e) {
+            this.users.clear();
+            this.units.clear();
+            this.unitsInPark.clear();
+            console.log('!!!');
+            this.ownUnitsSourcesRebuild();
+            this.onMoveEndRequest(polygon);
+          }
+          return of([]);
         })).subscribe(() => {
-      }, error1 => {
-        console.log('Error resived!' + error1);
-      });
+        });
     } else {
       this.onMoveEndRequest(polygon, full);
     }

@@ -10,5 +10,6 @@ export const environment = {
   dateLocal: 'ru-RU',
   workEndPeriod: 15,
   aboutUrl: 'https://technokarta.ru/static-pages/about.html',
+  contactsUrl: 'https://technokarta.ru/static-pages/contacts.html',
   indexUrl: 'https://technokarta.ru/'
 };
