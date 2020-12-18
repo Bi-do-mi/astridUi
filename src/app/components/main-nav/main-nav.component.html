@@ -11,8 +11,8 @@
     <mat-toolbar class="cursor-pointer" color="accent"
                  (click)="sidenavService.parkContent ? toggleParkBar()
                  :(sidenavService.searchContent?toggleSearchBar():null)">
-      {{sidenavService.searchContent?'Поиск'
-      :sidenavService.parkContent?'Мой парк техники':''}}
+      {{sidenavService.searchContent ? 'Поиск'
+      : sidenavService.parkContent ? 'Мой парк техники' : ''}}
       <div fxFlex></div>
       <mat-icon aria-label="Arrow back icon">arrow_back_ios</mat-icon>
     </mat-toolbar>

@@ -16,7 +16,13 @@
          href="" [routerLink]="['/']">
         <img src="/assets/icons/logo.png" height="50px" alt="logo technokarta">
         Технокарта</a>
-      <div fxFlex></div>
+      <div fxFlex="">
+        <div fxFlex="" fxLayout="row wrap" fxLayoutAlign="end center"
+             *ngIf="!(isHandset$ | async)">
+          <a class="a-ref" [href]="env.aboutUrl">О сервисе</a>
+          <a class="a-ref" [href]="env.contactsUrl">Обратная связь</a>
+        </div>
+      </div>
     </mat-toolbar>
   </header>
   <div class="div1">

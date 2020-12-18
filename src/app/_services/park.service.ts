@@ -210,19 +210,18 @@ export class ParkService implements OnDestroy {
   loadDataOnMoveEnd(polygon: turf.Feature<turf.MultiPolygon>, full?: boolean) {
     if (document.cookie.indexOf('XSRF-TOKEN') === -1) {
       this.http.get<any>('/rest/users/hello')
-        .pipe(first(), untilDestroyed(this), catchError((e) => {
-          console.log('Error resived!' + e);
-          if (!e) {
+        .pipe(first(), untilDestroyed(this),
+          finalize(() => {
             this.users.clear();
             this.units.clear();
             this.unitsInPark.clear();
-            console.log('!!!');
             this.ownUnitsSourcesRebuild();
             this.onMoveEndRequest(polygon);
-          }
-          return of([]);
-        })).subscribe(() => {
-        });
+          }), catchError((e) => {
+            console.log('Error resived!' + e);
+            return of([]);
+          })).subscribe(() => {
+      });
     } else {
       this.onMoveEndRequest(polygon, full);
     }
