@@ -1,0 +1,3 @@
+User-Agent: *
+Allow: /static-pages/about.html
+Allow: /static-pages/contacts.html
