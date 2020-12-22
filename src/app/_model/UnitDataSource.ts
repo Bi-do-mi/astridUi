@@ -1,13 +1,14 @@
 //  Data Source Class    //////////////////////////////////////////////////////////////////////
 import {DataSource} from '@angular/cdk/table';
 import {Unit} from './Unit';
-import {OnDestroy} from '@angular/core';
+import {Injectable, OnDestroy} from '@angular/core';
 import {merge, Observable, Subscription} from 'rxjs';
 import {untilDestroyed} from 'ngx-take-until-destroy';
 import {first, map} from 'rxjs/operators';
 import {MatPaginator} from '@angular/material/paginator';
 import {MatSort} from '@angular/material/sort';
 
+@Injectable()
 export class UnitDataSource extends DataSource<Unit> implements OnDestroy {
   public data: Unit[];
   private subscription1: Subscription;
