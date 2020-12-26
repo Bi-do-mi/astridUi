@@ -1,8 +1,8 @@
 export const environment = {
   production: true,
   mapbox: {
-    accessToken: 'VRgdrAzvUsWnu6iigRja',
-    geocoderAccessToken: 'hg1h55E0Z3ft5je5zeKI'
+    accessToken: 'cER4oYE3pZHqmYoxD7bi',
+    geocoderAccessToken: 'cER4oYE3pZHqmYoxD7bi'
   },
   testing_paid: true,
   unitPicSpacer: './assets/pics/unit_pic_spacer-500x333.png',

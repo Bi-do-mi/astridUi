@@ -8,7 +8,7 @@ export class SwitchAppService {
   public staticPages = true;
 
   constructor() {
-    console.log('SwitchAppService');
+    // console.log('SwitchAppService');
   }
 
   appOn() {

@@ -216,7 +216,7 @@ export class ParkService implements OnDestroy {
         this.unitsInPark.clear();
         this.ownUnitsSourcesRebuild();
         this.onMoveEndRequest(polygon);
-      }, error => {console.log('Error resived!' + error)});
+      }, error => {console.log('Error resived on loadDataOnMoveEnd!')});
     } else {
       this.onMoveEndRequest(polygon, full);
     }

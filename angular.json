@@ -89,7 +89,7 @@
           "builder": "@nguniversal/builders:prerender",
           "options": {
             "browserTarget": "astridUi:build:production",
-            "serverTarget": "astridUi:server:production",
+            "serverTarget": "astridUi:serve:production",
             "routes": ["/"]
           },
           "configurations": {

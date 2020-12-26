@@ -25,7 +25,7 @@ export class AppComponent implements OnInit, OnDestroy {
               private router: Router,
               private snackBarService: SnackBarService,
               public switchAppService: SwitchAppService) {
-    console.log('AppComponent');
+    // console.log('AppComponent');
   }
 
   ngOnInit(): void {
