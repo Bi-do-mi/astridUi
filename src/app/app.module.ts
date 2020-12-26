@@ -117,7 +117,7 @@ export const httpInterceptorProviders = [
     SearchFilterDialogComponent
   ],
   imports: [
-    BrowserModule,
+    BrowserModule.withServerTransition({ appId: 'serverApp' }),
     BrowserAnimationsModule,
     FormsModule,
     HttpClientModule,
