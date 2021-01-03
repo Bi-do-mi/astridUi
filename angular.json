@@ -162,7 +162,7 @@
             "browserTarget": "astridUi:build:production",
             "serverTarget": "astridUi:server:production",
             "routes": [
-              "/contacts"
+              "/about-service"
             ]
           },
           "configurations": {
