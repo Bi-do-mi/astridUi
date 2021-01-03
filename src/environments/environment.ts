@@ -12,10 +12,7 @@ export const environment = {
   unitPicSpacer: './assets/pics/unit_pic_spacer-500x333.png',
   userPicSpacer: './assets/pics/buldozer_.jpg',
   dateLocal: 'ru-RU',
-  workEndPeriod: 360,
-  aboutUrl: 'http://localhost:4200/static-pages/about.html',
-  contactsUrl: 'http://localhost:4200/static-pages/contacts.html',
-  indexUrl: 'http://localhost:4200/'
+  workEndPeriod: 360
 };
 
 /*
