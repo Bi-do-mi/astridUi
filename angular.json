@@ -27,12 +27,7 @@
             "assets": [
               "src/favicon.png",
               "src/assets",
-              "src/manifest.json",
-              {
-                "glob": "**/*",
-                "input": "src/static-pages/",
-                "output": "/static-pages/"
-              }
+              "src/manifest.json"
             ],
             "styles": [
               "src/styles.scss",
@@ -141,32 +136,6 @@
               "sourceMap": false,
               "optimization": true
             }
-          }
-        },
-        "serve-ssr": {
-          "builder": "@nguniversal/builders:ssr-dev-server",
-          "options": {
-            "browserTarget": "astridUi:build",
-            "serverTarget": "astridUi:server"
-          },
-          "configurations": {
-            "production": {
-              "browserTarget": "astridUi:build:production",
-              "serverTarget": "astridUi:server:production"
-            }
-          }
-        },
-        "prerender": {
-          "builder": "@nguniversal/builders:prerender",
-          "options": {
-            "browserTarget": "astridUi:build:production",
-            "serverTarget": "astridUi:server:production",
-            "routes": [
-              "/about-service"
-            ]
-          },
-          "configurations": {
-            "production": {}
           }
         }
       }
