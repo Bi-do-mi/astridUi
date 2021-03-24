@@ -158,7 +158,7 @@ export const httpInterceptorProviders = [
     MatSnackBarModule,
     NgxMapboxGLModule.withConfig({
       // Optionnal, can also be set per map (accessToken input of mgl-map)
-      // accessToken: 'pk.eyJ1IjoiYmlkb21pIiwiYSI6ImNqbWt6dm05aTAydjQza3BianJwajV5ZmkifQ.46hioGSUTzMOdWqTFHwnDQ'
+      // accessToken: 'pk.eyJ1IjoiYmlkb21pIiwiYSI6ImNrajRhanV3MDBpbW4ydG5vOHk2OW9xZHkifQ.NKTR8fIPRdH7XPvm4MR2Fg',
       accessToken: environment.mapbox.accessToken,
       geocoderAccessToken: environment.mapbox.geocoderAccessToken
       // Optionnal, specify if different from the map access token, can also be set per mgl-geocoder (accessToken input of mgl-geocoder)

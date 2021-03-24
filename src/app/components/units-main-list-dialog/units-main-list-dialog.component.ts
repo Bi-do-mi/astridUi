@@ -2,7 +2,6 @@ import {Component, Inject, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {Unit} from '../../_model/Unit';
 import {UserService} from '../../_services/user.service';
 import {MapService} from '../../_services/map.service';
-import {SidenavService} from '../../_services/sidenav.service';
 import {untilDestroyed} from 'ngx-take-until-destroy';
 import {UnitDataSource} from '../../_model/UnitDataSource';
 import {UnitInfoCardDialogComponent} from '../unit-info-card-dialog/unit-info-card-dialog.component';
@@ -59,6 +58,7 @@ export class UnitsMainListDialogComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    // console.log('data: user.loc: ' + this.data.user.location);
     this.galleryImagesMap = new Map();
     // this.dialogRef.disableClose = true;
     this.dialogRef.backdropClick().pipe(untilDestroyed(this))

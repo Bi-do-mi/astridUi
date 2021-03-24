@@ -84,7 +84,6 @@ export class MainNavComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    const appTitle = this.titleService.getTitle();
     this.router.events.pipe(
       filter(a => a instanceof NavigationEnd), untilDestroyed(this),
       map(() => {
@@ -177,7 +176,7 @@ export class MainNavComponent implements OnInit, OnDestroy {
 
   openUserOptionsDialog(): void {
     this.sidenavService.closeAll();
-    const dialogRef = this.dialog.open(UserOptionsDialogComponent, {
+    this.dialog.open(UserOptionsDialogComponent, {
       minHeight: '250px'
     });
   }
@@ -225,7 +224,7 @@ export class MainNavComponent implements OnInit, OnDestroy {
             this.currentUser.location = point;
 
             if (this.currentUser.units && this.currentUser.units.length > 0) {
-              this.currentUser.units.forEach((u: Unit, i, arr) => {
+              this.currentUser.units.forEach((u: Unit) => {
                 const unitLoc = u.location.geometry.coordinates as number[];
                 // console.log('!!!unitLoc: ' + unitLoc + '\n!!!userLoc: ' + userLoc);
                 if (userLoc[0] === unitLoc[0] && userLoc[1] === unitLoc[1]) {
@@ -235,9 +234,7 @@ export class MainNavComponent implements OnInit, OnDestroy {
             }
 
             this.uService.updateUser(this.currentUser)
-              .pipe(first(), untilDestroyed(this)).subscribe(u => {
-            }, error1 => {
-            });
+              .pipe(first(), untilDestroyed(this)).subscribe();
           }
         }
         if (!this.currentUser.location && !point) {
@@ -268,6 +265,7 @@ export class MainNavComponent implements OnInit, OnDestroy {
   }
 
   openUnitsMainListDialog(user?: User) {
+    // console.log('openUnitsMainListDialog user: ' + User);
     this.sidenavService.closeAll();
     const dialogRef = this.dialog.open(UnitsMainListDialogComponent, {
       maxHeight: '100vh',
@@ -297,7 +295,7 @@ export class MainNavComponent implements OnInit, OnDestroy {
   }
 
   openUserInfoCardDialog(user: User) {
-    const userInfoDialogRef = this.userInfoDialog.open(UserInfoCardDialogComponent, {
+    this.userInfoDialog.open(UserInfoCardDialogComponent, {
       maxHeight: '100vh',
       maxWidth: '100vw',
       backdropClass: 'leanerBack2',
@@ -311,13 +309,13 @@ export class MainNavComponent implements OnInit, OnDestroy {
     //   });
   }
 
-  toggleMenu(hasBackdrop?: boolean) {
+  toggleMenu() {
     this.sidenavService.closeAll();
     this.sidenavService.hasBackdrop$.next(true);
     this.rightDrawer.toggle();
   }
 
-  toggleSearchBar(hasBackdrop?: boolean) {
+  toggleSearchBar() {
     if (this.sidenavService.searchContent) {
       this.leftDrawer.close();
       this.sidenavService.searchContent = false;
@@ -328,7 +326,7 @@ export class MainNavComponent implements OnInit, OnDestroy {
         this.sidenavService.hasBackdrop$.next(false);
         this.leftDrawer.open();
       } else {
-        this.leftDrawer.close().then(v => {
+        this.leftDrawer.close().then(() => {
           this.sidenavService.searchContent = true;
           this.sidenavService.parkContent = false;
           this.sidenavService.closeRight();
@@ -339,7 +337,7 @@ export class MainNavComponent implements OnInit, OnDestroy {
     }
   }
 
-  toggleParkBar(hasBackdrop?: boolean) {
+  toggleParkBar() {
     this.searchService.reSearch();
     if (this.sidenavService.parkContent) {
       this.leftDrawer.close();
@@ -351,7 +349,7 @@ export class MainNavComponent implements OnInit, OnDestroy {
         this.sidenavService.hasBackdrop$.next(false);
         this.leftDrawer.open();
       } else {
-        this.leftDrawer.close().then(v => {
+        this.leftDrawer.close().then(() => {
           this.sidenavService.searchContent = false;
           this.sidenavService.parkContent = true;
           this.sidenavService.closeRight();

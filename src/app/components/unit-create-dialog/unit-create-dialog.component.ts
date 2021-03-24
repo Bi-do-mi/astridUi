@@ -275,7 +275,7 @@ export class UnitCreateDialogComponent implements OnInit, AfterViewInit, OnDestr
     if (this.currentUser.units.includes(this.data.unit)) {
       this.currentUser.units.forEach(u => {
         if (u.id === this.data.unit.id) {
-          console.log(this.data.unit.options);
+          // console.log(this.data.unit.options);
           this.parkService.updateUnit(this.data.unit).pipe(first(),
             untilDestroyed(this), finalize(() => {
               this.loading = false;
@@ -311,11 +311,6 @@ export class UnitCreateDialogComponent implements OnInit, AfterViewInit, OnDestr
           this.snackbarService.error('Что-то пошло не так', 'OK');
         });
     }
-    // todo remove method later
-    // this.parkService.createUnitTypesList(this.unitsTabList).pipe(first(),
-    //   untilDestroyed(this)).subscribe(() => {
-    //   console.log('unitsTabList created!');
-    // });
   }
 
   public handleImages(event: any) {

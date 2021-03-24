@@ -1,20 +1,19 @@
 import {Injectable, OnDestroy} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {catchError, finalize, first, map} from 'rxjs/operators';
+import {finalize, first, map} from 'rxjs/operators';
 import {UnitBrand, UnitType} from '../_model/UnitTypesModel';
 import {Unit} from '../_model/Unit';
 import {NgxSpinnerService} from 'ngx-spinner';
 import {UserService} from './user.service';
 import * as turf from '@turf/helpers';
-import {BehaviorSubject, of} from 'rxjs';
+import {Feature, MultiPolygon} from '@turf/helpers';
+import {BehaviorSubject} from 'rxjs';
 import {User} from '../_model/User';
 import {untilDestroyed} from 'ngx-take-until-destroy';
 import {DateDeserializerService} from './date-deserializer.service';
 import {SnackBarService} from './snack-bar.service';
 import {ZonedDateTime} from '@js-joda/core';
 import {environment} from '../../environments/environment';
-import {Feature} from '@turf/helpers';
-import {MultiPolygon} from '@turf/helpers';
 
 @Injectable({
   providedIn: 'root'
@@ -58,7 +57,6 @@ export class ParkService implements OnDestroy {
     private dateDeserializer: DateDeserializerService,
     private snackbarService: SnackBarService
   ) {
-    this.getJSONfromFile();
   }
 
   ngOnDestroy() {
@@ -163,7 +161,7 @@ export class ParkService implements OnDestroy {
       }));
   }
 
-  ownUnitsSourcesRebuild(viewPort?: Feature<MultiPolygon>) {
+  ownUnitsSourcesRebuild(viewPort?: Feature<MultiPolygon>, full?: boolean) {
     this.userService.currentUser.pipe(untilDestroyed(this), first()).subscribe((currentUser) => {
       this.currentUser = currentUser;
     });
@@ -204,19 +202,17 @@ export class ParkService implements OnDestroy {
     this.ownUnitsInParkCacheFiltered$.next(Array.from(this.ownUnitsInPark.values()));
     this.ownUnitsNotPaidCacheFiltered$.next(Array.from(this.ownUnitsNotPaid.values()));
     this.ownUnitsNotEnabledCacheFiltered$.next(Array.from(this.ownUnitsNotEnabled.values()));
-    this.loadDataOnMoveEnd(viewPort);
+    this.loadDataOnMoveEnd(viewPort, full);
   }
 
   loadDataOnMoveEnd(polygon: turf.Feature<turf.MultiPolygon>, full?: boolean) {
     if (document.cookie.indexOf('XSRF-TOKEN') === -1) {
       this.http.get<any>('/rest/users/hello')
         .pipe(first(), untilDestroyed(this)).subscribe(() => {
-        this.users.clear();
-        this.units.clear();
-        this.unitsInPark.clear();
-        this.ownUnitsSourcesRebuild();
-        this.onMoveEndRequest(polygon);
-      }, error => {console.log('Error resived on loadDataOnMoveEnd!')});
+        this.onMoveEndRequest(polygon, full);
+      }, error => {
+        console.log('Error resived on loadDataOnMoveEnd()! ' + error.toString());
+      });
     } else {
       this.onMoveEndRequest(polygon, full);
     }
@@ -334,8 +330,13 @@ export class ParkService implements OnDestroy {
 
   locationComparer(user: User, unit: Unit): boolean {
     try {
+      // if (user.location) {
+      // console.log('user loc: ' + user.location.geometry.coordinates);
       return unit.location.geometry.coordinates[0] === user.location.geometry.coordinates[0] &&
         unit.location.geometry.coordinates[1] === user.location.geometry.coordinates[1];
+      // } else {
+      //   return false;
+      // }
     } catch (e) {
       console.log('Error in locationComparer\n', e);
     }

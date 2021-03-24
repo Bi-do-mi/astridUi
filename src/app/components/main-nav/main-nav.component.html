@@ -27,10 +27,10 @@
       <div class="ml-1 mr-0" fxLayout="row">
         <div fxLayout="column" fxFlex>
           <div fxLayout="column" fxLayoutAlign="start center">
-            <img class="bordered-user-image mt-2" *ngIf="currentUser.image"
+            <img alt="user-image" class="bordered-user-image mt-2" *ngIf="currentUser.image"
                  [src]="'data:image/jpg;base64,' + currentUser.image?.value">
             <img height="150px" *ngIf="!currentUser.image"
-                 src="assets/pics/buldozer_.jpg" alt="Photo of a machins"/>
+                 src="./src/assets/pics/buldozer_.jpg" alt="Photo of a machins"/>
             <div style="text-align: center;">
               <span class="h6">{{currentUser.name}}</span>
             </div>
@@ -78,7 +78,7 @@
           </mat-icon>
           <mat-icon *ngIf="currentUser?.units?.length > 0"
                     matTooltip="Открыть список" tabindex="-1" class="mn-cursor-pointer"
-                    matTooltipPosition="above" (click)="openUnitsMainListDialog()">list
+                    matTooltipPosition="above" (click)="openUnitsMainListDialog(currentUser)">list
           </mat-icon>
         </div>
       </div>
@@ -124,7 +124,7 @@
         <mat-toolbar color="primary" class="mat-elevation-z6" fxLayout="row">
           <a tabindex="-1" [ngStyle]="{'text-decoration': 'none','color': 'white'}"
              href="" [routerLink]="['/']">
-            <img src="/assets/icons/logo.png" height="50px" alt="logo technokarta">
+            <img src="./src/assets/icons/logo.png" height="50px" alt="logo technokarta">
             Технокарта</a>
           <div fxFlex></div>
           <a mat-button (click)="routingToLoginPage()" *ngIf="currentUser&&

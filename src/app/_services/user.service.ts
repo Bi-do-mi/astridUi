@@ -111,14 +111,20 @@ export class UserService implements OnDestroy {
     }, 1000);
     // remove user from local storage to log user out
     this.http.post('/logout', {}).pipe(finalize(() => {
-      localStorage.removeItem('currentUser');
-      // localStorage.removeItem('ahead');
-      this.updateCurrentUser(new User(), false);
-      this.authHeader = new HttpHeaders();
-      this.authenticated = false;
-      notFinished = false;
-      this.spinner.hide();
-    }), untilDestroyed(this)).subscribe();
+        localStorage.removeItem('currentUser');
+        // if (document.cookie.indexOf('XSRF-TOKEN') === -1) {
+        //   console.log('logout()!!!');
+        //   this.http.get<any>('/rest/users/hello')
+        //     .pipe(first(), untilDestroyed(this)).subscribe(() => {
+        //   })
+        // }
+        this.updateCurrentUser(new User(), false);
+        this.authHeader = new HttpHeaders();
+        this.authenticated = false;
+        notFinished = false;
+        this.spinner.hide();
+      }
+    ), untilDestroyed(this)).subscribe();
   }
 
   getAll() {
@@ -216,7 +222,7 @@ export class UserService implements OnDestroy {
           if (data === 'true') {
             this.login(credentials, token).pipe(first(),
               untilDestroyed(this))
-              .subscribe(d => {
+              .subscribe(() => {
               });
           } else {
             throw new Error('Пароль не был изменен. Проверьте правильность вводимых данных.');
