@@ -211,7 +211,7 @@ export class ParkService implements OnDestroy {
         .pipe(first(), untilDestroyed(this)).subscribe(() => {
         this.onMoveEndRequest(polygon, full);
       }, error => {
-        console.log('Error resived on loadDataOnMoveEnd()! ' + error.toString());
+        console.log('Error resived on loadDataOnMoveEnd()!!! ' + error.toString());
       });
     } else {
       this.onMoveEndRequest(polygon, full);

@@ -17,7 +17,14 @@ const appRoutes: Routes = [
       keywords: 'спецтехника, аренда спецтехники, кран аренда, эксковатор аренда, фронтальный погрузчик'
     }
   },
-  {path: 'contacts', component: ContactsComponent, data: {title: 'Контакты'}},
+  {
+    path: 'contacts', component: ContactsComponent, data: {
+      title: 'Контакты',
+      description: '«Технокарта» – бесплатный онлайн-сервис поиска спецтехники в аренду.' +
+        'Страница обратной связи.',
+      keywords: 'спецтехника, аренда спецтехники, кран аренда, эксковатор аренда, фронтальный погрузчик'
+    }
+  },
   {
     path: 'app-admin-units-collection', component: AdminUnitsCollectionComponent,
     canActivate: [AdminGuard],
@@ -26,10 +33,12 @@ const appRoutes: Routes = [
       robots: 'noindex'
     }
   },
-  {path: '404', component: PageNotFoundComponent, data: {
-    title: 'Ошибка 404',
-    robots: 'noindex'
-    }},
+  {
+    path: '404', component: PageNotFoundComponent, data: {
+      title: 'Ошибка 404',
+      robots: 'noindex'
+    }
+  },
   {
     path: '', component: MapBoxComponent,
     data: {
