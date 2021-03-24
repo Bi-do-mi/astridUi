@@ -30,7 +30,7 @@
             <img alt="user-image" class="bordered-user-image mt-2" *ngIf="currentUser.image"
                  [src]="'data:image/jpg;base64,' + currentUser.image?.value">
             <img height="150px" *ngIf="!currentUser.image"
-                 src="./src/assets/pics/buldozer_.jpg" alt="Photo of a machins"/>
+                 src="../../assets/pics/buldozer_.jpg" alt="Photo of a machins"/>
             <div style="text-align: center;">
               <span class="h6">{{currentUser.name}}</span>
             </div>
@@ -124,7 +124,7 @@
         <mat-toolbar color="primary" class="mat-elevation-z6" fxLayout="row">
           <a tabindex="-1" [ngStyle]="{'text-decoration': 'none','color': 'white'}"
              href="" [routerLink]="['/']">
-            <img src="./src/assets/icons/logo.png" height="50px" alt="logo technokarta">
+            <img src="../../assets/icons/logo.png" height="50px" alt="logo technokarta">
             Технокарта</a>
           <div fxFlex></div>
           <a mat-button (click)="routingToLoginPage()" *ngIf="currentUser&&
