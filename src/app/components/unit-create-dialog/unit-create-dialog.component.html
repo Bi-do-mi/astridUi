@@ -153,8 +153,8 @@
             <i class="material-icons">location_on</i>
           </button>
           <p class="m-3">{{(unitGeoCode?.results[0]?.name) + ', ' +
-            (unitGeoCode?.results[1]?.name)+'\n'+
-            (unitGeoCode?.results[unitGeoCode?.results.length-1]?.name)}}
+          (unitGeoCode?.results[1]?.name) + '\n' +
+          (unitGeoCode?.results[unitGeoCode?.results.length - 1]?.name)}}
           </p>
         </div>
         <p class="m-3" *ngIf="data.unit.location && data.unit.location === currentUser.location">
@@ -188,7 +188,8 @@
                  [required]="data.unit.location && data.unit.location.geometry.coordinates[0]
               !== currentUser.location.geometry.coordinates[0]
                && data.unit.location.geometry.coordinates[1]
-              !== currentUser.location.geometry.coordinates[1]">
+              !== currentUser.location.geometry.coordinates[1]
+              && workEndMode">
           <mat-datepicker-toggle matSuffix [for]="workEndPicker"></mat-datepicker-toggle>
           <mat-datepicker [touchUi]="isHandset$ | async" #workEndPicker></mat-datepicker>
           <mat-error *ngIf="workEndDateCtl.hasError('required')">

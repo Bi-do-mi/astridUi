@@ -18,11 +18,11 @@
         <div class="m-3">
           <h6><b>{{unit.model}}</b></h6>
           <div>&bull; Тип: {{unit.type}}</div>
-          <div *ngIf="isPrivate">&bull; Оплачен: {{unit.paid ? 'да' : 'нет'}}</div>
+          <div *ngIf="isPrivate && showPaidStatus">&bull; Оплачен: {{unit.paid ? 'да' : 'нет'}}</div>
           <div *ngIf="unit.paid">&bull;Оплачен до: {{unit.paidUntil !==null ?
             (unit.paidUntil | dateToLocaleString | async): '-'}}
           </div>
-          <div>&bull; Виден другим пользователям: {{unit.enabled?'да':'нет'}}</div>
+          <div *ngIf="showUnitToOthers">&bull; Виден другим пользователям: {{unit.enabled?'да':'нет'}}</div>
           <div>&bull; Дата создания: {{unit.createdOn | dateToLocaleString | async}}
           </div>
           <div>&bull; Дата последнего редактирования: {{unit.lastUpdate | dateToLocaleString | async}}

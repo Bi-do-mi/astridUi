@@ -139,7 +139,7 @@ export class ParkService implements OnDestroy {
         })
         , map((user: User) => {
           this.dateDeserializer.date(user);
-          if (user) {
+          if (user && (this.currentUser.username === user.username)) {
             this.userService.updateCurrentUser(user, true);
           }
           return user;
@@ -221,7 +221,7 @@ export class ParkService implements OnDestroy {
   onMoveEndRequest(polygon: turf.Feature<turf.MultiPolygon>, full?: boolean) {
     if (polygon) {
       if (full) {
-        this.ownUnitsSourcesRebuild();
+        this.ownUnitsSourcesRebuild(polygon);
       } else {
         this.http.post<any>('/rest/search/on_moveend', polygon)
           .pipe(first(), untilDestroyed(this)).subscribe((data: Array<Array<any>>) => {

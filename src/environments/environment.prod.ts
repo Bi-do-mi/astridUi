@@ -8,5 +8,6 @@ export const environment = {
   unitPicSpacer: './assets/pics/unit_pic_spacer-500x333.png',
   userPicSpacer: './assets/pics/buldozer_.jpg',
   dateLocal: 'ru-RU',
-  workEndPeriod: 15
+  workEndPeriod: 15,
+  workEndMode: false
 };

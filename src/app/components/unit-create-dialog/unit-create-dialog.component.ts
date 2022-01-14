@@ -52,12 +52,14 @@ export class UnitCreateDialogComponent implements OnInit, AfterViewInit, OnDestr
   linear = true;
   unitGeoCode: GeoCode;
   optForm: FormGroup;
+  workEndForm: FormGroup;
   unitOptions: UnitOptionModel<any>[] = [];
   isHandset$: Observable<boolean> = this.breakpointObserver.observe(
     Breakpoints.Handset).pipe(map((result: any) => result.matches));
   minDate: Moment;
   maxDate: Moment;
   public inputValue = '';
+  workEndMode = environment.workEndMode;
 
   constructor(
     private breakpointObserver: BreakpointObserver,
@@ -69,7 +71,8 @@ export class UnitCreateDialogComponent implements OnInit, AfterViewInit, OnDestr
     private ngxPicaService: NgxPicaService,
     @Inject(MAT_DIALOG_DATA) public data: {
       unit: Unit,
-      stepNum?: number
+      stepNum?: number,
+      editing: boolean
     },
     private mapService: MapService,
     private questionCtrlService: QuestionControlService,

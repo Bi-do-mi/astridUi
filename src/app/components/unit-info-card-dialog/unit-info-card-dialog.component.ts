@@ -15,8 +15,8 @@ import {ParkService} from '../../_services/park.service';
 import {HttpClient} from '@angular/common/http';
 import {DateDeserializerService} from '../../_services/date-deserializer.service';
 import {OpenUserInfoService} from '../../_services/open-user-info.service';
-import {UnitOptionModel} from '../unit-create-dialog/UnitOptions/UnitOptionModel';
 import {UNIT_OPTIONS_CONSTANTS} from '../../constants/UnitOptionsConstants';
+import {environment} from "../../../environments/environment";
 
 @Component({
   selector: 'app-unit-info-card-dialog',
@@ -34,6 +34,8 @@ export class UnitInfoCardDialogComponent implements OnInit, OnDestroy {
   public layout1: string;
   owner: User;
   public measures: Map<string, string>;
+  showPaidStatus = environment.showPaidStatus;
+  showUnitToOthers = environment.showUnitToOthers;
 
   constructor(
     private breakpointObserver: BreakpointObserver,
@@ -51,6 +53,9 @@ export class UnitInfoCardDialogComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.userService.currentUser.pipe(first(), untilDestroyed(this))
       .subscribe((user: User) => {
+        if (user.username === 'bidomi@mail.ru'){
+          this.isPrivate = true;
+        }
         if (user.units && user.units.length > 0) {
           user.units.forEach((u: Unit) => {
             if (u.id === this.data.unit.id) {
